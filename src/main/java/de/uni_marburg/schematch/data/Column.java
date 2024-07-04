@@ -23,6 +23,7 @@ public class Column {
     private Map<Tokenizer, Set<String>> tokenizedLabel;
     private Map<Tokenizer, Set<String>> tokenizedValues;
 
+    //Column wird angelegt indem Name der Columns und enthaltene Werte übergeben werden
     public Column(String label, List<String> values) {
         this.label = label;
         this.values = values;

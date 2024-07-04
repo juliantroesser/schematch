@@ -11,8 +11,8 @@ import java.util.Collection;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InclusionDependency implements Dependency{
-    Collection<Column> dependant;
-    Collection<Column> referenced;
+    Collection<Column> dependant; //Untermenge
+    Collection<Column> referenced; //Übermenge //dependent ist enthalten in referenced
 
     public Collection<Column> getSubset(){
         return dependant;

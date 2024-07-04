@@ -13,10 +13,7 @@ import de.uni_marburg.schematch.utils.Configuration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LabelSimilarityMatcherTest {
-    public static void testLabelSimilarityMatcher (
-            Configuration.MatcherConfiguration matcherConfiguration,
-            SimilarityMeasure<String> similarityMeasure
-    ) throws Exception {
+    public static void testLabelSimilarityMatcher(Configuration.MatcherConfiguration matcherConfiguration, SimilarityMeasure<String> similarityMeasure) throws Exception {
         TestUtils.TestData testData = TestUtils.getTestData();
         Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
         Table sourceTable = scenario.getSourceDatabase().getTableByName("authors");
@@ -28,8 +25,7 @@ class LabelSimilarityMatcherTest {
 
         for (int i = 0; i < sourceTable.getNumColumns(); i++) {
             for (int j = 0; j < targetTable.getNumColumns(); j++) {
-                float simScore = similarityMeasure.compare(sourceTable.getColumn(i).getLabel(),
-                        targetTable.getColumn(j).getLabel());
+                float simScore = similarityMeasure.compare(sourceTable.getColumn(i).getLabel(), targetTable.getColumn(j).getLabel());
                 assertEquals(simScore, simMatrix[i][j]);
             }
         }

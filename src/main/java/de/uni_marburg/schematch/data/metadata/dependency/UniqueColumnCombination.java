@@ -12,7 +12,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UniqueColumnCombination implements Dependency{
-    Collection<Column> columnCombination;
+    Collection<Column> columnCombination; //Unique Column Combination //FD is most minimal
 
     @Override
     public boolean equals(Object o) {

@@ -16,11 +16,7 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TokenizedLabelSimilarityMatcherTest {
-    public static void testTokenizedLabelSimilarityMatcher (
-            Configuration.MatcherConfiguration matcherConfiguration,
-            Tokenizer tokenizer,
-            SimilarityMeasure<Set<String>> similarityMeasure
-    ) throws Exception {
+    public static void testTokenizedLabelSimilarityMatcher(Configuration.MatcherConfiguration matcherConfiguration, Tokenizer tokenizer, SimilarityMeasure<Set<String>> similarityMeasure) throws Exception {
         TestUtils.TestData testData = TestUtils.getTestData();
         Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
         Table sourceTable = scenario.getSourceDatabase().getTableByName("authors");
@@ -32,8 +28,7 @@ class TokenizedLabelSimilarityMatcherTest {
 
         for (int i = 0; i < sourceTable.getNumColumns(); i++) {
             for (int j = 0; j < targetTable.getNumColumns(); j++) {
-                float simScore = similarityMeasure.compare(sourceTable.getColumn(i).getLabelTokens(tokenizer),
-                        targetTable.getColumn(j).getLabelTokens(tokenizer));
+                float simScore = similarityMeasure.compare(sourceTable.getColumn(i).getLabelTokens(tokenizer), targetTable.getColumn(j).getLabelTokens(tokenizer));
                 assertEquals(simScore, simMatrix[i][j]);
             }
         }

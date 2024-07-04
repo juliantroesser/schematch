@@ -14,6 +14,7 @@ public class FunctionalDependency implements Dependency{
     Column dependant;
     PdepTuple pdepTuple;
 
+    //{left1, left2,...} -> {right}
     public FunctionalDependency(Collection<Column> left, Column right){
         this.determinant = left;
         this.dependant = right;

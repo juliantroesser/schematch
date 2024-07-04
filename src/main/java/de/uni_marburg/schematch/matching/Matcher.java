@@ -32,6 +32,7 @@ public abstract class Matcher {
 
     /**
      * Sets all matcher fields according to the configuration (see first_line_matchers.yaml)
+     *
      * @param matcherConfiguration Configuration for this matcher
      */
     public void configure(Configuration.MatcherConfiguration matcherConfiguration) {
@@ -47,7 +48,7 @@ public abstract class Matcher {
                 throw new RuntimeException(e);
             }
             try {
-                String setterName = "set" + key.substring(0,1).toUpperCase() + key.substring(1);
+                String setterName = "set" + key.substring(0, 1).toUpperCase() + key.substring(1);
                 setter = this.getClass().getDeclaredMethod(setterName, fieldType);
             } catch (NoSuchMethodException e) {
                 getLogger().error("Configuration error: Could not find setter for field " + key + " for " + this);
@@ -77,7 +78,8 @@ public abstract class Matcher {
                 field.setAccessible(true);
                 result.append(field.getName()).append("=").append(field.get(this)).append(", ");
                 field.setAccessible(false);
-            } catch (IllegalAccessException ignored) {} // Cannot happen, we have set the field to be accessible
+            } catch (IllegalAccessException ignored) {
+            } // Cannot happen, we have set the field to be accessible
         }
         String res = result.toString();
         if (getClass().getDeclaredFields().length > 0) {

@@ -9,11 +9,11 @@ import java.io.File;
 import java.util.List;
 
 @Data
-public class Database {
+public class Database { //Entspricht meiner Schema Klasse
     private final String name;
     private final String path;
-    private List<Table> tables;
-    private DatabaseMetadata metadata;
+    private List<Table> tables; //Repräsentiert mehrere Tabellen
+    private DatabaseMetadata metadata; //Dependencies u.ä
     private int numColumns;
 
     public Database(String path) {
