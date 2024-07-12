@@ -16,6 +16,11 @@ public class Node {
     private final boolean isHelperNode;
     private final boolean isIDNode;
 
+    //Valentine:
+    //Name
+    //long_name = table_name, table_guid, column_name, column_guid
+    //Database
+
     public Node(String value, NodeType nodeType, Datatype datatype, boolean isHelperNode, boolean isIDNode) {
         this.value = value;
         this.nodeType = nodeType;
@@ -32,6 +37,8 @@ public class Node {
         return isIDNode;
     }
 
+    //Valentine: equal if: this.name = other.name & this.db = other.db
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Node other) {
@@ -39,6 +46,8 @@ public class Node {
         }
         return false;
     }
+
+    //Valentine: hash(name)
 
     @Override
     public int hashCode() {

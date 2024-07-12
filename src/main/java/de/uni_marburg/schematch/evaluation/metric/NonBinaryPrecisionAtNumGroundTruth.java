@@ -29,4 +29,5 @@ public class NonBinaryPrecisionAtNumGroundTruth extends Metric {
 
         return score;
     }
+
 }

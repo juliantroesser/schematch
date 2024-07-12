@@ -1,5 +1,6 @@
 package de.uni_marburg.schematch.evaluation.metric;
 
+import de.uni_marburg.schematch.utils.ArrayUtils;
 import de.uni_marburg.schematch.utils.MetricUtils;
 
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class AUCPR extends AUCMetric {
+
     @Override
     public float run(int[] groundTruthVector, float[] simVector) {
         List<Integer> sortedSimIndices = MetricUtils.getSortedSimIndices(simVector, groundTruthVector);
@@ -51,4 +53,5 @@ public class AUCPR extends AUCMetric {
 
         return (float) calcAreaUnderCurve(recall, precision);
     }
+
 }

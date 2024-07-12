@@ -1,2 +1,0 @@
-[walmart_amazon_source.csv.id]
-[walmart_amazon_source.csv.modelno, walmart_amazon_source.csv.title]

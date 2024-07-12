@@ -50,4 +50,5 @@ public class AUROC extends AUCMetric {
 
         return (float) calcAreaUnderCurve(fpr, tpr);
     }
+
 }

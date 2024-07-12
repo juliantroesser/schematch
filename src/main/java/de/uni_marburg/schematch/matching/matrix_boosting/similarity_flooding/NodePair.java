@@ -4,6 +4,10 @@ import java.util.Objects;
 
 public class NodePair {
 
+    //Valentine:
+    //Node1
+    //Node2
+
     private final Node node1;
     private final Node node2;
 
@@ -20,13 +24,18 @@ public class NodePair {
         return node2;
     }
 
+    //Valentine: equals: (this.node1 = other.node1 & this.node2 = other.node2) ||
+    //                   (this.node1 = other.node2 & this.node2 = other.node1)
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof NodePair other) {
-            return (other.node1.equals(this.node1) && other.node2.equals(this.node2));
+            return (other.node1.equals(this.node1) && other.node2.equals(this.node2)) || (other.node1.equals(this.node2) && other.node2.equals(this.node1));
         }
         return false;
     }
+
+    //Valentine: hash(node1.name + node2.name)
 
     @Override
     public int hashCode() {

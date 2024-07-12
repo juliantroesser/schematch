@@ -1,3 +1,0 @@
-[fodors_zagats_target.csv.id]
-[fodors_zagats_target.csv.name]
-[fodors_zagats_target.csv.class]

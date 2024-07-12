@@ -54,17 +54,17 @@ public class Evaluator {
         Map<Metric, Performance> performances = new HashMap<>();
 
         for (Metric metric : this.metrics) {
-            Performance performance = new Performance(metric.run(this.groundTruthVector, simVector));
+            Performance performance = new Performance(metric.run(this.groundTruthVector, simVector)); //Evaluate whole Matrix
             if (Configuration.getInstance().isEvaluateAttributes()) {
                 assert this.sourceGroundTruthIndices != null;
                 assert this.targetGroundTruthIndices != null;
                 assert this.transposedGroundTruthMatrix != null;
                 for (Integer i : this.sourceGroundTruthIndices) {
-                    performance.addSourceAttributeScore(i, metric.run(this.groundTruthMatrix[i], simMatrix[i]));
+                    performance.addSourceAttributeScore(i, metric.run(this.groundTruthMatrix[i], simMatrix[i])); //Evaluate only source attribute rows
                 }
                 float[][] transposedSimMatrix = ArrayUtils.transposeMatrix(simMatrix);
                 for (Integer j : this.targetGroundTruthIndices) {
-                    performance.addTargetAttributeScore(j, metric.run(this.transposedGroundTruthMatrix[j], transposedSimMatrix[j]));
+                    performance.addTargetAttributeScore(j, metric.run(this.transposedGroundTruthMatrix[j], transposedSimMatrix[j])); //Evaluate only target attribute rows
                 }
             }
             performances.put(metric, performance);
