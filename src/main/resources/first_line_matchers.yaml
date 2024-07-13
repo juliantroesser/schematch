@@ -13,7 +13,7 @@
 name: "SimilarityFlooding"
 packageName: "matrix_boosting.similarity_flooding"
 params:
-  useValentineGraphRepresentation: ["false", "true"]
+  useValentineGraphRepresentation: ["true"]
   propagationCoefficientPolicy: ["INVERSE_AVERAGE"]
   fixpointFormula: ["FORMULA_C"]
   epsilon: ["0.001"]

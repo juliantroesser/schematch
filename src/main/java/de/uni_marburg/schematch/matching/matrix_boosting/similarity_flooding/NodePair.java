@@ -44,7 +44,7 @@ public class NodePair {
 
     @Override
     public String toString() {
-        return "(" + node1.toString() + " -> " + node2.toString() + ")";
+        return "(" + node1.toString() + ", " + node2.toString() + ")";
     }
 
 }

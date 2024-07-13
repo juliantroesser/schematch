@@ -85,7 +85,7 @@ public class SimilarityFlooding extends Matcher {
         Graph<NodePair, CoefficientEdge> propagationGraph = inducePropagationGraph(connectivityGraph, sourceGraph, targetGraph, policy);
 
         //Calculate the initial mapping (similarity) values
-        Map<NodePair, Double> initialMapping = calculateInitialMapping(propagationGraph);
+        Map<NodePair, Double> initialMapping = calculateInitialMappingValentine(propagationGraph);
 
         //Run the similarity-flooding algorithm
         Map<NodePair, Double> floodingResults = similarityFlooding(propagationGraph, initialMapping, formula);
@@ -337,9 +337,6 @@ public class SimilarityFlooding extends Matcher {
 
     public Graph<NodePair, LabelEdge> createConnectivityGraph(Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) {
 
-        System.out.println("Graph1 has: #" + graph1.vertexSet().size() + " Nodes");
-        System.out.println("Graph2 has: #" + graph2.vertexSet().size() + " Nodes");
-
         Graph<NodePair, LabelEdge> connectivityGraph = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
         //Valentine:
@@ -376,34 +373,47 @@ public class SimilarityFlooding extends Matcher {
 
     public Graph<NodePair, CoefficientEdge> inducePropagationGraph(Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy policy) {
 
+        Graph<NodePair, LabelEdge> connectivityGraphCopy = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
+
+        //Graph kopieren (shallow)
+        for(LabelEdge edge : connectivityGraph.edgeSet()) {
+
+            NodePair source = connectivityGraph.getEdgeSource(edge);
+            NodePair target = connectivityGraph.getEdgeTarget(edge);
+
+            connectivityGraphCopy.addVertex(source);
+            connectivityGraphCopy.addVertex(target);
+            connectivityGraphCopy.addEdge(source, target, edge);
+        }
+
         Graph<NodePair, CoefficientEdge> propagationGraph = new DefaultDirectedWeightedGraph<>(CoefficientEdge.class);
 
         //Prüfen zu welchen Vorwärtskanten eine Rückwärtskante hinzugefügt werden muss
         Set<LabelEdge> reverseEdges = new HashSet<>();
 
-        for (LabelEdge label : connectivityGraph.edgeSet()) {
-            NodePair sourceNodePair = connectivityGraph.getEdgeSource(label);
-            NodePair targetNodePair = connectivityGraph.getEdgeTarget(label);
+        for (LabelEdge label : connectivityGraphCopy.edgeSet()) {
+            NodePair sourceNodePair = connectivityGraphCopy.getEdgeSource(label);
+            NodePair targetNodePair = connectivityGraphCopy.getEdgeTarget(label);
 
-            if (!connectivityGraph.containsEdge(targetNodePair, sourceNodePair)) {
+            if (!connectivityGraphCopy.containsEdge(targetNodePair, sourceNodePair)) {
                 reverseEdges.add(label);
             }
         }
 
         //Rückwärtskanten hinzufügen
         for (LabelEdge label : reverseEdges) {
-            NodePair sourceNodePair = connectivityGraph.getEdgeSource(label);
-            NodePair targetNodePair = connectivityGraph.getEdgeTarget(label);
+            NodePair sourceNodePair = connectivityGraphCopy.getEdgeSource(label);
+            NodePair targetNodePair = connectivityGraphCopy.getEdgeTarget(label);
 
             //Kante umgekehrt einfügen
-            connectivityGraph.addEdge(targetNodePair, sourceNodePair, new LabelEdge(label.toString()));
+            connectivityGraphCopy.addEdge(targetNodePair, sourceNodePair, new LabelEdge(label.toString()));
         }
 
 
         //Würde auch direkt über Graph1 und Graph2 gehen, anstatt Umweg über connectivityGraph, aber damit mehr Flexibilität aktuellen Weg beibehalten
-        for (LabelEdge label : connectivityGraph.edgeSet()) {
+        for (LabelEdge label : connectivityGraphCopy.edgeSet()) {
 
-            NodePair nodePairSource = connectivityGraph.getEdgeSource(label);
+            NodePair nodePairSource = connectivityGraphCopy.getEdgeSource(label);
             Node node1 = nodePairSource.getFirstNode();
             Node node2 = nodePairSource.getSecondNode();
 
@@ -415,7 +425,7 @@ public class SimilarityFlooding extends Matcher {
                 throw new RuntimeException(e);
             }
 
-            NodePair nodePairTarget = connectivityGraph.getEdgeTarget(label);
+            NodePair nodePairTarget = connectivityGraphCopy.getEdgeTarget(label);
 
             //Kante zum Propagation Graph hinzufügen
             propagationGraph.addVertex(nodePairSource);
@@ -505,29 +515,34 @@ public class SimilarityFlooding extends Matcher {
 
     public Map<NodePair, Double> similarityFlooding(Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
 
-        System.out.println("Propagation Graph: #Arcs: " + propagationGraph.edgeSet().size());
-        System.out.println("Propagation Graph: #Node Pairs: " + propagationGraph.vertexSet().size());
-
         Map<NodePair, Double> sigma_0 = new HashMap<>(initialMapping);
         Map<NodePair, Double> sigma_i = new HashMap<>(initialMapping);
         Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
 
-        double EPSILON = Double.parseDouble(epsilon);
-        int MAX_ITERATIONS = Integer.parseInt(maxIterations);
+        //double EPSILON = Double.parseDouble(epsilon);
+        double EPSILON = 1e-4;
+        //int MAX_ITERATIONS = Integer.parseInt(maxIterations);
+        int MAX_ITERATIONS = 100;
 
         boolean convergence = false;
         int iterationCount = 0;
 
         while (!convergence && iterationCount < MAX_ITERATIONS) {
 
-            double maxValueCurrentIteration = -1;
+            double maxValueCurrentIteration = Double.MIN_VALUE;
 
             for (NodePair node : sigma_0.keySet()) {
 
-                //Alle Nachbarn bekommen (=Startpunkte eingehender Kanten)
+                //Alle Nachbarn bekommen (Ausgehend und Eingehend)
                 Set<CoefficientEdge> incomingEdges = propagationGraph.incomingEdgesOf(node);
+                //Set<CoefficientEdge> outgoingEdges = propagationGraph.outgoingEdgesOf(node);
 
-                Set<NodePair> neighborNodes = incomingEdges.stream().map(propagationGraph::getEdgeSource).collect(Collectors.toSet());
+                Set<NodePair> neighborNodesIncomingEdges = incomingEdges.stream().map(propagationGraph::getEdgeSource).collect(Collectors.toSet());
+                //Set<NodePair> neighborNodesOutgoingEdges = outgoingEdges.stream().map(propagationGraph::getEdgeTarget).collect(Collectors.toSet());
+
+                Set<NodePair> neighborNodes = new HashSet<>();
+                neighborNodes.addAll(neighborNodesIncomingEdges);
+                //neighborNodes.addAll(neighborNodesOutgoingEdges);
 
                 //Neuen Wert für Node auf Basis der Nachbarn berechnen
                 double newValue;
@@ -561,10 +576,17 @@ public class SimilarityFlooding extends Matcher {
         System.out.println("Iterations: " + iterationCount);
 
         //return filterMapping(sigma_i);
+        for(Map.Entry<NodePair, Double> entry : sigma_i.entrySet()) {
+            System.out.println(entry);
+        }
         return sigma_i;
     }
 
     public boolean hasConverged(Map<NodePair, Double> sigma_i, Map<NodePair, Double> sigma_i_plus_1, double epsilon) {
+        return calcResidualVector(sigma_i, sigma_i_plus_1) < epsilon;
+    }
+
+    public double calcResidualVector(Map<NodePair, Double> sigma_i, Map<NodePair, Double> sigma_i_plus_1) {
 
         double residualSum = 0;
 
@@ -573,10 +595,10 @@ public class SimilarityFlooding extends Matcher {
             double value_i = sigma_i.get(node);
             double value_i_plus_1 = sigma_i_plus_1.get(node);
 
-            residualSum = residualSum + Math.abs(value_i - value_i_plus_1);
+            residualSum = residualSum + Math.pow((value_i - value_i_plus_1), 2);
         }
 
-        return residualSum < epsilon;
+        return Math.sqrt(residualSum);
     }
 
     public float[][] convertSimilarityMapToMatrix(Map<NodePair, Double> mapping, MatchTask matchTask) {

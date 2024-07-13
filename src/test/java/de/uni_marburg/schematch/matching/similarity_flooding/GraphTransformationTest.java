@@ -5,12 +5,15 @@ import de.uni_marburg.schematch.data.Database;
 import de.uni_marburg.schematch.data.Scenario;
 import de.uni_marburg.schematch.matching.matrix_boosting.similarity_flooding.*;
 import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class GraphTransformationTest {
 
@@ -23,6 +26,7 @@ public class GraphTransformationTest {
     Graph<NodePair, CoefficientEdge> propagationGraph;
     PropagationCoefficientPolicy propagationCoefficientPolicy = PropagationCoefficientPolicy.INVERSE_AVERAGE;
     Map<NodePair, Double> initialMapping;
+    FixpointFormula fixpointFormula;
 
     @BeforeEach
     public void init() {
@@ -35,6 +39,7 @@ public class GraphTransformationTest {
         connectivityGraph = similarityFlooding.createConnectivityGraph(graph1, graph2);
         propagationGraph = similarityFlooding.inducePropagationGraph(connectivityGraph, graph1, graph2, propagationCoefficientPolicy);
         initialMapping = similarityFlooding.calculateInitialMappingValentine(propagationGraph); //Valentine Initial Mapping
+        fixpointFormula = FixpointFormula.FORMULA_C;
     }
 
     public void transformIntoGraphRepresentationTest() {
@@ -1137,5 +1142,109 @@ public class GraphTransformationTest {
             }
         }
     }
+
+    @Test
+    public void hasConvergedTest() {
+
+        Node n1 = new Node("n1", null, null, false, false);
+        Node n2 = new Node("n2", null, null, false, false);
+
+        NodePair n1_n1 = new NodePair(n1, n1);
+        NodePair n1_n2 = new NodePair(n1, n2);
+        NodePair n2_n1 = new NodePair(n2, n1);
+        NodePair n2_n2 = new NodePair(n2, n2);
+
+        Map<NodePair, Double> sigma_i = new HashMap<>();
+        Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
+
+        sigma_i.put(n1_n1, 1.0);
+        sigma_i.put(n1_n2, 2.0);
+        sigma_i.put(n2_n1, 3.0);
+        sigma_i.put(n2_n2, 4.0);
+
+        sigma_i_plus_1.put(n1_n1, 2.0);
+        sigma_i_plus_1.put(n1_n2, 3.0);
+        sigma_i_plus_1.put(n2_n1, 4.0);
+        sigma_i_plus_1.put(n2_n2, 5.0);
+
+        Assertions.assertEquals(2.0, similarityFlooding.calcResidualVector(sigma_i, sigma_i_plus_1));
+
+        Assertions.assertTrue(similarityFlooding.hasConverged(sigma_i, sigma_i_plus_1, 2.1));
+        Assertions.assertFalse(similarityFlooding.hasConverged(sigma_i, sigma_i_plus_1, 1.9));
+
+    }
+
+    @Test
+    public void similarityFloodingTest() {
+
+        similarityFlooding.similarityFlooding(propagationGraph, initialMapping, fixpointFormula);
+
+    }
+
+    @Test
+    public void fixpointFormulaTest() throws NoSuchMethodException {
+
+        Node graph1_nodeID2 = new Node("NodeID2", null, null, false, false);
+        Node graph2_nodeID2 = new Node("NodeID2", null, null, false, false);
+        Node graph1_nodeID3 = new Node("NodeID3", null, null, false, false);
+        Node graph2_nodeID3 = new Node("NodeID3", null, null, false, false);
+        Node graph1_int = new Node("int", null, null, false, false);
+        Node graph2_int = new Node("int", null, null, false, false);
+        Node graph1_columnType = new Node("columnType", null, null, false, false);
+        Node graph2_columnType = new Node("columnType", null, null, false, false);
+
+        NodePair nodeID2_nodeID2 = new NodePair(graph1_nodeID2, graph2_nodeID2);
+        NodePair nodeID3_nodeID3 = new NodePair(graph1_nodeID3, graph2_nodeID3);;
+        NodePair int_int = new NodePair(graph1_int, graph2_int);
+        NodePair columnType_columnType = new NodePair(graph1_columnType, graph2_columnType);
+
+        //PropagationGraph aufbauen
+        Graph<NodePair, CoefficientEdge> testPropagationGraph = new DefaultDirectedWeightedGraph<>(CoefficientEdge.class);
+
+        testPropagationGraph.addVertex(nodeID2_nodeID2);
+        testPropagationGraph.addVertex(nodeID3_nodeID3);
+        testPropagationGraph.addVertex(int_int);
+        testPropagationGraph.addVertex(columnType_columnType);
+
+        testPropagationGraph.addEdge(nodeID2_nodeID2, nodeID3_nodeID3, new CoefficientEdge(1.0));
+        testPropagationGraph.addEdge(int_int, nodeID3_nodeID3, new CoefficientEdge(1.0));
+        testPropagationGraph.addEdge(columnType_columnType, nodeID3_nodeID3, new CoefficientEdge(0.5));
+
+        //Mappings aufbauen
+        Map<NodePair, Double> sigma_0 = new HashMap<>();
+        sigma_0.put(nodeID2_nodeID2, 0.0);
+        sigma_0.put(nodeID3_nodeID3, 0.0);
+        sigma_0.put(int_int, 1.0);
+        sigma_0.put(columnType_columnType, 1.0);
+
+        Map<NodePair, Double> sigma_i = new HashMap<>();
+        sigma_i.put(nodeID2_nodeID2, 0.3);
+        sigma_i.put(nodeID3_nodeID3, 0.25);
+        sigma_i.put(int_int, 0.75);
+        sigma_i.put(columnType_columnType, 0.9);
+
+        Set<NodePair> neighborNodes = new HashSet<>();
+        neighborNodes.add(nodeID2_nodeID2);
+        neighborNodes.add(int_int);
+        neighborNodes.add(columnType_columnType);
+
+        fixpointFormula = FixpointFormula.BASIC;
+        double newValueBasic = fixpointFormula.evaluate(nodeID3_nodeID3, neighborNodes, sigma_0, sigma_i, testPropagationGraph);
+        Assertions.assertEquals(1.75, newValueBasic);
+
+        fixpointFormula = FixpointFormula.FORMULA_A;
+        double newValueFormulaA = fixpointFormula.evaluate(nodeID3_nodeID3, neighborNodes, sigma_0, sigma_i, testPropagationGraph);
+        Assertions.assertEquals(1.5, newValueFormulaA);
+
+        fixpointFormula = FixpointFormula.FORMULA_B;
+        double newValueFormulaB = fixpointFormula.evaluate(nodeID3_nodeID3, neighborNodes, sigma_0, sigma_i, testPropagationGraph);
+        Assertions.assertEquals(3.0, newValueFormulaB);
+
+        fixpointFormula = FixpointFormula.FORMULA_C;
+        double newValueFormulaC = fixpointFormula.evaluate(nodeID3_nodeID3, neighborNodes, sigma_0, sigma_i, testPropagationGraph);
+        Assertions.assertEquals(3.25, newValueFormulaC);
+
+    }
+
 
 }

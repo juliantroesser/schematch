@@ -79,7 +79,11 @@ public enum FixpointFormula {
                 phi += (neighborValue_0 + neighborValue_i) * propagationCoefficient;
             }
 
-            return sigma_0.get(node) + sigma_i.get(node) + phi;
+            double initial_value = sigma_0.get(node);
+            double previous_value = sigma_i.get(node);
+            double next_value = initial_value + previous_value + phi;
+
+            return next_value;
         }
     };
 
