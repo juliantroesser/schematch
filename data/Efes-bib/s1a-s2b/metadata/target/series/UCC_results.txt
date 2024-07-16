@@ -1,2 +1,0 @@
-[series.csv.seriesnm]
-[series.csv.seriesid]

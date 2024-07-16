@@ -1,5 +1,0 @@
-[incollection.csv.collid]
-[incollection.csv.title]
-[incollection.csv.bktitle, incollection.csv.loc]
-[incollection.csv.loc, incollection.csv.year]
-[incollection.csv.class, incollection.csv.loc]

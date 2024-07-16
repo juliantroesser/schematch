@@ -1,2 +1,0 @@
-[notes.csv.citkey]
-[notes.csv.note]

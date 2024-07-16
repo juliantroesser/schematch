@@ -1,2 +1,0 @@
-[keyword.csv.keywdid] --> keyword.csv.word
-[keyword.csv.word] --> keyword.csv.keywdid

@@ -1,1 +1,0 @@
-[releases_formats.csv.format_id]

@@ -1,3 +1,0 @@
-[written.csv.aid, written.csv.publisher] --> written.csv.pubyear
-[written.csv.aid, written.csv.pubyear] --> written.csv.publisher
-[written.csv.pid] --> written.csv.publisher, written.csv.pubyear

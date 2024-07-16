@@ -13,28 +13,30 @@ public class Node {
     private final NodeType nodeType;
     @Getter
     private final Datatype datatype;
-    private final boolean isHelperNode;
     private final boolean isIDNode;
+    private final Node name;
 
     //Valentine:
     //Name
     //long_name = table_name, table_guid, column_name, column_guid
     //Database
 
-    public Node(String value, NodeType nodeType, Datatype datatype, boolean isHelperNode, boolean isIDNode) {
+    public Node(String value, NodeType nodeType, Datatype datatype, boolean isIDNode, Node name) {
         this.value = value;
         this.nodeType = nodeType;
         this.datatype = datatype;
-        this.isHelperNode = isHelperNode;
         this.isIDNode = isIDNode;
+        this.name = name; //Only Necessary for NodeID Nodes
+
     }
 
-    public boolean isHelperNode() {
-        return isHelperNode;
-    }
 
     public boolean isIDNode() {
         return isIDNode;
+    }
+
+    public Node getNameNode() {
+        return name;
     }
 
     //Valentine: equal if: this.name = other.name & this.db = other.db

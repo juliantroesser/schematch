@@ -1,2 +1,0 @@
-[pub_info.csv.pub_id]
-[pub_info.csv.pr_info]

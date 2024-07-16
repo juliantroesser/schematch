@@ -1,2 +1,0 @@
-[abstracts.csv.citkey] --> abstracts.csv.txt
-[abstracts.csv.txt] --> abstracts.csv.citkey

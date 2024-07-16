@@ -1,3 +1,0 @@
-[label_meta.csv.id] --> label_meta.csv.rating, label_meta.csv.rating_count
-[label_meta.csv.rating] --> label_meta.csv.rating_count
-[label_meta.csv.rating_count] --> label_meta.csv.rating

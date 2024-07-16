@@ -1,1 +1,0 @@
-[labels_sublabels.csv.label, labels_sublabels.csv.label_id]

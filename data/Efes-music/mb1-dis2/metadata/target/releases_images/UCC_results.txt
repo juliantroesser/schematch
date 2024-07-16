@@ -1,2 +1,0 @@
-[releases_images.csv.uri]
-[releases_images.csv.uri150]

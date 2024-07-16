@@ -1,2 +1,0 @@
-[bookpublished.csv.bookid]
-[bookpublished.csv.authid]

@@ -19,12 +19,12 @@
 #---
 #name: "Sakila"
 #path: "Sakila"
+#---
+#name: "Test"
+#path: "Test"
 ---
-name: "Test"
-path: "Test"
-#---
-#name: "Valentine-Magellan"
-#path: "Valentine-Magellan"
-#---
-#name: "Valentine-Wikidata"
-#path: "Valentine-Wikidata"
+name: "Valentine-Magellan"
+path: "Valentine-Magellan"
+---
+name: "Valentine-Wikidata"
+path: "Valentine-Wikidata"

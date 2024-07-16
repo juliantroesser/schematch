@@ -1,2 +1,0 @@
-[artist_alias_type.csv.id] --> artist_alias_type.csv.name
-[artist_alias_type.csv.name] --> artist_alias_type.csv.id

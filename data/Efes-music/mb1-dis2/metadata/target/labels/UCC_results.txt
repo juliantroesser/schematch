@@ -1,2 +1,0 @@
-[labels.csv.id]
-[labels.csv.name]

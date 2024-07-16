@@ -1,3 +1,0 @@
-[roysched.csv.hirange, roysched.csv.title_id] --> roysched.csv.lorange, roysched.csv.royalty
-[roysched.csv.lorange, roysched.csv.title_id] --> roysched.csv.hirange, roysched.csv.royalty
-[roysched.csv.royalty, roysched.csv.title_id] --> roysched.csv.hirange, roysched.csv.lorange

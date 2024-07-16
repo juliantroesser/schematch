@@ -1,1 +1,0 @@
-[masters_styles.csv.master_id, masters_styles.csv.style]

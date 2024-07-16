@@ -1,2 +1,0 @@
-[gender.csv.id] --> gender.csv.name
-[gender.csv.name] --> gender.csv.id

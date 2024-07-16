@@ -1,1 +1,0 @@
-[] --> recording_annotation.csv.annotation, recording_annotation.csv.recording

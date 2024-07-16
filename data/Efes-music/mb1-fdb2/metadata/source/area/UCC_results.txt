@@ -1,3 +1,0 @@
-[area.csv.id]
-[area.csv.gid]
-[area.csv.last_updated]

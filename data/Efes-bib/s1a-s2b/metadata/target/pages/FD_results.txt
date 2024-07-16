@@ -1,2 +1,0 @@
-[pages.csv.citkey] --> pages.csv.pgrange
-[pages.csv.pgrange] --> pages.csv.citkey

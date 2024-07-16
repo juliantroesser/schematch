@@ -2,18 +2,18 @@
 #name: "SimilarityFlooding"
 #packageName: "matrix_boosting.similarity_flooding"
 #params:
-#  useValentineGraphRepresentation: ["false", "true"]
+#  useValentineGraphRepresentation: ["false"]
 #  propagationCoefficientPolicy: ["INVERSE_AVERAGE", "INVERSE_PRODUCT"]
 #  fixpointFormula: ["BASIC", "FORMULA_A", "FORMULA_B", "FORMULA_C"]
 #  epsilon: ["0.001"]
 #  maxIterations: ["100"]
-#  useUCCInformation: ["false"]
-#  useFDInformation: ["false"]
+#  useUCCInformation: ["true"]
+#  useFDInformation: ["true"]
 ---
 name: "SimilarityFlooding"
 packageName: "matrix_boosting.similarity_flooding"
 params:
-  useValentineGraphRepresentation: ["true"]
+  useValentineGraphRepresentation: ["false"]
   propagationCoefficientPolicy: ["INVERSE_AVERAGE"]
   fixpointFormula: ["FORMULA_C"]
   epsilon: ["0.001"]

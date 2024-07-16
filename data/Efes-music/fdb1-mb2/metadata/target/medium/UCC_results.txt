@@ -1,2 +1,0 @@
-[medium.csv.id]
-[medium.csv.position, medium.csv.release]

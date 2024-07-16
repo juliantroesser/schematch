@@ -1,2 +1,0 @@
-[author.csv.authorid] --> author.csv.name
-[author.csv.name] --> author.csv.authorid

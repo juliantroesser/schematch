@@ -1,1 +1,0 @@
-[releases_identifiers.csv.release_id, releases_identifiers.csv.value]

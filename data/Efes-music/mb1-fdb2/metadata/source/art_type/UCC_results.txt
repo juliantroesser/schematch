@@ -1,2 +1,0 @@
-[art_type.csv.id]
-[art_type.csv.name]

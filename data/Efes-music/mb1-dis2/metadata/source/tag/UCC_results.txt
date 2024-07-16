@@ -1,2 +1,0 @@
-[tag.csv.id]
-[tag.csv.name]

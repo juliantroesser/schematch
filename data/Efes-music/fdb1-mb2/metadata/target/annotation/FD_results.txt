@@ -1,3 +1,0 @@
-[annotation.csv.created] --> annotation.csv.changelog, annotation.csv.editor, annotation.csv.id, annotation.csv.text
-[annotation.csv.editor, annotation.csv.text] --> annotation.csv.changelog
-[annotation.csv.id] --> annotation.csv.changelog, annotation.csv.created, annotation.csv.editor, annotation.csv.text

@@ -1,2 +1,0 @@
-[recording_annotation.csv.recording]
-[recording_annotation.csv.annotation]

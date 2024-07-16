@@ -1,3 +1,0 @@
-[amazon_google_exp_target.csv.id] --> amazon_google_exp_target.csv.title
-[amazon_google_exp_target.csv.id] --> amazon_google_exp_target.csv.price
-[amazon_google_exp_target.csv.id] --> amazon_google_exp_target.csv.manufacturer

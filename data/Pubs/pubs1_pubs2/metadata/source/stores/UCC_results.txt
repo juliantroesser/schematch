@@ -1,5 +1,0 @@
-[stores.csv.stor_id]
-[stores.csv.stor_name]
-[stores.csv.stor_address]
-[stores.csv.city]
-[stores.csv.zip]

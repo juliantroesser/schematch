@@ -1,2 +1,0 @@
-[titles.csv.citkey]
-[titles.csv.title]

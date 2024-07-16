@@ -1,2 +1,0 @@
-[release.csv.id]
-[release.csv.gid]

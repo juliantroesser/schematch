@@ -1,2 +1,0 @@
-[masters_images.csv.uri]
-[masters_images.csv.uri150]

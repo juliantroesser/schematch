@@ -1,1 +1,0 @@
-[label_tag.csv.tag] --> label_tag.csv.count, label_tag.csv.last_updated

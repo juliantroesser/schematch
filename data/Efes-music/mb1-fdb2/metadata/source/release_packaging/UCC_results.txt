@@ -1,2 +1,0 @@
-[release_packaging.csv.id]
-[release_packaging.csv.name]

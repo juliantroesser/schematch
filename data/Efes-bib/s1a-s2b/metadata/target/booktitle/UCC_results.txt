@@ -1,2 +1,0 @@
-[booktitle.csv.bktitlenm]
-[booktitle.csv.bktitleid]

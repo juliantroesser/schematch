@@ -1,5 +1,0 @@
-[Employee.csv.EmployeeID]
-[Employee.csv.EmployeeName]
-[Employee.csv.Department, Employee.csv.ProjectID]
-[Employee.csv.Department, Employee.csv.ProjectManager]
-[Employee.csv.Department, Employee.csv.ManagerRoom]

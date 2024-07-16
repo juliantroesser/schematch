@@ -1,2 +1,0 @@
-[publisher.csv.pubid] --> publisher.csv.pubnm
-[publisher.csv.pubnm] --> publisher.csv.pubid

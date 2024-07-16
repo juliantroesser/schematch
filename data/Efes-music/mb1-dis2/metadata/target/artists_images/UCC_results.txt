@@ -1,2 +1,0 @@
-[artists_images.csv.uri]
-[artists_images.csv.uri150]

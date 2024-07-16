@@ -1,1 +1,0 @@
-[artists_aliases.csv.artist_id, artists_aliases.csv.name]

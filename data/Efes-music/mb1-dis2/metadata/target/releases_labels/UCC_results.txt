@@ -1,1 +1,0 @@
-[releases_labels.csv.catno, releases_labels.csv.name]

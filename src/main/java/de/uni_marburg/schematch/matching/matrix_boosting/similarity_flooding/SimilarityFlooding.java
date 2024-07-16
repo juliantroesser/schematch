@@ -9,12 +9,10 @@ import de.uni_marburg.schematch.data.metadata.dependency.UniqueColumnCombination
 import de.uni_marburg.schematch.matching.Matcher;
 import de.uni_marburg.schematch.matchtask.MatchTask;
 import de.uni_marburg.schematch.matchtask.matchstep.MatchingStep;
-import de.uni_marburg.schematch.similarity.string.Cosine;
-import de.uni_marburg.schematch.similarity.string.JaroWinkler;
 import de.uni_marburg.schematch.similarity.string.Levenshtein;
-import de.uni_marburg.schematch.similarity.string.LongestCommonSubsequence;
-import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -23,6 +21,8 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 public class SimilarityFlooding extends Matcher {
@@ -47,8 +47,7 @@ public class SimilarityFlooding extends Matcher {
             case "INVERSE_AVERAGE" -> PropagationCoefficientPolicy.INVERSE_AVERAGE;
             case "INVERSE_PRODUCT" -> PropagationCoefficientPolicy.INVERSE_PRODUCT;
             case "CONSTANT_ONE" -> PropagationCoefficientPolicy.CONSTANT_ONE;
-            default ->
-                    throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
+            default -> throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
         };
 
         formula = switch (fixpointFormula) {
@@ -68,15 +67,10 @@ public class SimilarityFlooding extends Matcher {
 
         if (Boolean.parseBoolean(useValentineGraphRepresentation)) {
             sourceGraph = transformIntoValentineGraphRepresentation(sourceDb);
-            System.out.println("ValentineGraphRepresenation SourceGraph: Anzahl Knoten: " + sourceGraph.vertexSet().size() + "; Anzahl Kanten" + sourceGraph.edgeSet().size());
             targetGraph = transformIntoValentineGraphRepresentation(targetDb);
-            System.out.println("ValentineGraphRepresenation TargetGraph: Anzahl Knoten: " + targetGraph.vertexSet().size() + "; Anzahl Kanten" + targetGraph.edgeSet().size());
-
         } else {
             sourceGraph = transformIntoGraphRepresentation(sourceDb);
-            System.out.println("MeineGraphRepresentation SourceGraph: Anzahl Knoten: " + sourceGraph.vertexSet().size() + "; Anzahl Kanten" + sourceGraph.edgeSet().size());
             targetGraph = transformIntoGraphRepresentation(targetDb);
-            System.out.println("MeineGraphRepresentation TargetGraph: Anzahl Knoten: " + targetGraph.vertexSet().size() + "; Anzahl Kanten" + targetGraph.edgeSet().size());
         }
 
         //Combine both Graphs into a connectivity-graph
@@ -90,13 +84,9 @@ public class SimilarityFlooding extends Matcher {
         //Run the similarity-flooding algorithm
         Map<NodePair, Double> floodingResults = similarityFlooding(propagationGraph, initialMapping, formula);
 
-        //Only keep Mappings with elements from the original schemata
-        //Map<NodePair, Double> filteredMapping = removeHelperNodePairs(floodingResults);
+        Map<NodePair, Double> filteredFloodingResults = filterMapping(floodingResults); //Verschlechtert das Ergebnis leicht?
 
-        Map<NodePair, Double> floodingResultsWithAppliedTypingConstraints = applyTypingConstraint(floodingResults); //Verschlechtert das Ergebnis leicht?
-
-        //return convertSimilarityMapToMatrix(floodingResultsWithAppliedTypingConstraints, matchTask);
-        return convertSimilarityMapToMatrix(floodingResults, matchTask);
+        return convertSimilarityMapToMatrix(filteredFloodingResults, matchTask);
     }
 
     public Graph<Node, LabelEdge> transformIntoGraphRepresentation(Database db) {
@@ -110,11 +100,11 @@ public class SimilarityFlooding extends Matcher {
 
         //Valentine: Ab hier __init__ (Klasse Graph)
 
-        Node databaseNode = new Node("DATABASE", NodeType.DATABASE, null, true, false);
-        Node tableNode = new Node("TABLE", NodeType.TABLE, null, true, false);
-        Node columnNode = new Node("COLUMN", NodeType.COLUMN, null, true, false);
-        Node columnTypeNode = new Node("COLUMN_TYPE", NodeType.COLUMN_TYPE, null, true, false);
-        Node constraintNode = new Node("CONSTRAINT", NodeType.CONSTRAINT, null, true, false);
+        Node databaseNode = new Node("Database", NodeType.DATABASE, null, false, null);
+        Node tableNode = new Node("Table", NodeType.TABLE, null, false, null);
+        Node columnNode = new Node("Column", NodeType.COLUMN, null, false, null);
+        Node columnTypeNode = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null);
+        Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null);
 
         graphRepresentation.addVertex(databaseNode);
         graphRepresentation.addVertex(tableNode);
@@ -124,54 +114,50 @@ public class SimilarityFlooding extends Matcher {
 
         //Valentine: Unique_id = 1 //Nur eine ID für alle Knoten benutzt
 
-        int tid = 1;
-        int cid = 1;
-        int ctid = 1;
-        int cnstid = 1;
+        int uniqueID = 1;
 
         //TODO: Valentine benutzt Keinen Extra Schema/Database Typ Knoten, sondern fängt direkt mit der Table als Root an
 
-        Node currentDatabaseNode = new Node("S", NodeType.DATABASE, null, true, true);
-        graphRepresentation.addVertex(currentDatabaseNode);
-
-        Node databaseName = new Node(db.getName(), NodeType.DATABASE, null, false, false);
+        Node databaseName = new Node(db.getName(), NodeType.DATABASE, null, false, null);
         graphRepresentation.addVertex(databaseName);
 
-        graphRepresentation.addEdge(currentDatabaseNode, databaseNode, new LabelEdge("TYPE"));
-        graphRepresentation.addEdge(currentDatabaseNode, databaseName, new LabelEdge("NAME"));
+        Node currentDatabaseNode = new Node("NodeID" + uniqueID++, NodeType.DATABASE, null, true, databaseName);
+        graphRepresentation.addVertex(currentDatabaseNode);
+
+        graphRepresentation.addEdge(currentDatabaseNode, databaseNode, new LabelEdge("type"));
+        graphRepresentation.addEdge(currentDatabaseNode, databaseName, new LabelEdge("name"));
 
         //Valentine: Ab hier create_graph()
 
         for (Table table : db.getTables()) {
 
-            Node currentTableNode = new Node("T" + tid++, NodeType.TABLE, null, true, true);
-            graphRepresentation.addVertex(currentTableNode);
-
-            Node tableName = new Node(table.getName(), NodeType.TABLE, null, false, false);
+            Node tableName = new Node(table.getName(), NodeType.TABLE, null, false, null);
             graphRepresentation.addVertex(tableName);
 
-            graphRepresentation.addEdge(currentDatabaseNode, currentTableNode, new LabelEdge("TABLE"));
-            graphRepresentation.addEdge(currentTableNode, tableNode, new LabelEdge("TYPE"));
-            graphRepresentation.addEdge(currentTableNode, tableName, new LabelEdge("NAME"));
+            Node currentTableNode = new Node("NodeID" + uniqueID++, NodeType.TABLE, null, true, tableName);
+            graphRepresentation.addVertex(currentTableNode);
+
+            graphRepresentation.addEdge(currentDatabaseNode, currentTableNode, new LabelEdge("table"));
+            graphRepresentation.addEdge(currentTableNode, tableNode, new LabelEdge("type"));
+            graphRepresentation.addEdge(currentTableNode, tableName, new LabelEdge("name"));
 
             //Valentine: Ab hier add_and_connect(column) 1. Teil
             for (Column column : table.getColumns()) {
 
-                //Valentine: IDNode = Node(NodeID#, schema.name)
-                Node currentColumnNode = new Node("C" + cid++, NodeType.COLUMN, null, true, true);
-                graphRepresentation.addVertex(currentColumnNode);
-
-                //Valentine: AttributeNode: Node(column.name, schema.name)
-                Node columnName = new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, false);
+                Node columnName = new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, null);
                 graphRepresentation.addVertex(columnName);
 
-                graphRepresentation.addEdge(currentTableNode, currentColumnNode, new LabelEdge("COLUMN"));
-                graphRepresentation.addEdge(currentColumnNode, columnNode, new LabelEdge("TYPE"));
-                graphRepresentation.addEdge(currentColumnNode, columnName, new LabelEdge("NAME"));
+                //Valentine: IDNode = Node(NodeID#, schema.name)
+                Node currentColumnNode = new Node("NodeID" + uniqueID++, NodeType.COLUMN, column.getDatatype(), true, columnName);
+                graphRepresentation.addVertex(currentColumnNode);
+
+                graphRepresentation.addEdge(currentTableNode, currentColumnNode, new LabelEdge("column"));
+                graphRepresentation.addEdge(currentColumnNode, columnNode, new LabelEdge("type"));
+                graphRepresentation.addEdge(currentColumnNode, columnName, new LabelEdge("name"));
 
                 //Mit ColumnTypeNode verbinden
                 //Valentine: DataTypeNode: Node(column.DataType, schema.Name)
-                Node columnDataType = new Node(column.getDatatype().toString(), NodeType.COLUMN_TYPE, column.getDatatype(), true, false);
+                Node columnDataType = new Node(column.getDatatype().toString(), NodeType.COLUMN_TYPE, column.getDatatype(), true, null);
                 boolean dataTypeNodeExistsInGraph = graphRepresentation.containsVertex(columnDataType);
 
                 if (dataTypeNodeExistsInGraph) { //Dann Kante zu
@@ -179,14 +165,11 @@ public class SimilarityFlooding extends Matcher {
                     Set<LabelEdge> edgesOfIdToColumnType = graphRepresentation.incomingEdgesOf(columnDataType);
                     LabelEdge edgeOfIdToColumnType = edgesOfIdToColumnType.stream().findFirst().orElseThrow(() -> new NoSuchElementException("No such data Type edge present in the graph"));
                     Node columnTypeIdentifier = graphRepresentation.getEdgeSource(edgeOfIdToColumnType);
-
-                    //TODO: SQL_Type -> DATA_TYPE ändern
-                    graphRepresentation.addEdge(currentColumnNode, columnTypeIdentifier, new LabelEdge("SQL_TYPE"));
-
+                    graphRepresentation.addEdge(currentColumnNode, columnTypeIdentifier, new LabelEdge("dataType"));
 
                 } else { //Neuen Knoten anlegen
 
-                    Node columnTypeIdentifier = new Node("CT" + ctid++, NodeType.COLUMN_TYPE, column.getDatatype(), true, true);
+                    Node columnTypeIdentifier = new Node("NodeID" + uniqueID++, NodeType.COLUMN_TYPE, column.getDatatype(), true, columnDataType);
 
                     graphRepresentation.addVertex(columnDataType);
                     graphRepresentation.addVertex(columnTypeIdentifier);
@@ -203,14 +186,14 @@ public class SimilarityFlooding extends Matcher {
 
                     if (isUniqueColumn) {
 
-                        Node uccNode = new Node("UCC", NodeType.CONSTRAINT, null, true, false);
+                        Node uccNode = new Node("UniqueColumnCombination", NodeType.CONSTRAINT, null, false, null);
                         boolean uccNodeExistsInGraph = graphRepresentation.containsVertex(uccNode);
 
                         if (uccNodeExistsInGraph) { //Dann nur Kante zu dieser
-                            graphRepresentation.addEdge(currentColumnNode, uccNode, new LabelEdge("UCC"));
+                            graphRepresentation.addEdge(currentColumnNode, uccNode, new LabelEdge("ucc"));
                         } else {
                             graphRepresentation.addVertex(uccNode);
-                            graphRepresentation.addEdge(currentColumnNode, uccNode, new LabelEdge("UCC"));
+                            graphRepresentation.addEdge(currentColumnNode, uccNode, new LabelEdge("ucc"));
                         }
                     }
                 }
@@ -225,15 +208,15 @@ public class SimilarityFlooding extends Matcher {
 
                     if (!dependants.isEmpty()) {
 
-                        LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, false)).stream().findFirst().get();
+                        LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, null)).stream().findFirst().get();
                         Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
 
                         for (Column dependant : dependants) {
 
-                            LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, false)).stream().findFirst().get();
+                            LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null)).stream().findFirst().get();
                             Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
 
-                            graphRepresentation.addEdge(determinantIDNode, dependantIDNode, new LabelEdge("FD"));
+                            graphRepresentation.addEdge(determinantIDNode, dependantIDNode, new LabelEdge("fd"));
                         }
                     }
                 }
@@ -244,7 +227,7 @@ public class SimilarityFlooding extends Matcher {
         //Erst Kanten zwischen Knoten hinzufügen wenn auch alle Columns im Graph sind
 
         return graphRepresentation;
-    }
+    } //TODO: Testen ob funktioniert oder in Valentine Format mit NodeID usw. lieber umgesetzt werden soll
 
     public Graph<Node, LabelEdge> transformIntoValentineGraphRepresentation(Database db) {
 
@@ -257,9 +240,9 @@ public class SimilarityFlooding extends Matcher {
 
         //Valentine: Ab hier __init__ (Klasse Graph)
 
-        Node tableNode = new Node("Table", NodeType.TABLE, null, true, false);
-        Node columnNode = new Node("Column", NodeType.COLUMN, null, true, false);
-        Node columnTypeNode = new Node("ColumnType", NodeType.COLUMN_TYPE, null, true, false);
+        Node tableNode = new Node("Table", NodeType.TABLE, null, false, null);
+        Node columnNode = new Node("Column", NodeType.COLUMN, null, false, null);
+        Node columnTypeNode = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null);
 
         graphRepresentation.addVertex(tableNode);
         graphRepresentation.addVertex(columnNode);
@@ -279,24 +262,25 @@ public class SimilarityFlooding extends Matcher {
 
         Table table = db.getTables().get(0); //Valentine unterstützt nur das Matchen von einer Tabelle zu genau einer anderen Tabelle
 
-        Node currentTableNode = new Node("NodeID" + uniqueId++, NodeType.TABLE, null, true, true);
-        graphRepresentation.addVertex(currentTableNode);
-
-        Node tableName = new Node(table.getName(), NodeType.TABLE, null, false, false);
+        Node tableName = new Node(table.getName(), NodeType.TABLE, null, false, null);
         graphRepresentation.addVertex(tableName);
+
+        Node currentTableNode = new Node("NodeID" + uniqueId++, NodeType.TABLE, null, true, tableName);
+        graphRepresentation.addVertex(currentTableNode);
 
         graphRepresentation.addEdge(currentTableNode, tableNode, new LabelEdge("type"));
         graphRepresentation.addEdge(currentTableNode, tableName, new LabelEdge("name"));
 
         for (Column column : table.getColumns()) {
 
+            Node columnName = new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, null);
+            graphRepresentation.addVertex(columnName);
+
             //Valentine: IDNode = Node(NodeID#, schema.name)
-            Node currentColumnNode = new Node("NodeID" + uniqueId++, NodeType.COLUMN, null, true, true);
+            Node currentColumnNode = new Node("NodeID" + uniqueId++, NodeType.COLUMN, column.getDatatype(), true, columnName);
             graphRepresentation.addVertex(currentColumnNode);
 
             //Valentine: AttributeNode: Node(column.name, schema.name)
-            Node columnName = new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, false);
-            graphRepresentation.addVertex(columnName);
 
             graphRepresentation.addEdge(currentTableNode, currentColumnNode, new LabelEdge("column"));
             graphRepresentation.addEdge(currentColumnNode, columnNode, new LabelEdge("type"));
@@ -307,7 +291,7 @@ public class SimilarityFlooding extends Matcher {
 
             String valentineDataType = translateIntoValentineDataType(column.getDatatype());
 
-            Node columnDataType = new Node(valentineDataType, NodeType.COLUMN_TYPE, column.getDatatype(), true, false);
+            Node columnDataType = new Node(valentineDataType, NodeType.COLUMN_TYPE, null, false, null);
             boolean dataTypeNodeExistsInGraph = graphRepresentation.containsVertex(columnDataType);
 
             if (dataTypeNodeExistsInGraph) { //Dann Kante zu
@@ -322,7 +306,7 @@ public class SimilarityFlooding extends Matcher {
 
             } else { //Neuen Knoten anlegen
 
-                Node columnTypeIdentifier = new Node("NodeID" + uniqueId++, NodeType.COLUMN_TYPE, column.getDatatype(), true, true);
+                Node columnTypeIdentifier = new Node("NodeID" + uniqueId++, NodeType.COLUMN_TYPE, null, true, columnDataType);
 
                 graphRepresentation.addVertex(columnDataType);
                 graphRepresentation.addVertex(columnTypeIdentifier);
@@ -376,7 +360,7 @@ public class SimilarityFlooding extends Matcher {
         Graph<NodePair, LabelEdge> connectivityGraphCopy = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
         //Graph kopieren (shallow)
-        for(LabelEdge edge : connectivityGraph.edgeSet()) {
+        for (LabelEdge edge : connectivityGraph.edgeSet()) {
 
             NodePair source = connectivityGraph.getEdgeSource(edge);
             NodePair target = connectivityGraph.getEdgeTarget(edge);
@@ -519,10 +503,8 @@ public class SimilarityFlooding extends Matcher {
         Map<NodePair, Double> sigma_i = new HashMap<>(initialMapping);
         Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
 
-        //double EPSILON = Double.parseDouble(epsilon);
-        double EPSILON = 1e-4;
-        //int MAX_ITERATIONS = Integer.parseInt(maxIterations);
-        int MAX_ITERATIONS = 100;
+        double EPSILON = Double.parseDouble(epsilon);
+        int MAX_ITERATIONS = Integer.parseInt(maxIterations);
 
         boolean convergence = false;
         int iterationCount = 0;
@@ -575,10 +557,6 @@ public class SimilarityFlooding extends Matcher {
 
         System.out.println("Iterations: " + iterationCount);
 
-        //return filterMapping(sigma_i);
-        for(Map.Entry<NodePair, Double> entry : sigma_i.entrySet()) {
-            System.out.println(entry);
-        }
         return sigma_i;
     }
 
@@ -614,16 +592,17 @@ public class SimilarityFlooding extends Matcher {
                 for (int i = 0; i < sourceColumns.size(); i++) {
 
                     String sourceLabel = sourceColumns.get(i).getLabel();
-                    Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, false);
+                    Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, null);
 
                     for (int j = 0; j < targetColumns.size(); j++) {
 
                         String targetLabel = targetColumns.get(j).getLabel();
-                        Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, false);
+                        Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null);
+
+                        //TODO: Problem falls zwei verschiedene Tabellen beide Source sind und Attribut mit gleichem Namen haben -> Node langen Namen geben
 
                         float similarity = mapping.getOrDefault(new NodePair(sourceNode, targetNode), 0.0).floatValue();
 
-                        //TODO: Schauen ob das so richtig
                         simMatrix[sourceTable.getOffset() + i][targetTable.getOffset() + j] = similarity;
                     }
                 }
@@ -631,30 +610,6 @@ public class SimilarityFlooding extends Matcher {
         }
 
         return simMatrix;
-    }
-
-    public Map<NodePair, Double> applyTypingConstraint(Map<NodePair, Double> mapping) {
-
-        Map<NodePair, Double> filteredMapping = new HashMap<>();
-
-        for (Map.Entry<NodePair, Double> entry : mapping.entrySet()) {
-
-            Node firstNode = entry.getKey().getFirstNode();
-            Node secondNode = entry.getKey().getSecondNode();
-
-            if (!firstNode.isHelperNode() && !secondNode.isHelperNode() && firstNode.getNodeType().equals(secondNode.getNodeType())) { //If both Nodes represent the same Type like Schema, Table, Column, etc. then the mapping is kept
-
-                if (firstNode.getNodeType().equals(NodeType.COLUMN) && firstNode.getDatatype() != null && secondNode.getDatatype() != null) { //If both Nodes represent a Column then
-                    if (firstNode.getDatatype().equals(secondNode.getDatatype())) { //both should have the same Datatype, otherwise the mapping is discarded
-                        filteredMapping.put(entry.getKey(), entry.getValue());
-                    }
-                } else {
-                    filteredMapping.put(entry.getKey(), entry.getValue()); //The rest of the Mappings between Tables, Schemas, etc.
-                }
-            }
-        }
-
-        return filteredMapping;
     }
 
     private boolean isUniqueColumn(Column column, Database db) {
@@ -694,6 +649,34 @@ public class SimilarityFlooding extends Matcher {
             case GEO_LOCATION -> "location";
         };
 
+    }
+
+    //Only keep matching between elements of same kind, put simValue of IDNodes with their nameValues
+    public Map<NodePair, Double> filterMapping(Map<NodePair, Double> mapping) {
+
+        Map<NodePair, Double> filteredMapping = new HashMap<>();
+
+        for (Map.Entry<NodePair, Double> entry : mapping.entrySet()) {
+
+            Node node1 = entry.getKey().getFirstNode();
+            Node node2 = entry.getKey().getSecondNode();
+            Double simValue = entry.getValue();
+
+            if (node1.isIDNode() && node2.isIDNode()) {
+
+                NodePair pair = new NodePair(node1.getNameNode(), node2.getNameNode());
+
+                if (node1.getNodeType().equals(node2.getNodeType())) {
+                    if (node1.getNodeType().equals(NodeType.DATABASE) || node1.getNodeType().equals(NodeType.TABLE) || node1.getNodeType().equals(NodeType.COLUMN)) {
+                        filteredMapping.put(pair, simValue);
+                    }
+                }
+
+            }
+
+        }
+
+        return filteredMapping;
     }
 
     @Override

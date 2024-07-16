@@ -1,2 +1,0 @@
-[authors.csv.au_id]
-[authors.csv.au_fname]

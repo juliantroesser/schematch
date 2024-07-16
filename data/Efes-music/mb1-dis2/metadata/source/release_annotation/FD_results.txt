@@ -1,1 +1,0 @@
-[] --> release_annotation.csv.annotation, release_annotation.csv.release

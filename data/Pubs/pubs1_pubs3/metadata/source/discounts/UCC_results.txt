@@ -1,4 +1,0 @@
-[discounts.csv.discounttype]
-[discounts.csv.discount]
-[discounts.csv.lowqty, discounts.csv.stor_id]
-[discounts.csv.highqty, discounts.csv.stor_id]

@@ -1,5 +1,0 @@
-[track.csv.id]
-[track.csv.gid]
-[track.csv.medium, track.csv.recording]
-[track.csv.medium, track.csv.number]
-[track.csv.medium, track.csv.position]
