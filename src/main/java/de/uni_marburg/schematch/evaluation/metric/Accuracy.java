@@ -1,16 +1,17 @@
 package de.uni_marburg.schematch.evaluation.metric;
 
-public class F1Score extends Metric {
+public class Accuracy extends Metric{
+
     @Override
     public float run(int[] groundTruthVector, float[] simVector) {
 
-        float precision = new Precision().run(groundTruthVector, simVector);
         float recall = new Recall().run(groundTruthVector, simVector);
+        float precision = new Precision().run(groundTruthVector, simVector);
 
         float score = 0f;
 
-        if(precision + recall > 0) {
-            score = (2 * precision * recall) / (precision + recall);
+        if(precision > 0) {
+            score = recall * (2.0f - (1.0f / precision));
         }
 
         return score;

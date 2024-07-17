@@ -16,7 +16,12 @@ public class Recall extends Metric {
             }
         }
 
-        return (float) TP / (float) (TP + FN);
+        float score = 0f;
 
+        if(TP + FN > 0) {
+            score = (float) TP / (float) (TP + FN);
+        }
+
+        return score;
     }
 }

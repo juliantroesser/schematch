@@ -34,7 +34,8 @@ public class Main {
 
 //        SimMatrixBoosting firstLineSimMatrixBoosting = new TopNSelectionBoosting();
 //        SimMatrixBoosting firstLineSimMatrixBoosting = new MaximumWeightSelectionBoosting();
-        SimMatrixBoosting firstLineSimMatrixBoosting = new ValentineOneToOneSelectionBoosting();
+//        SimMatrixBoosting firstLineSimMatrixBoosting = new ValentineOneToOneSelectionBoosting();
+        SimMatrixBoosting firstLineSimMatrixBoosting = new ThresholdSelectionBoosting();
 
         SimMatrixBoosting secondLineSimMatrixBoosting = new IdentitySimMatrixBoosting();
 

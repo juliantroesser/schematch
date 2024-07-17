@@ -1,14 +1,16 @@
 ---
 name: "NonBinaryPrecisionAtGroundTruth"
 ---
+name: "NonBinaryPrecisionAtNumGroundTruth"
+---
 name: "AUCPR"
 ---
 name: "AUROC"
----
-name: "NonBinaryPrecisionAtNumGroundTruth"
 ---
 name: "Recall"
 ---
 name: "Precision"
 ---
 name: "F1Score"
+---
+name: "Accuracy"

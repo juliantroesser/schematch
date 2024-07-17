@@ -19,7 +19,14 @@ public class Precision extends Metric {
             }
         }
 
-        return (float) TP / (float) (TP + FP);
+        float score = 0f;
+
+        if(TP + FP > 0) {
+            score = (float) TP / (float) (TP + FP);
+        }
+
+        return score;
+
     }
 
 
