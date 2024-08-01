@@ -5,6 +5,7 @@ import de.uni_marburg.schematch.data.Database;
 import de.uni_marburg.schematch.data.Table;
 import de.uni_marburg.schematch.data.metadata.Datatype;
 import de.uni_marburg.schematch.data.metadata.dependency.FunctionalDependency;
+import de.uni_marburg.schematch.data.metadata.dependency.InclusionDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.UniqueColumnCombination;
 import de.uni_marburg.schematch.matching.Matcher;
 import de.uni_marburg.schematch.matchtask.MatchTask;
@@ -27,13 +28,13 @@ import java.util.stream.Collectors;
 @Getter
 public class SimilarityFlooding extends Matcher {
 
-    private String useValentineGraphRepresentation;
     private String propagationCoefficientPolicy;
     private String fixpointFormula;
     private String epsilon;
     private String maxIterations;
     private String useUCCInformation;
     private String useFDInformation;
+    private String useINDInformation;
 
     //TODO: Aktuell funktioniert es nur für Schemata mit genau einer Tabelle -> Alex fragen wie genau umsetzen
 
@@ -47,7 +48,8 @@ public class SimilarityFlooding extends Matcher {
             case "INVERSE_AVERAGE" -> PropagationCoefficientPolicy.INVERSE_AVERAGE;
             case "INVERSE_PRODUCT" -> PropagationCoefficientPolicy.INVERSE_PRODUCT;
             case "CONSTANT_ONE" -> PropagationCoefficientPolicy.CONSTANT_ONE;
-            default -> throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
+            default ->
+                    throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
         };
 
         formula = switch (fixpointFormula) {
@@ -65,13 +67,16 @@ public class SimilarityFlooding extends Matcher {
         Graph<Node, LabelEdge> sourceGraph;
         Graph<Node, LabelEdge> targetGraph;
 
-        if (Boolean.parseBoolean(useValentineGraphRepresentation)) {
-            sourceGraph = transformIntoValentineGraphRepresentation(sourceDb);
-            targetGraph = transformIntoValentineGraphRepresentation(targetDb);
-        } else {
-            sourceGraph = transformIntoGraphRepresentation(sourceDb);
-            targetGraph = transformIntoGraphRepresentation(targetDb);
-        }
+//        if (Boolean.parseBoolean(useValentineGraphRepresentation)) {
+//            sourceGraph = transformIntoValentineGraphRepresentation(sourceDb);
+//            targetGraph = transformIntoValentineGraphRepresentation(targetDb);
+//        } else {
+//            sourceGraph = transformIntoGraphRepresentation(sourceDb);
+//            targetGraph = transformIntoGraphRepresentation(targetDb);
+//        }
+
+        sourceGraph = transformIntoGraphRepresentation(sourceDb);
+        targetGraph = transformIntoGraphRepresentation(targetDb);
 
         //Combine both Graphs into a connectivity-graph
         Graph<NodePair, LabelEdge> connectivityGraph = createConnectivityGraph(sourceGraph, targetGraph);
@@ -173,58 +178,124 @@ public class SimilarityFlooding extends Matcher {
 
                     graphRepresentation.addVertex(columnDataType);
                     graphRepresentation.addVertex(columnTypeIdentifier);
-                    graphRepresentation.addEdge(columnTypeIdentifier, columnDataType, new LabelEdge("NAME"));
-                    graphRepresentation.addEdge(columnTypeIdentifier, columnTypeNode, new LabelEdge("TYPE"));
-                    graphRepresentation.addEdge(currentColumnNode, columnTypeIdentifier, new LabelEdge("SQL_TYPE"));
+                    graphRepresentation.addEdge(columnTypeIdentifier, columnDataType, new LabelEdge("name"));
+                    graphRepresentation.addEdge(columnTypeIdentifier, columnTypeNode, new LabelEdge("type"));
+                    graphRepresentation.addEdge(currentColumnNode, columnTypeIdentifier, new LabelEdge("dataType"));
                 }
                 //TODO: Add Constraints
 
                 if (useUCCInformation.equals("true")) {
 
-                    //ucc info
-                    boolean isUniqueColumn = isUniqueColumn(column, db);
+                    List<UniqueColumnCombination> uccsThatIncludeColumn = getUCCSThatIncludeColumn(column, db);
 
-                    if (isUniqueColumn) {
+                    for (UniqueColumnCombination ucc : uccsThatIncludeColumn) {
 
-                        Node uccNode = new Node("UniqueColumnCombination", NodeType.CONSTRAINT, null, false, null, null);
-                        boolean uccNodeExistsInGraph = graphRepresentation.containsVertex(uccNode);
+                        int uccSize = ucc.getColumnCombination().size();
 
-                        if (uccNodeExistsInGraph) { //Dann nur Kante zu dieser
-                            graphRepresentation.addEdge(currentColumnNode, uccNode, new LabelEdge("ucc"));
+                        Node uccSizeNode = new Node("UniqueColumnCombination#" + uccSize, NodeType.CONSTRAINT, null, false, null, table); //TODO: eventuell table entfernen
+
+                        if (graphRepresentation.containsVertex(uccSizeNode)) {
+                            graphRepresentation.addEdge(currentColumnNode, uccSizeNode, new LabelEdge("ucc")); //TODO eventuell auch noch Grösse geben ucc#1, ucc#2, usw.
                         } else {
-                            graphRepresentation.addVertex(uccNode);
-                            graphRepresentation.addEdge(currentColumnNode, uccNode, new LabelEdge("ucc"));
+                            graphRepresentation.addVertex(uccSizeNode);
+                            graphRepresentation.addEdge(currentColumnNode, uccSizeNode, new LabelEdge("ucc"));
                         }
+
                     }
                 }
             }
 
-            //Hier anfangen
-            if (useFDInformation.equals("true")) {
-                for (Column column : table.getColumns()) {
+//            if (useFDInformation.equals("true")) {
+//
+//                List<FunctionalDependency> functionalDependencies = db.getMetadata().getFds().stream().toList();
+//
+//                for (FunctionalDependency functionalDependency : functionalDependencies) {
+//
+//                    List<Node> determinantIdNodes = new ArrayList<>();
+//
+//                    for (Column determinant : functionalDependency.getDeterminant()) {
+//
+//                        LabelEdge edgeFromIDtoDeterminant;
+//
+//                        try{
+//                            edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(determinant.getLabel(), NodeType.COLUMN, determinant.getDatatype(), false, null, table)).stream().findFirst().get();
+//                        } catch(Exception e) {
+//                            edgeFromIDtoDeterminant = null;
+//                        }
+//
+//                        Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
+//                        determinantIdNodes.add(determinantIDNode);
+//                    }
+//
+//                    Column dependant = functionalDependency.getDependant();
+//
+//                    LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, table)).stream().findFirst().get();
+//                    Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
+//
+//                    for (Node determinantIDNode : determinantIdNodes) {
+//                        graphRepresentation.addEdge(determinantIDNode, dependantIDNode, new LabelEdge("fd"));
+//                    }
+//
+//                }
+//            }
+        }
 
-                    //fd info
-                    List<Column> dependants = getAllDependants(column, db);
+        if (useFDInformation.equals("true")) {
 
-                    if (!dependants.isEmpty()) {
+            List<FunctionalDependency> functionalDependencies = db.getMetadata().getFds().stream().toList();
 
-                        LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, null, null)).stream().findFirst().get();
-                        Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
+            for (FunctionalDependency functionalDependency : functionalDependencies) {
 
-                        for (Column dependant : dependants) {
+                List<Node> determinantIdNodes = new ArrayList<>();
 
-                            LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, null)).stream().findFirst().get();
-                            Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
+                for (Column determinant : functionalDependency.getDeterminant()) {
+                    LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(determinant.getLabel(), NodeType.COLUMN, determinant.getDatatype(), false, null, determinant.getTable())).stream().findFirst().get();
+                    Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
+                    determinantIdNodes.add(determinantIDNode);
+                }
 
-                            graphRepresentation.addEdge(determinantIDNode, dependantIDNode, new LabelEdge("fd"));
-                        }
+                Column dependant = functionalDependency.getDependant();
+
+                LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable())).stream().findFirst().get();
+                Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
+
+                for (Node determinantIDNode : determinantIdNodes) {
+                    graphRepresentation.addEdge(determinantIDNode, dependantIDNode, new LabelEdge("fd"));
+                }
+
+            }
+        }
+
+        if(useINDInformation.equals("true")) {
+
+            List<InclusionDependency> inclusionDependencies = db.getMetadata().getInds().stream().toList();
+
+            for(InclusionDependency inclusionDependency : inclusionDependencies) {
+
+                List<Node> dependantIdNodes = new ArrayList<>();
+                List<Node> referencedIdNodes = new ArrayList<>();
+
+                for(Column dependant : inclusionDependency.getDependant()) {
+                    LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable())).stream().findFirst().get();
+                    Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
+                    dependantIdNodes.add(dependantIDNode);
+                }
+
+                for(Column referenced : inclusionDependency.getReferenced()) {
+                    LabelEdge edgeFromIDtoReferenced = graphRepresentation.incomingEdgesOf(new Node(referenced.getLabel(), NodeType.COLUMN, referenced.getDatatype(), false, null, referenced.getTable())).stream().findFirst().get();
+                    Node referencedIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoReferenced);
+                    referencedIdNodes.add(referencedIDNode);
+                }
+
+                for(Node dependantIDNode : dependantIdNodes) { //TODO: Oder andersherum? Kante von referenced to dependant mit contains?
+                    for(Node referencedIDNode : referencedIdNodes) {
+                        graphRepresentation.addEdge(dependantIDNode, referencedIDNode, new LabelEdge("contained"));
                     }
                 }
+
             }
 
         }
-
-        //Erst Kanten zwischen Knoten hinzufügen wenn auch alle Columns im Graph sind
 
         return graphRepresentation;
     }
@@ -488,6 +559,18 @@ public class SimilarityFlooding extends Matcher {
 
                 //Beeinflusst Similarity Wert die Anzahl der Iterationen?
 
+                if (node1.getNodeType().equals(NodeType.CONSTRAINT) && node2.getNodeType().equals(NodeType.CONSTRAINT)) {
+
+                    int uccSize1 = Integer.parseInt(node1.getValue().replaceAll("\\D", ""));
+                    int uccSize2 = Integer.parseInt(node2.getValue().replaceAll("\\D", ""));
+
+                    if (uccSize1 == uccSize2) {
+                        initialMapping.put(mappingPair, 1.0);
+                    } else {
+                        initialMapping.put(mappingPair, 1.0 / (1 + Math.abs(uccSize1 - uccSize2))); //TODO: macht keinen Unterschied ob 1/... oder direkt 0
+                    }
+                }
+
                 Levenshtein l = new Levenshtein();
                 double similarity = l.compare(node1.getValue(), node2.getValue());
                 initialMapping.put(mappingPair, similarity);
@@ -555,7 +638,7 @@ public class SimilarityFlooding extends Matcher {
             iterationCount++;
         }
 
-        System.out.println("Iterations: " + iterationCount);
+        System.out.println("Iterations: " + iterationCount + " for: " + initialMapping.size() + " Nodes");
 
         return sigma_i;
     }
@@ -612,29 +695,26 @@ public class SimilarityFlooding extends Matcher {
         return simMatrix;
     }
 
-    private boolean isUniqueColumn(Column column, Database db) {
+    private List<UniqueColumnCombination> getUCCSThatIncludeColumn(Column column, Database db) {
         try {
-            List<UniqueColumnCombination> uccsThatIncludeColumn = db.getMetadata().getUniqueColumnCombinations(column, 1).stream().toList();
-            return !uccsThatIncludeColumn.isEmpty();
+            return db.getMetadata().getUniqueColumnCombinations(column).stream().toList();
 
         } catch (Exception e) {
-            return false;
+            return new ArrayList<>();
         }
     }
 
-    private List<Column> getAllDependants(Column column, Database db) {
+    private List<FunctionalDependency> getFunctionalDependenciesThatIncludesColumn(Column column, Database db) {
 
-        List<Column> dependantsOfColumn = new ArrayList<>();
+        List<FunctionalDependency> functionalDependencies;
 
         try {
-            for (FunctionalDependency dependency : db.getMetadata().getFunctionalDependencies(column, 1)) {
-                dependantsOfColumn.add(dependency.getDependant());
-            }
+            functionalDependencies = db.getMetadata().getFds().stream().toList();
         } catch (Exception e) {
-            dependantsOfColumn = new ArrayList<>();
+            functionalDependencies = new ArrayList<>();
         }
 
-        return dependantsOfColumn;
+        return functionalDependencies;
     }
 
     private String translateIntoValentineDataType(Datatype datatype) {
