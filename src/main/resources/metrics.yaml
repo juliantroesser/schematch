@@ -2,10 +2,10 @@
 name: "NonBinaryPrecisionAtGroundTruth"
 ---
 name: "NonBinaryPrecisionAtNumGroundTruth"
----
-name: "AUCPR"
----
-name: "AUROC"
+#---
+#name: "AUCPR"
+#---
+#name: "AUROC"
 ---
 name: "Recall"
 ---

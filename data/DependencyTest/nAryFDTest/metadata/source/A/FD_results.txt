@@ -1,0 +1,2 @@
+[A.csv.A, A.csv.B] --> B.csv.C
+[A.csv.A, A.csv.B] --> B.csv.D

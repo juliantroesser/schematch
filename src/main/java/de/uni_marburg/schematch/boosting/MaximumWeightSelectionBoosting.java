@@ -373,30 +373,4 @@ public class MaximumWeightSelectionBoosting implements SimMatrixBoosting{
 
     }
 
-    public static void main(String[] args) {
-
-        MaximumWeightSelectionBoosting boosting = new MaximumWeightSelectionBoosting();
-
-        float[][] testMatrix1 = {{0.5f, 0.6f},
-                                {0.4f, 0.4f},
-                                {0.5f, 0.7f}};
-
-        float[][] testMatrix2 = {{0.5f, 0.6f, 0.8f},
-                                {0.4f, 0.4f, 0.7f}};
-
-        float[][] testMatrix3 = {{0.1f, 0.2f, 0.3f},
-                                {0.4f, 0.5f, 0.6f},
-                                {0.7f, 0.8f, 0.9f}};
-
-//        System.out.println(Arrays.deepToString(boosting.makeSquareMatrix(testMatrix1)));
-//        System.out.println(Arrays.deepToString(boosting.makeSquareMatrix(testMatrix2)));
-//
-//        System.out.println(Arrays.deepToString(boosting.transformForMaximization(testMatrix3)));
-
-        //System.out.println(Arrays.deepToString(boosting.run(null, null, testMatrix1)));
-        System.out.println(Arrays.deepToString(boosting.run(null, null, testMatrix3)));
-        //System.out.println(Arrays.deepToString(boosting.run(null, null, testMatrix3)));
-
-    }
-
 }

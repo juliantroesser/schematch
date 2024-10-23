@@ -1,10 +1,13 @@
 package de.uni_marburg.schematch.boosting;
 
+import de.uni_marburg.schematch.matching.Matcher;
 import de.uni_marburg.schematch.matchtask.MatchTask;
+import de.uni_marburg.schematch.matchtask.matchstep.MatchingStep;
 import de.uni_marburg.schematch.matchtask.matchstep.SimMatrixBoostingStep;
 import de.uni_marburg.schematch.utils.ArrayUtils;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static de.uni_marburg.schematch.utils.ArrayUtils.transposeMatrix;
 
@@ -52,12 +55,16 @@ public class ThresholdSelectionBoosting implements SimMatrixBoosting {
         return relativeValueMatrix;
     }
 
-    public static void main(String[] args) {
-
-        float[][] testMatrix = {{0.17f, 0.12f, 0.08f}};
-
-        ThresholdSelectionBoosting boosting = new ThresholdSelectionBoosting();
-
-        System.out.println(Arrays.deepToString(boosting.run(null, null, testMatrix)));
-    }
+//    @Override
+//    public float[][] match(MatchTask matchTask, MatchingStep matchStep) {
+//
+//        List<Matcher> matchers = matchTask.getMatchersForLine(this.line);
+//
+//        for(Matcher matcher : ma)
+//
+//        matchTask.getSimMatrixFromPreviousMatchStep(this, )
+//
+//
+//        return new float[0][];
+//    }
 }

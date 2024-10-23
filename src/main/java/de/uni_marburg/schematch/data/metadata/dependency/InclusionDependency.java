@@ -31,7 +31,7 @@ public class InclusionDependency implements Dependency{
         }
         sb.delete(sb.length() - 2, sb.length());
         sb.append("]");
-        sb.append(" =] ");
+        sb.append(" [= ");
         sb.append("[");
         for (Column column : referenced) {
             sb.append(column.getLabel());

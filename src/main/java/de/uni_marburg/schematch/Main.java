@@ -36,7 +36,6 @@ public class Main {
 //        SimMatrixBoosting firstLineSimMatrixBoosting = new MaximumWeightSelectionBoosting();
 //        SimMatrixBoosting firstLineSimMatrixBoosting = new ValentineOneToOneSelectionBoosting();
         SimMatrixBoosting firstLineSimMatrixBoosting = new ThresholdSelectionBoosting();
-
         SimMatrixBoosting secondLineSimMatrixBoosting = new IdentitySimMatrixBoosting();
 
         log.info("Setting up matching steps as specified in config");
