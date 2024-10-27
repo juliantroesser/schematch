@@ -29,6 +29,6 @@ class LabelEdgeTest {
     @Test
     void getValue() {
         LabelEdge labelEdge = new LabelEdge("type");
-        Assertions.assertEquals("type", labelEdge.getValue());
+        Assertions.assertEquals("type", labelEdge.getLabel());
     }
 }

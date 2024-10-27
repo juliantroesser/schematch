@@ -28,13 +28,10 @@ class GraphTransformationTest {
     public void init() {
 
 
-
-
     }
 
     @Test
     public void transformIntoGraphRepresentation() {
-
 
 
     }
@@ -140,7 +137,7 @@ class GraphTransformationTest {
 
         Graph<NodePair, LabelEdge> connectivityGraph = similarityFlooding.createConnectivityGraph(modelA, modelB);
 
-        //Test for PropagationGraph constructed with the InverseAverage policy
+        //Test for PropagationGraph constructed with the InverseProduct policy
         Graph<NodePair, CoefficientEdge> propagationGraphInverseProduct = similarityFlooding.inducePropagationGraph(connectivityGraph, modelA, modelB, PropagationCoefficientPolicy.INVERSE_PRODUCT);
 
         NodePair ab = new NodePair(a, b);
@@ -177,19 +174,54 @@ class GraphTransformationTest {
 
         Assertions.assertTrue(propagationGraphInverseProduct.containsEdge(a1b2, a2b1));
         Assertions.assertTrue(propagationGraphInverseProduct.containsEdge(a2b1, a1b2));
-        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a1b2, a2b1)); //Expected: 1.0, Actual 0.5
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a1b2, a2b1));
         Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a2b1, a1b2));
 
         Assertions.assertTrue(propagationGraphInverseProduct.containsEdge(a1b, a2b2));
         Assertions.assertTrue(propagationGraphInverseProduct.containsEdge(a2b2, a1b));
         Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a1b, a2b2));
-        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a2b2, a1b)); //Expected: 1.0, Actual 0.5
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a2b2, a1b));
 
         //TODO: Check if example on paper is correct
         //TODO: Calculate (by Hand) propagation graph for inverse average policy
 
-        //Graph<NodePair, CoefficientEdge> propagationGraphInverseProduct = similarityFlooding.inducePropagationGraph(connectivityGraph, modelA, modelB, PropagationCoefficientPolicy.INVERSE_PRODUCT);
+        //Test for PropagationGraph constructed with the InverseAverage policy
+        Graph<NodePair, CoefficientEdge> propagationGraphInverseAverage = similarityFlooding.inducePropagationGraph(connectivityGraph, modelA, modelB, PropagationCoefficientPolicy.INVERSE_AVERAGE);
 
+        //PropagationGraph should have 6 nodes
+        Assertions.assertEquals(6, propagationGraphInverseAverage.vertexSet().size());
+
+        //Check for correct vertices (NodePairs)
+        Assertions.assertTrue(propagationGraphInverseAverage.containsVertex(ab));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsVertex(a1b1));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsVertex(a2b1));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsVertex(a1b2));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsVertex(a1b));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsVertex(a2b2));
+
+        //ConnectivityGraph should have 4 edges
+        Assertions.assertEquals(8, propagationGraphInverseAverage.edgeSet().size());
+
+        //Check for correctly labeled edges
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(ab, a1b1));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(a1b1, ab));
+        Assertions.assertEquals(new CoefficientEdge(2.0 / 3.0), propagationGraphInverseAverage.getEdge(ab, a1b1));
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a1b1, ab));
+
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(ab, a2b1));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(a2b1, ab));
+        Assertions.assertEquals(new CoefficientEdge(2.0 / 3.0), propagationGraphInverseAverage.getEdge(ab, a2b1));
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a2b1, ab));
+
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(a1b2, a2b1));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(a2b1, a1b2));
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a1b2, a2b1));
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a2b1, a1b2));
+
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(a1b, a2b2));
+        Assertions.assertTrue(propagationGraphInverseAverage.containsEdge(a2b2, a1b));
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a1b, a2b2));
+        Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a2b2, a1b));
     }
 
 

@@ -46,7 +46,8 @@ public class SimilarityFlooding extends Matcher {
             case "INVERSE_AVERAGE" -> PropagationCoefficientPolicy.INVERSE_AVERAGE;
             case "INVERSE_PRODUCT" -> PropagationCoefficientPolicy.INVERSE_PRODUCT;
             case "CONSTANT_ONE" -> PropagationCoefficientPolicy.CONSTANT_ONE;
-            default -> throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
+            default ->
+                    throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
         };
 
         formula = switch (fixpointFormula) {
@@ -369,7 +370,7 @@ public class SimilarityFlooding extends Matcher {
                     connectivityGraph.addVertex(connectedTargetNode);
 
                     //Kante von Knotenpaar1 zu Knotenpaar2 mit Label der beiden Kanten
-                    connectivityGraph.addEdge(connectedSourceNode, connectedTargetNode, new LabelEdge(label1.getValue()));
+                    connectivityGraph.addEdge(connectedSourceNode, connectedTargetNode, new LabelEdge(label1.getLabel()));
                 }
             }
         }
@@ -379,64 +380,39 @@ public class SimilarityFlooding extends Matcher {
 
     public Graph<NodePair, CoefficientEdge> inducePropagationGraph(Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy policy) {
 
-        Graph<NodePair, LabelEdge> connectivityGraphCopy = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
-
-        //Graph kopieren (shallow)
-        for (LabelEdge edge : connectivityGraph.edgeSet()) {
-
-            NodePair source = connectivityGraph.getEdgeSource(edge);
-            NodePair target = connectivityGraph.getEdgeTarget(edge);
-
-            connectivityGraphCopy.addVertex(source);
-            connectivityGraphCopy.addVertex(target);
-            connectivityGraphCopy.addEdge(source, target, edge);
-        }
-
         Graph<NodePair, CoefficientEdge> propagationGraph = new DefaultDirectedWeightedGraph<>(CoefficientEdge.class);
 
-        //Prüfen zu welchen Vorwärtskanten eine Rückwärtskante hinzugefügt werden muss
-        Set<LabelEdge> reverseEdges = new HashSet<>();
-
-        for (LabelEdge label : connectivityGraphCopy.edgeSet()) {
-            NodePair sourceNodePair = connectivityGraphCopy.getEdgeSource(label);
-            NodePair targetNodePair = connectivityGraphCopy.getEdgeTarget(label);
-
-            if (!connectivityGraphCopy.containsEdge(targetNodePair, sourceNodePair)) {
-                reverseEdges.add(label);
-            }
+        for (NodePair nodePair : connectivityGraph.vertexSet()) {
+            propagationGraph.addVertex(nodePair);
         }
 
-        //Rückwärtskanten hinzufügen
-        for (LabelEdge label : reverseEdges) {
-            NodePair sourceNodePair = connectivityGraphCopy.getEdgeSource(label);
-            NodePair targetNodePair = connectivityGraphCopy.getEdgeTarget(label);
+        for (NodePair nodePair : connectivityGraph.vertexSet()) {
 
-            //Kante umgekehrt einfügen
-            connectivityGraphCopy.addEdge(targetNodePair, sourceNodePair, new LabelEdge(label.toString()));
-        }
+            Node nodeGraph1 = nodePair.getFirstNode();
+            Node nodeGraph2 = nodePair.getSecondNode();
 
-
-        //Würde auch direkt über Graph1 und Graph2 gehen, anstatt Umweg über connectivityGraph, aber damit mehr Flexibilität aktuellen Weg beibehalten
-        for (LabelEdge label : connectivityGraphCopy.edgeSet()) {
-
-            NodePair nodePairSource = connectivityGraphCopy.getEdgeSource(label);
-            Node node1 = nodePairSource.getFirstNode();
-            Node node2 = nodePairSource.getSecondNode();
-
-            double propagationCoefficient;
+            List<Map<String, Double>> propagationCoefficients = new ArrayList<>();
 
             try {
-                propagationCoefficient = policy.evaluate(label, node1, node2, graph1, graph2);
-            } catch (NoSuchMethodException e) {
-                throw new RuntimeException(e);
+                propagationCoefficients = policy.evaluate(nodeGraph1, nodeGraph2, graph1, graph2);
+            } catch (Exception e) {
+                System.out.println("Not a policy");
             }
 
-            NodePair nodePairTarget = connectivityGraphCopy.getEdgeTarget(label);
+            Map<String, Double> countInLabelsTotal = propagationCoefficients.get(0);
+            Map<String, Double> countOutLabelsTotal = propagationCoefficients.get(1);
 
-            //Kante zum Propagation Graph hinzufügen
-            propagationGraph.addVertex(nodePairSource);
-            propagationGraph.addVertex(nodePairTarget);
-            propagationGraph.addEdge(nodePairSource, nodePairTarget, new CoefficientEdge(propagationCoefficient));
+            for (LabelEdge edge : connectivityGraph.incomingEdgesOf(nodePair)) {
+                NodePair sourceNodePair = connectivityGraph.getEdgeSource(edge);
+                NodePair targetNodePair = connectivityGraph.getEdgeTarget(edge);
+                propagationGraph.addEdge(targetNodePair, sourceNodePair, new CoefficientEdge(countInLabelsTotal.get(edge.getLabel())));
+            }
+
+            for (LabelEdge edge : connectivityGraph.outgoingEdgesOf(nodePair)) {
+                NodePair sourceNodePair = connectivityGraph.getEdgeSource(edge);
+                NodePair targetNodePair = connectivityGraph.getEdgeTarget(edge);
+                propagationGraph.addEdge(sourceNodePair, targetNodePair, new CoefficientEdge(countOutLabelsTotal.get(edge.getLabel())));
+            }
         }
 
         return propagationGraph;

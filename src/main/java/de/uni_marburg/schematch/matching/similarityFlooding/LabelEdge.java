@@ -5,21 +5,21 @@ import lombok.Getter;
 @Getter
 public class LabelEdge {
 
-    private final String value;
+    private final String label;
 
     public LabelEdge(String label) {
-        this.value = label;
+        this.label = label;
     }
 
     @Override
     public String toString() {
-        return value;
+        return label;
     }
 
     @Override
     public boolean equals(Object other) {
         if (other instanceof LabelEdge otherlabelEdge) { //Equality holds between two Objects if both are of class LabelEdge
-            return this.value.equals(otherlabelEdge.value); //And both hold the equal String value
+            return this.label.equals(otherlabelEdge.label); //And both hold the equal String value
         }
         return false;
     }
