@@ -1,39 +1,918 @@
 package de.uni_marburg.schematch.matching.similarityFlooding;
 
 import de.uni_marburg.schematch.TestUtils;
+import de.uni_marburg.schematch.data.Column;
 import de.uni_marburg.schematch.data.Database;
 import de.uni_marburg.schematch.data.Scenario;
+import de.uni_marburg.schematch.data.Table;
+import de.uni_marburg.schematch.data.metadata.DatabaseMetadata;
+import de.uni_marburg.schematch.data.metadata.Datatype;
+import de.uni_marburg.schematch.data.metadata.dependency.FunctionalDependency;
+import de.uni_marburg.schematch.data.metadata.dependency.InclusionDependency;
+import de.uni_marburg.schematch.data.metadata.dependency.UniqueColumnCombination;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.Map;
+import java.util.List;
 
 class GraphTransformationTest {
 
-    //Database sourceDb;
-    //Database targetDb;
     SimilarityFlooding similarityFlooding = new SimilarityFlooding();
-    //Graph<Node, LabelEdge> graph1;
-    //Graph<Node, LabelEdge> graph2;
-    //Graph<NodePair, LabelEdge> connectivityGraph;
-    //Graph<NodePair, CoefficientEdge> propagationGraph;
-    //PropagationCoefficientPolicy propagationCoefficientPolicy = PropagationCoefficientPolicy.INVERSE_AVERAGE;
-    //Map<NodePair, Double> initialMapping;
-    //FixpointFormula fixpointFormula;
 
-    @BeforeEach
-    public void init() {
-
-
-    }
+    //Basisfall: 16 Knoten, 17 Kanten
 
     @Test
     public void transformIntoGraphRepresentation() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
 
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, false, false, false);
 
+        //All Type Nodes
+        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+
+        //All Name Nodes
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Database Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+
+        //All Table Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //Check vertices
+        Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(source));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID6));
+
+        //Check Edges
+        Assertions.assertEquals(17, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID5));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID5));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID4));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID3, NodeID4));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, NodeID6));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID5, NodeID6));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID6, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
+    }
+
+    @Test
+    public void transformIntoGraphRepresentationWithFDV1() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
+        DatabaseMetadata metadata = new DatabaseMetadata();
+
+        //Add test Dependency to Database
+        Column columnAid = sourceDb.getTableByName("authors").getColumn(0);
+        Column columnName = sourceDb.getTableByName("authors").getColumn(1);
+
+        //Test Dependency aid --> name
+        FunctionalDependency fd = new FunctionalDependency(List.of(columnAid), columnName);
+        metadata.setFds(List.of(fd));
+
+        sourceDb.setMetadata(metadata);
+
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, true, false, false, false, false, false);
+
+        //All Type Nodes
+        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+
+        //All Name Nodes
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Database Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+
+        //All Table Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //Check vertices
+        Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(source));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID6));
+
+        //Check Edges
+        Assertions.assertEquals(18, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID5));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID5));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID4));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID3, NodeID4));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, NodeID6));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID5, NodeID6));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID6, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
+
+        //All Test for Extra Dependency Edges
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID5));
+        Assertions.assertEquals(new LabelEdge("determines"), graphRepresentation.getEdge(NodeID3, NodeID5));
+    }
+
+    @Test
+    public void transformIntoGraphRepresentationWithFDV2() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
+        DatabaseMetadata metadata = new DatabaseMetadata();
+
+        //Add test Dependency to Database
+        Column columnAid = sourceDb.getTableByName("authors").getColumn(0);
+        Column columnName = sourceDb.getTableByName("authors").getColumn(1);
+
+        //Test Dependency aid --> name
+        FunctionalDependency fd = new FunctionalDependency(List.of(columnAid), columnName);
+        metadata.setFds(List.of(fd));
+
+        sourceDb.setMetadata(metadata);
+
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, true, false, false, false, false);
+
+        //All Type Nodes
+        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
+
+        //All Name Nodes
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Database Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+
+        //All Table Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //All FD Nodes
+        Node fd1 = new Node("FD1", NodeType.CONSTRAINT, null, false, null, null);
+
+        //Check vertices
+        Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(constraint));
+        Assertions.assertTrue(graphRepresentation.containsVertex(source));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID6));
+        Assertions.assertTrue(graphRepresentation.containsVertex(fd1));
+
+        //Check Edges
+        Assertions.assertEquals(20, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID5));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID5));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID4));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID3, NodeID4));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, NodeID6));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID5, NodeID6));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID6, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
+
+        //All Test for Extra Dependency Edges
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, fd1));
+        Assertions.assertEquals(new LabelEdge("determinant"), graphRepresentation.getEdge(NodeID3, fd1));
+        Assertions.assertTrue(graphRepresentation.containsEdge(fd1, NodeID5));
+        Assertions.assertEquals(new LabelEdge("determines"), graphRepresentation.getEdge(fd1, NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsEdge(fd1, constraint));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(fd1, constraint));
+    }
+
+    @Test
+    public void transformIntoGraphRepresentationWithUCCV1() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
+        DatabaseMetadata metadata = new DatabaseMetadata();
+
+        //Add test Dependency to Database
+        Column columnAid = sourceDb.getTableByName("authors").getColumn(0);
+        Column columnName = sourceDb.getTableByName("authors").getColumn(1);
+
+        //Test UniqueColumnCombination (aid, name)
+        UniqueColumnCombination uniqueColumnCombination = new UniqueColumnCombination(List.of(columnAid, columnName));
+        metadata.setUccs(List.of(uniqueColumnCombination));
+
+        sourceDb.setMetadata(metadata);
+
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, true, false, false, false);
+
+        //All Type Nodes
+        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
+
+        //All Name Nodes
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Database Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+
+        //All Table Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //UCC Node
+        Node ucc = new Node("UCC#2", NodeType.CONSTRAINT, null, false, null, null);
+
+        //Check vertices
+        Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(constraint));
+        Assertions.assertTrue(graphRepresentation.containsVertex(source));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID6));
+        Assertions.assertTrue(graphRepresentation.containsVertex(ucc));
+
+        //Check Edges
+        Assertions.assertEquals(20, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID5));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID5));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID4));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID3, NodeID4));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, NodeID6));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID5, NodeID6));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID6, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
+
+        //All Test for Extra UCC Edges
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, ucc));
+        Assertions.assertEquals(new LabelEdge("ucc"), graphRepresentation.getEdge(NodeID3, ucc));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, ucc));
+        Assertions.assertEquals(new LabelEdge("ucc"), graphRepresentation.getEdge(NodeID5, ucc));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ucc, constraint));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(ucc, constraint));
+    }
+
+    @Test
+    public void transformIntoGraphRepresentationWithUCCV2() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
+        DatabaseMetadata metadata = new DatabaseMetadata();
+
+        //Add test Dependency to Database
+        Column columnAid = sourceDb.getTableByName("authors").getColumn(0);
+        Column columnName = sourceDb.getTableByName("authors").getColumn(1);
+
+        //Test UniqueColumnCombination (aid, name)
+        UniqueColumnCombination uniqueColumnCombination1 = new UniqueColumnCombination(List.of(columnAid));
+        UniqueColumnCombination uniqueColumnCombination2 = new UniqueColumnCombination(List.of(columnName));
+
+        metadata.setUccs(List.of(uniqueColumnCombination1, uniqueColumnCombination2));
+
+        sourceDb.setMetadata(metadata);
+
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, true, false, false);
+
+        //All Type Nodes
+        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
+
+        //All Name Nodes
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Database Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+
+        //All Table Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //UCC Nodes
+        Node ucc1 = new Node("UCC1", NodeType.CONSTRAINT, null, false, null, null);
+        Node ucc2 = new Node("UCC2", NodeType.CONSTRAINT, null, false, null, null);
+        Node ucc_size_1 = new Node("UCC#1", NodeType.CONSTRAINT, null, false, null, null);
+
+        //Check vertices
+        Assertions.assertEquals(20, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(constraint));
+        Assertions.assertTrue(graphRepresentation.containsVertex(source));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID6));
+        Assertions.assertTrue(graphRepresentation.containsVertex(ucc1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(ucc2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(ucc_size_1));
+
+        //Check Edges
+        Assertions.assertEquals(22, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID5));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID5));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID4));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID3, NodeID4));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, NodeID6));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID5, NodeID6));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID6, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
+
+        //All Test for Extra UCC Edges
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, ucc1));
+        Assertions.assertEquals(new LabelEdge("ucc"), graphRepresentation.getEdge(NodeID3, ucc1));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ucc1, ucc_size_1));
+        Assertions.assertEquals(new LabelEdge("size"), graphRepresentation.getEdge(ucc1, ucc_size_1));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, ucc2));
+        Assertions.assertEquals(new LabelEdge("ucc"), graphRepresentation.getEdge(NodeID5, ucc2));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ucc2, ucc_size_1));
+        Assertions.assertEquals(new LabelEdge("size"), graphRepresentation.getEdge(ucc2, ucc_size_1));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ucc_size_1, constraint));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(ucc_size_1, constraint));
+    }
+
+    @Test
+    public void transformIntoGraphRepresentationWithINDV1() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
+        DatabaseMetadata metadata = new DatabaseMetadata();
+
+        //Add test Dependency to Database
+        Column columnAid = sourceDb.getTableByName("authors").getColumn(0);
+        Column columnName = sourceDb.getTableByName("authors").getColumn(1);
+
+        //Test Dependency name [= aid
+        InclusionDependency inclusionDependency = new InclusionDependency(List.of(columnName), List.of(columnAid));
+        metadata.setInds(List.of(inclusionDependency));
+        sourceDb.setMetadata(metadata);
+
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, false, true, false);
+
+        //All Type Nodes
+        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+
+        //All Name Nodes
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Database Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+
+        //All Table Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //Check vertices
+        Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(source));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID6));
+
+        //Check Edges
+        Assertions.assertEquals(18, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID5));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID5));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID4));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID3, NodeID4));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, NodeID6));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID5, NodeID6));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID6, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
+
+        //All Test for Extra Dependency Edges
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID5));
+        Assertions.assertEquals(new LabelEdge("contains"), graphRepresentation.getEdge(NodeID3, NodeID5));
+    }
+
+    @Test
+    public void transformIntoGraphRepresentationWithINDV2() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
+        DatabaseMetadata metadata = new DatabaseMetadata();
+
+        //Add test Dependency to Database
+        Column columnAid = sourceDb.getTableByName("authors").getColumn(0);
+        Column columnName = sourceDb.getTableByName("authors").getColumn(1);
+
+        //Test Dependency name [= aid
+        InclusionDependency inclusionDependency = new InclusionDependency(List.of(columnName), List.of(columnAid));
+        metadata.setInds(List.of(inclusionDependency));
+        sourceDb.setMetadata(metadata);
+
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, false, false, true);
+
+        //All Type Nodes
+        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
+
+        //All Name Nodes
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Database Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+
+        //All Table Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //Additional IND Nodes
+        Node ind1 = new Node("IND1", NodeType.CONSTRAINT, null, false, null, null);
+
+        //Check vertices
+        Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(constraint));
+        Assertions.assertTrue(graphRepresentation.containsVertex(source));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID1));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID6));
+        Assertions.assertTrue(graphRepresentation.containsVertex(ind1));
+
+        //Check Edges
+        Assertions.assertEquals(20, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID5));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID2, NodeID5));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, NodeID4));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID3, NodeID4));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, NodeID6));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID5, NodeID6));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID6, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID6, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
+
+        //All Test for Extra Dependency Edges
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, ind1));
+        Assertions.assertEquals(new LabelEdge("referenced"), graphRepresentation.getEdge(NodeID3, ind1));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ind1, NodeID5));
+        Assertions.assertEquals(new LabelEdge("dependant"), graphRepresentation.getEdge(ind1, NodeID5));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ind1, constraint));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(ind1, constraint));
     }
 
     @Test
@@ -182,9 +1061,6 @@ class GraphTransformationTest {
         Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a1b, a2b2));
         Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseProduct.getEdge(a2b2, a1b));
 
-        //TODO: Check if example on paper is correct
-        //TODO: Calculate (by Hand) propagation graph for inverse average policy
-
         //Test for PropagationGraph constructed with the InverseAverage policy
         Graph<NodePair, CoefficientEdge> propagationGraphInverseAverage = similarityFlooding.inducePropagationGraph(connectivityGraph, modelA, modelB, PropagationCoefficientPolicy.INVERSE_AVERAGE);
 
@@ -223,6 +1099,4 @@ class GraphTransformationTest {
         Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a1b, a2b2));
         Assertions.assertEquals(new CoefficientEdge(1.0), propagationGraphInverseAverage.getEdge(a2b2, a1b));
     }
-
-
 }
