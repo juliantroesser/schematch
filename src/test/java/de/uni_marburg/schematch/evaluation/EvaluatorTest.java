@@ -3,14 +3,13 @@ package de.uni_marburg.schematch.evaluation;
 import de.uni_marburg.schematch.TestUtils;
 import de.uni_marburg.schematch.data.Scenario;
 import de.uni_marburg.schematch.evaluation.metric.Metric;
-import de.uni_marburg.schematch.evaluation.metric.NonBinaryPrecisionAtGroundTruth;
+import de.uni_marburg.schematch.evaluation.metric.NonBinaryPrecision;
 import de.uni_marburg.schematch.evaluation.performance.Performance;
 import de.uni_marburg.schematch.utils.Configuration;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,7 +20,7 @@ class EvaluatorTest {
         TestUtils.TestData testData = TestUtils.getTestData();
 
         List<Metric> metrics = new ArrayList<>();
-        metrics.add(new NonBinaryPrecisionAtGroundTruth());
+        metrics.add(new NonBinaryPrecision());
         Scenario scenario = new Scenario(testData.getScenarios().get("test3").getPath());
         // FIXME: refactor reading of ground truth to be more accessible
         int[][] groundTruthMatrix = {

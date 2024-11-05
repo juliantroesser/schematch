@@ -1,6 +1,6 @@
 package de.uni_marburg.schematch.evaluation.metric;
 
-public class Accuracy extends Metric{
+public class Overall extends Metric{
 
     @Override
     public float run(int[] groundTruthVector, float[] simVector) {

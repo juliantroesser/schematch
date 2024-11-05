@@ -105,17 +105,4 @@ public class ValentineOneToOneSelectionBoosting implements SimMatrixBoosting {
             matrix[row][columnIndex] = 0;
         }
     }
-
-    public static void main(String[] args) {
-
-        ValentineOneToOneSelectionBoosting boosting = new ValentineOneToOneSelectionBoosting();
-
-        float[][] testMatrix = {{0.45f, 0.45f},
-                                {0.45f, 0.46f}};
-
-        System.out.println(Arrays.deepToString(boosting.greedilyKeepHighestMatches(testMatrix)));
-
-    }
-
-
 }

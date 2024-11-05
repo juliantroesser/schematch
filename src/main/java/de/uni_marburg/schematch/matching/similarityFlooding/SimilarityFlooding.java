@@ -12,6 +12,8 @@ import de.uni_marburg.schematch.matchtask.MatchTask;
 import de.uni_marburg.schematch.matchtask.matchstep.MatchingStep;
 import de.uni_marburg.schematch.similarity.string.Levenshtein;
 import lombok.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 
@@ -19,12 +21,16 @@ import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.convertSimilarityMapToMatrix;
+import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.hasConverged;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
 @Getter
 public class SimilarityFlooding extends Matcher {
 
+    private static final Logger log = LogManager.getLogger(SimilarityFlooding.class);
     private String propagationCoefficientPolicy;
     private String fixpointFormula;
     private String epsilon;
@@ -46,7 +52,8 @@ public class SimilarityFlooding extends Matcher {
             case "INVERSE_AVERAGE" -> PropagationCoefficientPolicy.INVERSE_AVERAGE;
             case "INVERSE_PRODUCT" -> PropagationCoefficientPolicy.INVERSE_PRODUCT;
             case "CONSTANT_ONE" -> PropagationCoefficientPolicy.CONSTANT_ONE;
-            default -> throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
+            default ->
+                    throw new RuntimeException("No such propagation coefficient policy: " + propagationCoefficientPolicy);
         };
 
         formula = switch (fixpointFormula) {
@@ -170,7 +177,7 @@ public class SimilarityFlooding extends Matcher {
             graphRepresentation.addVertex(constraintNode);
         }
 
-        if (fdv1) {
+        if (fdv1) { //New Edges for fdv1
 
             List<FunctionalDependency> functionalDependencies = db.getMetadata().getFds().stream().toList();
 
@@ -195,7 +202,7 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
-        if (fdv2) {
+        if (fdv2) { //New vertices and edges for fdv2
 
             List<FunctionalDependency> functionalDependencies = db.getMetadata().getFds().stream().toList();
             int fdID = 1;
@@ -227,7 +234,7 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
-        if (uccv1) {
+        if (uccv1) { //new vertices and edges for uccv1
 
             List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
 
@@ -255,7 +262,7 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
-        if (uccv2) {
+        if (uccv2) { //new vertices and edges for uccv2
 
             List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
             int uccID = 1;
@@ -289,7 +296,7 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
-        if (indv1) {
+        if (indv1) { //new edges for indv1
 
             List<InclusionDependency> inclusionDependencies = db.getMetadata().getInds().stream().toList();
 
@@ -318,7 +325,7 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
-        if (indv2) {
+        if (indv2) { //new vertices and edges for indv2
 
             List<InclusionDependency> inclusionDependencies = db.getMetadata().getInds().stream().toList();
             int indID = 1;
@@ -444,35 +451,55 @@ public class SimilarityFlooding extends Matcher {
             Node node1 = mappingPair.getFirstNode();
             Node node2 = mappingPair.getSecondNode();
             Levenshtein l = new Levenshtein();
-            double similarity = -1.0;
+            double similarity;
+
+//            if (node1.isIDNode() || node2.isIDNode()) { //Mapping with artifical Nodes
+//                similarity = 0.0; //Bei 0 lassen beste Ergebnisse //Bei negativen Werten keine Konvergenz //>0 monoton fallender Score
+//            } else if (node1.getNodeType().equals(NodeType.COLUMN) && node2.getNodeType().equals(NodeType.COLUMN)) {
+//                if (node1.getValue().equals("Column") && node2.getValue().equals("Column")) {
+//                    similarity = 1.0;
+//                } else {
+//                    similarity = l.compare(node1.getValue(), node2.getValue());
+//                }
+//            } else if (node1.getNodeType().equals(NodeType.COLUMN_TYPE) && node2.getNodeType().equals(NodeType.COLUMN_TYPE)) {
+//                if (node1.getValue().equals("ColumnType") && node2.getValue().equals("ColumnType")) {
+//                    similarity = 1.0;
+//                } else {
+//                    similarity = getDatatypeSimilarity(node1.getDatatype(), node2.getDatatype());
+//                }
+//            } else if (node1.getNodeType().equals(NodeType.TABLE) && node2.getNodeType().equals(NodeType.TABLE)) {
+//                if (node1.getValue().equals("Table") && node2.getValue().equals("Table")) {
+//                    similarity = 1.0;
+//                } else {
+//                    similarity = l.compare(node1.getValue(), node2.getValue());
+//                }
+//            } else if (node1.getNodeType().equals(NodeType.DATABASE) && node2.getNodeType().equals(NodeType.DATABASE)) {
+//                if (node1.getValue().equals("Database") && node2.getValue().equals("Database")) {
+//                    similarity = 1.0;
+//                } else {
+//                    similarity = l.compare(node1.getValue(), node2.getValue()); //TODO: Wenn nur source und target als Name, was tun?
+//                }
+//            } else if (node1.getNodeType().equals(NodeType.CONSTRAINT) && node2.getNodeType().equals(NodeType.CONSTRAINT)) {
+//                if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) { //TODO: Beachten wenn Column mit FD beginnt.
+//                    similarity = 0.0; //TODO: 0 oder 1 besser?
+//                } else if (node1.getValue().startsWith("UCC#") && node2.getValue().startsWith("UCC#")) {
+//                    int uccSize1 = Integer.parseInt(node1.getValue().replaceAll("\\D", ""));
+//                    int uccSize2 = Integer.parseInt(node2.getValue().replaceAll("\\D", ""));
+//                    similarity = 1.0 / (1.0 + Math.abs(uccSize1 - uccSize2));
+//                } else if (node1.getValue().startsWith("UCC") && node2.getValue().startsWith("UCC")) {
+//                    similarity = 1.0; //TODO: 0 oder 1 besser?
+//                } else if (node1.getValue().startsWith("IND") && node2.getValue().startsWith("IND")) {
+//                    similarity = 1.0; //TODO: 0 oder 1 besser?
+//                } else {
+//                    similarity = -1.0;
+//                }
+//            } else {
+//                similarity = 0.0;
+//            }
 
             if (node1.isIDNode() || node2.isIDNode()) { //Mapping with artifical Nodes
                 similarity = 0.0; //Bei 0 lassen beste Ergebnisse //Bei negativen Werten keine Konvergenz //>0 monoton fallender Score
-            } else if (node1.getNodeType().equals(NodeType.COLUMN) && node2.getNodeType().equals(NodeType.COLUMN)) {
-                if (node1.getValue().equals("Column") && node2.getValue().equals("Column")) {
-                    similarity = 1.0;
-                } else {
-                    similarity = l.compare(node1.getValue(), node2.getValue());
-                }
-            } else if (node1.getNodeType().equals(NodeType.COLUMN_TYPE) && node2.getNodeType().equals(NodeType.COLUMN_TYPE)) {
-                if (node1.getValue().equals("ColumnType") && node2.getValue().equals("ColumnType")) {
-                    similarity = 1.0;
-                } else {
-                    similarity = getDatatypeSimilarity(node1.getDatatype(), node2.getDatatype());
-                }
-            } else if (node1.getNodeType().equals(NodeType.TABLE) && node2.getNodeType().equals(NodeType.TABLE)) {
-                if (node1.getValue().equals("Table") && node2.getValue().equals("Table")) {
-                    similarity = 1.0;
-                } else {
-                    similarity = l.compare(node1.getValue(), node2.getValue());
-                }
-            } else if (node1.getNodeType().equals(NodeType.DATABASE) && node2.getNodeType().equals(NodeType.DATABASE)) {
-                if (node1.getValue().equals("Database") && node2.getValue().equals("Database")) {
-                    similarity = 1.0;
-                } else {
-                    similarity = l.compare(node1.getValue(), node2.getValue()); //TODO: Wenn nur source und target als Name, was tun?
-                }
-            } else if (node1.getNodeType().equals(NodeType.CONSTRAINT) && node2.getNodeType().equals(NodeType.CONSTRAINT)) {
+            } else if (node1.getNodeType().equals(NodeType.CONSTRAINT) && node2.getNodeType().equals(NodeType.CONSTRAINT)) { //Mapping
                 if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) { //TODO: Beachten wenn Column mit FD beginnt.
                     similarity = 0.0; //TODO: 0 oder 1 besser?
                 } else if (node1.getValue().startsWith("UCC#") && node2.getValue().startsWith("UCC#")) {
@@ -487,7 +514,7 @@ public class SimilarityFlooding extends Matcher {
                     similarity = -1.0;
                 }
             } else {
-                similarity = 0.0;
+                similarity = l.compare(node1.getValue(), node2.getValue());
             }
 
             initialMapping.put(mappingPair, similarity);
@@ -519,17 +546,16 @@ public class SimilarityFlooding extends Matcher {
 
     public Map<NodePair, Double> similarityFlooding(Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
 
-        Map<NodePair, Double> sigma_0 = new HashMap<>(initialMapping);
-        Map<NodePair, Double> sigma_i = new HashMap<>(initialMapping);
-        Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
-
         double EPSILON = Double.parseDouble(epsilon);
         int MAX_ITERATIONS = Integer.parseInt(maxIterations);
-
         boolean convergence = false;
         int iterationCount = 0;
 
-        while (!convergence && iterationCount < MAX_ITERATIONS) {
+        Map<NodePair, Double> sigma_0 = new HashMap<>(initialMapping);
+        Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
+        Map<NodePair, Double> sigma_i = new HashMap<>(sigma_0);
+
+        while (!convergence && iterationCount <= MAX_ITERATIONS) {
 
             double maxValueCurrentIteration = Double.MIN_VALUE;
 
@@ -537,14 +563,7 @@ public class SimilarityFlooding extends Matcher {
 
                 //Alle Nachbarn bekommen
                 Set<CoefficientEdge> incomingEdges = propagationGraph.incomingEdgesOf(node); //TODO: Prüfen ob tatsächlich nur Knoten aus eingehenden Kanten als Nachbarn zählen
-                //Set<CoefficientEdge> outgoingEdges = propagationGraph.outgoingEdgesOf(node);
-
-                Set<NodePair> neighborNodesIncomingEdges = incomingEdges.stream().map(propagationGraph::getEdgeSource).collect(Collectors.toSet());
-                //Set<NodePair> neighborNodesOutgoingEdges = outgoingEdges.stream().map(propagationGraph::getEdgeTarget).collect(Collectors.toSet());
-
-                Set<NodePair> neighborNodes = new HashSet<>();
-                neighborNodes.addAll(neighborNodesIncomingEdges);
-                //neighborNodes.addAll(neighborNodesOutgoingEdges);
+                Set<NodePair> neighborNodes = incomingEdges.stream().map(propagationGraph::getEdgeSource).collect(Collectors.toSet());
 
                 //Neuen Wert für Node auf Basis der Nachbarn berechnen
                 double newValue;
@@ -569,67 +588,12 @@ public class SimilarityFlooding extends Matcher {
 
             //Prüfen ob Residuum(sigma_i, sigma_i+1) konvergiert
             convergence = hasConverged(sigma_i, sigma_i_plus_1, EPSILON);
-
             sigma_i.putAll(sigma_i_plus_1);
-            sigma_i_plus_1.clear();
             iterationCount++;
         }
 
-        System.out.println("Iterations: " + iterationCount + " for: " + initialMapping.size() + " Nodes"); //TODO: Iteration count with logger not print
-
-        return sigma_i;
-    }
-
-    public boolean hasConverged(Map<NodePair, Double> sigma_i, Map<NodePair, Double> sigma_i_plus_1, double epsilon) {
-        return calcResidualVector(sigma_i, sigma_i_plus_1) < epsilon;
-    }
-
-    public double calcResidualVector(Map<NodePair, Double> sigma_i, Map<NodePair, Double> sigma_i_plus_1) {
-
-        double residualSum = 0;
-
-        for (NodePair node : sigma_i.keySet()) {
-
-            double value_i = sigma_i.get(node);
-            double value_i_plus_1 = sigma_i_plus_1.get(node);
-
-            residualSum = residualSum + Math.pow((value_i - value_i_plus_1), 2);
-        }
-
-        return Math.sqrt(residualSum);
-    }
-
-    public float[][] convertSimilarityMapToMatrix(Map<NodePair, Double> mapping, MatchTask matchTask) {
-
-        float[][] simMatrix = matchTask.getEmptySimMatrix();
-
-        for (Table sourceTable : matchTask.getScenario().getSourceDatabase().getTables()) {
-            for (Table targetTable : matchTask.getScenario().getTargetDatabase().getTables()) {
-
-                List<Column> sourceColumns = sourceTable.getColumns();
-                List<Column> targetColumns = targetTable.getColumns();
-
-                for (int i = 0; i < sourceColumns.size(); i++) {
-
-                    String sourceLabel = sourceColumns.get(i).getLabel();
-                    Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, null, sourceTable);
-
-                    for (int j = 0; j < targetColumns.size(); j++) {
-
-                        String targetLabel = targetColumns.get(j).getLabel();
-                        Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable);
-
-                        //TODO: Problem falls zwei verschiedene Tabellen beide Source sind und Attribut mit gleichem Namen haben -> Node langen Namen geben
-
-                        float similarity = mapping.getOrDefault(new NodePair(sourceNode, targetNode), 0.0).floatValue();
-
-                        simMatrix[sourceTable.getOffset() + i][targetTable.getOffset() + j] = similarity;
-                    }
-                }
-            }
-        }
-
-        return simMatrix;
+        log.info("Ran {} Iterations for {} Nodes", iterationCount - 1, initialMapping.size());
+        return sigma_i_plus_1;
     }
 
     //Only keep matching between elements of same kind, put simValue of IDNodes with their nameValues
@@ -650,7 +614,6 @@ public class SimilarityFlooding extends Matcher {
                 //Only keep Matchings between Databases/Schemas, Tables and Columns (For our case, only columns are relevant)
                 if (node1.getNodeType().equals(node2.getNodeType())) {
                     if (node1.getNodeType().equals(NodeType.DATABASE) || node1.getNodeType().equals(NodeType.TABLE) || node1.getNodeType().equals(NodeType.COLUMN)) {
-
                         //TODO: Try typing constraints on columns, i.e only keep matches between columns of the same type
                         filteredMapping.put(pair, simValue);
                     }

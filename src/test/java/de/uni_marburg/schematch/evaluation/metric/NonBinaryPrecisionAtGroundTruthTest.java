@@ -12,8 +12,16 @@ class NonBinaryPrecisionAtGroundTruthTest {
         int[] gtVector = {1,0,0,1};
 
         NonBinaryPrecisionAtGroundTruth metric = new NonBinaryPrecisionAtGroundTruth();
-        float expected = (0.9f+0.5f)/(0.9f+0.7f+0.5f);
+        float expected = (0.9f)/(0.9f+0.7f);
         float actual = metric.run(gtVector, simVector);
+
+        assertEquals(expected, actual, 0.05f);
+
+        simVector = new float[]{0.5f, 0.5f, 0.5f, 0.5f};
+        gtVector = new int[]{1, 0, 0, 1};
+
+        expected = 0;
+        actual = metric.run(gtVector, simVector);
 
         assertEquals(expected, actual, 0.05f);
     }

@@ -1,41 +1,37 @@
 package de.uni_marburg.schematch.evaluation.metric;
 
+import de.uni_marburg.schematch.utils.MetricUtils;
+
+import java.util.List;
+
 public class NonBinaryRecallAtGroundTruth extends Metric {
+
     @Override
     public float run(int[] groundTruthVector, float[] simVector) {
 
-        float totalSimScoreTP = 0;
-        float totalSimScoreFN = 0;
+//        for (int i = 0; i < groundTruthVector.length; i++) {
+//            if (groundTruthVector[i] != 0 && groundTruthVector[i] != 1) {
+//                throw new IllegalArgumentException("groundTruthVector contains invalid values. Only 0 or 1 allowed.");
+//            }
+//            if (simVector[i] != 0 && simVector[i] != 1) {
+//                throw new IllegalArgumentException("simVector contains invalid values. Only 0 or 1 allowed.");
+//            }
+//        }
 
-        // find the lowest ground truth score
-        float lowestGTScore = Float.MAX_VALUE;
-        for (int i = 0; i < groundTruthVector.length; i++) {
-            if (groundTruthVector[i] == 1 && simVector[i] < lowestGTScore) {
-                lowestGTScore = simVector[i];
+        List<Integer> sortedSimIndices = MetricUtils.getSortedSimIndices(simVector, groundTruthVector); //Indices in descending order of similarity
+        List<Integer> groundTruthIndices = MetricUtils.getGroundTruthIndices(groundTruthVector); //Indices where GT=1
+
+        int groundTruthSize = groundTruthIndices.size(); //Recall@k with k = #GT
+
+        float countTruePositive = 0;
+
+        for(int i = 0; i < groundTruthSize; i++) {
+            int currSimIndex = sortedSimIndices.get(i);
+            if(groundTruthIndices.contains(currSimIndex)) {
+                countTruePositive++;
             }
         }
 
-        // flag all scores >= lowest ground truth score as TP/FP
-        for (int i = 0; i < groundTruthVector.length; i++) {
-            float simScore = simVector[i];
-            if (simScore >= lowestGTScore) {
-                if (groundTruthVector[i] == 1) {
-                    totalSimScoreTP += simScore;
-                }
-            }
-            if (simScore < lowestGTScore) {
-                if (groundTruthVector[i] == 1) {
-                    totalSimScoreFN += simScore;
-                }
-            }
-        }
-
-        float score = 0f;
-        if (totalSimScoreTP + totalSimScoreFN > 0) {
-            score = totalSimScoreTP / (totalSimScoreTP + totalSimScoreFN);
-        }
-
-        return score;
-
+        return countTruePositive / groundTruthSize;
     }
 }
