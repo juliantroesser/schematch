@@ -13,15 +13,15 @@
 #---
 #name: "ISIA-real_estate2"
 #path: "ISIA-real_estate2"
-#---
-#name: "Pubs"
-#path: "Pubs"
+---
+name: "Pubs"
+path: "Pubs"
 #---
 #name: "Sakila"
 #path: "Sakila"
----
-name: "Test"
-path: "Test"
+#---
+#name: "Test"
+#path: "Test"
 #---
 #name: "Valentine-Magellan"
 #path: "Valentine-Magellan"

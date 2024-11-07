@@ -48,7 +48,7 @@ saveOutputTablePairGeneration: False
 evaluateTablePairGeneration: False
 # Step 2: run first line matchers (i.e., matchers that use table data to match)
 saveOutputFirstLineMatchers: True
-evaluateFirstLineMatchers: True
+evaluateFirstLineMatchers: False
 readCacheFirstLineMatchers: False
 writeCacheFirstLineMatchers: False
 # Step 3: run similarity matrix boosting on the output of first line matchers
@@ -58,9 +58,9 @@ evaluateSimMatrixBoostingOnFirstLineMatchers: True
 readCacheSimMatrixBoostingOnFirstLineMatchers: False
 writeCacheSimMatrixBoostingOnFirstLineMatchers: False
 # Step 4: run second line matchers (ensemble matchers and other matchers using output of first line matchers)
-runSecondLineMatchers: True
-saveOutputSecondLineMatchers: True
-evaluateSecondLineMatchers: True
+runSecondLineMatchers: False
+saveOutputSecondLineMatchers: False
+evaluateSecondLineMatchers: False
 readCacheSecondLineMatchers: False
 writeCacheSecondLineMatchers: False
 # Step 5: run similarity matrix boosting on the output of second line matchers

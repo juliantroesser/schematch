@@ -126,7 +126,13 @@ public enum FixpointFormula {
 
                 double neighborValue_0 = sigma_0.get(neighbor);
                 double neighborValue_i = sigma_i.get(neighbor);
-                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
+
+                double propagationCoefficient;
+                try {
+                    propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
+                } catch (Exception e) {
+                    propagationCoefficient = 0;
+                }
 
                 phi += (neighborValue_0 + neighborValue_i) * propagationCoefficient;
             }

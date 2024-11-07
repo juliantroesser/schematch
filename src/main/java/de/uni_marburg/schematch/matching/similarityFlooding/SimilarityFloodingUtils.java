@@ -2,8 +2,6 @@ package de.uni_marburg.schematch.matching.similarityFlooding;
 
 import de.uni_marburg.schematch.data.Column;
 import de.uni_marburg.schematch.data.Table;
-import de.uni_marburg.schematch.matchtask.MatchTask;
-
 import java.util.List;
 import java.util.Map;
 
@@ -28,37 +26,29 @@ public class SimilarityFloodingUtils {
         return calcResidualVector(sigma_i, sigma_i_plus_1) < epsilon;
     }
 
-    public static float[][] convertSimilarityMapToMatrix(Map<NodePair, Double> mapping, MatchTask matchTask) {
 
-        float[][] simMatrix = matchTask.getEmptySimMatrix();
+    public static void populateSimMatrix(float[][] simMatrix, Map<NodePair, Double> mapping, Table sourceTable, Table targetTable) {
 
-        for (Table sourceTable : matchTask.getScenario().getSourceDatabase().getTables()) {
-            for (Table targetTable : matchTask.getScenario().getTargetDatabase().getTables()) {
+        List<Column> sourceColumns = sourceTable.getColumns();
+        List<Column> targetColumns = targetTable.getColumns();
 
-                List<Column> sourceColumns = sourceTable.getColumns();
-                List<Column> targetColumns = targetTable.getColumns();
+        for (int i = 0; i < sourceColumns.size(); i++) {
 
-                for (int i = 0; i < sourceColumns.size(); i++) {
+            String sourceLabel = sourceColumns.get(i).getLabel();
+            Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, null, sourceTable);
 
-                    String sourceLabel = sourceColumns.get(i).getLabel();
-                    Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, null, sourceTable);
+            for (int j = 0; j < targetColumns.size(); j++) {
 
-                    for (int j = 0; j < targetColumns.size(); j++) {
+                String targetLabel = targetColumns.get(j).getLabel();
+                Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable);
 
-                        String targetLabel = targetColumns.get(j).getLabel();
-                        Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable);
+                //TODO: Problem falls zwei verschiedene Tabellen beide Source sind und Attribut mit gleichem Namen haben -> Node langen Namen geben
 
-                        //TODO: Problem falls zwei verschiedene Tabellen beide Source sind und Attribut mit gleichem Namen haben -> Node langen Namen geben
+                float similarity = mapping.getOrDefault(new NodePair(sourceNode, targetNode), 0.0).floatValue();
 
-                        float similarity = mapping.getOrDefault(new NodePair(sourceNode, targetNode), 0.0).floatValue();
-
-                        simMatrix[sourceTable.getOffset() + i][targetTable.getOffset() + j] = similarity;
-                    }
-                }
+                simMatrix[sourceTable.getOffset() + i][targetTable.getOffset() + j] = similarity;
             }
         }
-
-        return simMatrix;
     }
 
 }

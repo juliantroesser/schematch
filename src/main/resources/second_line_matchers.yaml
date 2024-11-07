@@ -1,5 +1,0 @@
----
-name: "RandomEnsembleMatcher"
-packageName: "ensemble"
-params:
-  seed: [23, 69]

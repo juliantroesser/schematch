@@ -29,7 +29,7 @@ class GraphTransformationTest {
         Database sourceDb = scenario.getSourceDatabase();
         Table sourceTable = sourceDb.getTables().get(0);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, false, false, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, false, false);
 
         //All Type Nodes
         Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
@@ -148,7 +148,7 @@ class GraphTransformationTest {
 
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, true, false, false, false, false, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, true, false, false, false, false, false);
 
         //All Type Nodes
         Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
@@ -271,7 +271,7 @@ class GraphTransformationTest {
 
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, true, false, false, false, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, true, false, false, false, false);
 
         //All Type Nodes
         Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
@@ -404,7 +404,7 @@ class GraphTransformationTest {
 
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, true, false, false, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, true, false, false, false);
 
         //All Type Nodes
         Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
@@ -539,7 +539,7 @@ class GraphTransformationTest {
 
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, true, false, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, true, false, false);
 
         //All Type Nodes
         Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
@@ -679,7 +679,7 @@ class GraphTransformationTest {
         metadata.setInds(List.of(inclusionDependency));
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, false, true, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, true, false);
 
         //All Type Nodes
         Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
@@ -801,7 +801,7 @@ class GraphTransformationTest {
         metadata.setInds(List.of(inclusionDependency));
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentation(sourceDb, false, false, false, false, false, true);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, false, true);
 
         //All Type Nodes
         Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
