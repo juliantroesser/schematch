@@ -26,14 +26,18 @@ public class InclusionDependency implements Dependency{
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
         for (Column column : dependant) {
+            sb.append(column.getTable().getName());
+            sb.append(".");
             sb.append(column.getLabel());
             sb.append(", ");
         }
-        sb.delete(sb.length() - 2, sb.length());
+        sb.delete(sb.length() - 2, sb.length()); //delete trailing ", "
         sb.append("]");
         sb.append(" [= ");
         sb.append("[");
         for (Column column : referenced) {
+            sb.append(column.getTable().getName());
+            sb.append(".");
             sb.append(column.getLabel());
             sb.append(", ");
         }

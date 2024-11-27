@@ -3,14 +3,14 @@ name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
   useWholeSchema: ["false"]
-  propagationCoefficientPolicy: ["INVERSE_AVERAGE"]
-  fixpointFormula: ["FORMULA_C"]
-  epsilon: ["0.001"]
+  propagationCoefficientPolicy: ["INVERSE_PRODUCT"]
+  fixpointFormula: ["BASIC"]
+  epsilon: ["0.0001"]
   maxIterations: ["100"]
   FDV1: ["false"]
   FDV2: ["false"]
   UCCV1: ["false"]
-  UCCV2: ["true"]
+  UCCV2: ["false"]
   INDV1: ["false"]
   INDV2: ["false"]
 #---

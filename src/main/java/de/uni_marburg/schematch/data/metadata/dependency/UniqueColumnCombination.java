@@ -31,6 +31,8 @@ public class UniqueColumnCombination implements Dependency{
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
         for (Column column : columnCombination) {
+            sb.append(column.getTable().getName());
+            sb.append(".");
             sb.append(column.getLabel());
             sb.append(", ");
         }

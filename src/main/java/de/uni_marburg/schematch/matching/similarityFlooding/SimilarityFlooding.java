@@ -66,12 +66,18 @@ public class SimilarityFlooding extends Matcher {
             default -> throw new RuntimeException("No such fixpoint formula: " + fixpointFormula);
         };
 
+
+        boolean wholeSchema = Boolean.parseBoolean(useWholeSchema);
         boolean fdv1 = Boolean.parseBoolean(FDV1);
         boolean fdv2 = Boolean.parseBoolean(FDV2);
         boolean uccv1 = Boolean.parseBoolean(UCCV1);
         boolean uccv2 = Boolean.parseBoolean(UCCV2);
         boolean indv1 = Boolean.parseBoolean(INDV1);
         boolean indv2 = Boolean.parseBoolean(INDV2);
+
+//        if((indv1 && !wholeSchema) || (indv2 && !wholeSchema)) {
+//            throw new RuntimeException("Inclusion Dependencies can only be used when using the whole schema");
+//        }
 
         float[][] simMatrix = matchTask.getEmptySimMatrix();
 
@@ -86,7 +92,7 @@ public class SimilarityFlooding extends Matcher {
         Map<NodePair, Double> floodingResults;
         Map<NodePair, Double> filteredFloodingResults;
 
-        if (!Boolean.parseBoolean(useWholeSchema)) {
+        if (!wholeSchema) {
 
             for (TablePair tablePair : matchTask.getTablePairs()) {
 
@@ -139,7 +145,7 @@ public class SimilarityFlooding extends Matcher {
 
         Graph<Node, LabelEdge> graphRepresentation = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
-        Node databaseNode = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node databaseNode = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node tableNode = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnNode = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node columnTypeNode = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
@@ -468,7 +474,6 @@ public class SimilarityFlooding extends Matcher {
         if (fdv1) { //New Edges for fdv1
 
             Collection<FunctionalDependency> fdsOfTable = getAllFDsOfTable(db, table);
-
             for (FunctionalDependency functionalDependency : fdsOfTable) {
 
                 List<Node> determinantIdNodes = new ArrayList<>();
@@ -685,6 +690,16 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
+//        System.out.println("Vertices");
+//        for(NodePair node : connectivityGraph.vertexSet()) {
+//            System.out.println(node);
+//        }
+//
+//        System.out.println("Edges");
+//        for(LabelEdge edge : connectivityGraph.edgeSet()) {
+//            System.out.println("(" + connectivityGraph.getEdgeSource(edge) + ", " + edge.getLabel() + ", " + connectivityGraph.getEdgeTarget(edge) + ")");
+//        }
+
         return connectivityGraph;
     }
 
@@ -724,6 +739,12 @@ public class SimilarityFlooding extends Matcher {
                 propagationGraph.addEdge(sourceNodePair, targetNodePair, new CoefficientEdge(countOutLabelsTotal.get(edge.getLabel())));
             }
         }
+
+
+//        System.out.println("Edges:" );
+//        for(CoefficientEdge edge : propagationGraph.edgeSet()) {
+//            System.out.println("(" + propagationGraph.getEdgeSource(edge) + ", " + edge.getCoefficient() + ", " + propagationGraph.getEdgeTarget(edge) + ")");
+//        }
 
         return propagationGraph;
     }
@@ -808,6 +829,21 @@ public class SimilarityFlooding extends Matcher {
             initialMapping.put(mappingPair, similarity);
         }
 
+//        Map<NodePair, Double> sortedMap = initialMapping.entrySet()
+//                .stream()
+//                .sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue())) // Compare in descending order
+//                .collect(Collectors.toMap(
+//                        Map.Entry::getKey,
+//                        Map.Entry::getValue,
+//                        (e1, e2) -> e1, // In case of duplicate keys (not likely here), keep the first
+//                        LinkedHashMap::new // Maintain order of insertion
+//                ));
+
+        // Print the sorted entries
+//        sortedMap.forEach((key, value) ->
+//                System.out.println(key + " -> " + value)
+//        );
+
         return initialMapping;
     }
 
@@ -850,7 +886,7 @@ public class SimilarityFlooding extends Matcher {
             for (NodePair node : sigma_0.keySet()) {
 
                 //Alle Nachbarn bekommen
-                Set<CoefficientEdge> incomingEdges = propagationGraph.incomingEdgesOf(node); //TODO: Prüfen ob tatsächlich nur Knoten aus eingehenden Kanten als Nachbarn zählen
+                Set<CoefficientEdge> incomingEdges = propagationGraph.incomingEdgesOf(node); //Only neighbors from incoming edges
                 Set<NodePair> neighborNodes = incomingEdges.stream().map(propagationGraph::getEdgeSource).collect(Collectors.toSet());
 
                 //Neuen Wert für Node auf Basis der Nachbarn berechnen
