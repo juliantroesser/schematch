@@ -1,16 +1,8 @@
-#---
-#name: "NonBinaryPrecisionAtGroundTruth"
-#---
-#name: "NonBinaryPrecisionAtNumGroundTruth"
-#---
-#name: "AUCPR"
-#---
-#name: "AUROC"
-#---
-#name: "Recall"
-#---
-#name: "Precision"
-#---
-#name: "F1Score"
+---
+name: "Recall"
+---
+name: "Precision"
+---
+name: "F1Score"
 ---
 name: "Overall"

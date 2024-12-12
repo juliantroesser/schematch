@@ -75,10 +75,6 @@ public class SimilarityFlooding extends Matcher {
         boolean indv1 = Boolean.parseBoolean(INDV1);
         boolean indv2 = Boolean.parseBoolean(INDV2);
 
-//        if((indv1 && !wholeSchema) || (indv2 && !wholeSchema)) {
-//            throw new RuntimeException("Inclusion Dependencies can only be used when using the whole schema");
-//        }
-
         float[][] simMatrix = matchTask.getEmptySimMatrix();
 
         Database sourceDb = matchTask.getScenario().getSourceDatabase();
@@ -145,12 +141,12 @@ public class SimilarityFlooding extends Matcher {
 
         Graph<Node, LabelEdge> graphRepresentation = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
-        Node databaseNode = new Node("Schema", NodeType.DATABASE, null, false, null, null);
+        Node schemaNode = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node tableNode = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnNode = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node columnTypeNode = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
 
-        graphRepresentation.addVertex(databaseNode);
+        graphRepresentation.addVertex(schemaNode);
         graphRepresentation.addVertex(tableNode);
         graphRepresentation.addVertex(columnNode);
         graphRepresentation.addVertex(columnTypeNode);
@@ -163,7 +159,7 @@ public class SimilarityFlooding extends Matcher {
         Node currentDatabaseNode = new Node("NodeID" + uniqueID++, NodeType.DATABASE, null, true, databaseName, null);
         graphRepresentation.addVertex(currentDatabaseNode);
 
-        graphRepresentation.addEdge(currentDatabaseNode, databaseNode, new LabelEdge("type"));
+        graphRepresentation.addEdge(currentDatabaseNode, schemaNode, new LabelEdge("type"));
         graphRepresentation.addEdge(currentDatabaseNode, databaseName, new LabelEdge("name"));
 
         for (Table table : db.getTables()) {
@@ -218,7 +214,7 @@ public class SimilarityFlooding extends Matcher {
         //Add Constraint Node only when introducing additional Nodes for dependency
 
         Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
-        if (fdv2 || uccv1 || uccv2 || indv2) {
+        if (fdv2 || uccv2 || indv2) {
             graphRepresentation.addVertex(constraintNode);
         }
 
@@ -272,10 +268,10 @@ public class SimilarityFlooding extends Matcher {
                 Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
 
                 for (Node determinantIDNode : determinantIdNodes) {
-                    graphRepresentation.addEdge(determinantIDNode, fdNode, new LabelEdge("determinant"));
+                    graphRepresentation.addEdge(fdNode, determinantIDNode, new LabelEdge("determinant"));
                 }
 
-                graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("determines"));
+                graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("dependant"));
             }
         }
 
@@ -290,7 +286,6 @@ public class SimilarityFlooding extends Matcher {
 
                 if (!graphRepresentation.containsVertex(uccSizeNode)) {
                     graphRepresentation.addVertex(uccSizeNode);
-                    graphRepresentation.addEdge(uccSizeNode, constraintNode, new LabelEdge("type"));
                 }
 
                 List<Node> nodesPartOfUcc = new ArrayList<>();
@@ -316,13 +311,13 @@ public class SimilarityFlooding extends Matcher {
 
                 Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, false, null, null);
                 graphRepresentation.addVertex(uccNode);
+                graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type"));
 
                 int uccSize = ucc.getColumnCombination().size();
                 Node uccSizeNode = new Node("UCC#" + uccSize, NodeType.CONSTRAINT, null, false, null, null);
 
                 if (!graphRepresentation.containsVertex(uccSizeNode)) {
                     graphRepresentation.addVertex(uccSizeNode);
-                    graphRepresentation.addEdge(uccSizeNode, constraintNode, new LabelEdge("type"));
                 }
 
                 graphRepresentation.addEdge(uccNode, uccSizeNode, new LabelEdge("size"));
@@ -397,7 +392,7 @@ public class SimilarityFlooding extends Matcher {
                 graphRepresentation.addEdge(indNode, constraintNode, new LabelEdge("type"));
 
                 for (Node referencedIDNode : referencedIdNodes) {
-                    graphRepresentation.addEdge(referencedIDNode, indNode, new LabelEdge("referenced"));
+                    graphRepresentation.addEdge(indNode, referencedIDNode, new LabelEdge("referenced"));
                 }
 
                 for (Node dependantIDNode : dependantIdNodes) {
@@ -467,7 +462,7 @@ public class SimilarityFlooding extends Matcher {
         }
 
         Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
-        if (fdv2 || uccv1 || uccv2 || indv2) {
+        if (fdv2 || uccv2 || indv2) {
             graphRepresentation.addVertex(constraintNode);
         }
 
@@ -519,11 +514,11 @@ public class SimilarityFlooding extends Matcher {
                 LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable())).stream().findFirst().get();
                 Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
 
-                for (Node determinantIDNode : determinantIdNodes) {
-                    graphRepresentation.addEdge(determinantIDNode, fdNode, new LabelEdge("determinant"));
+                for (Node determinantIDNode : determinantIdNodes) { //Changed order
+                    graphRepresentation.addEdge(fdNode, determinantIDNode, new LabelEdge("determinant"));
                 }
 
-                graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("determines"));
+                graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("dependant"));
             }
         }
 
@@ -538,7 +533,6 @@ public class SimilarityFlooding extends Matcher {
 
                 if (!graphRepresentation.containsVertex(uccSizeNode)) {
                     graphRepresentation.addVertex(uccSizeNode);
-                    graphRepresentation.addEdge(uccSizeNode, constraintNode, new LabelEdge("type"));
                 }
 
                 List<Node> nodesPartOfUcc = new ArrayList<>();
@@ -564,13 +558,13 @@ public class SimilarityFlooding extends Matcher {
 
                 Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, false, null, null);
                 graphRepresentation.addVertex(uccNode);
+                graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type"));
 
                 int uccSize = ucc.getColumnCombination().size();
                 Node uccSizeNode = new Node("UCC#" + uccSize, NodeType.CONSTRAINT, null, false, null, null);
 
                 if (!graphRepresentation.containsVertex(uccSizeNode)) {
                     graphRepresentation.addVertex(uccSizeNode);
-                    graphRepresentation.addEdge(uccSizeNode, constraintNode, new LabelEdge("type"));
                 }
 
                 graphRepresentation.addEdge(uccNode, uccSizeNode, new LabelEdge("size"));
@@ -645,7 +639,7 @@ public class SimilarityFlooding extends Matcher {
                 graphRepresentation.addEdge(indNode, constraintNode, new LabelEdge("type"));
 
                 for (Node referencedIDNode : referencedIdNodes) {
-                    graphRepresentation.addEdge(referencedIDNode, indNode, new LabelEdge("referenced"));
+                    graphRepresentation.addEdge(indNode, referencedIDNode, new LabelEdge("referenced"));
                 }
 
                 for (Node dependantIDNode : dependantIdNodes) {
@@ -699,6 +693,9 @@ public class SimilarityFlooding extends Matcher {
 //        for(LabelEdge edge : connectivityGraph.edgeSet()) {
 //            System.out.println("(" + connectivityGraph.getEdgeSource(edge) + ", " + edge.getLabel() + ", " + connectivityGraph.getEdgeTarget(edge) + ")");
 //        }
+
+//        System.out.println("PCG has: " + connectivityGraph.vertexSet().size() + " vertices");
+//        System.out.println("PCG has: " + connectivityGraph.edgeSet().size() + " edges");
 
         return connectivityGraph;
     }
@@ -808,20 +805,20 @@ public class SimilarityFlooding extends Matcher {
 
             if (node1.isIDNode() || node2.isIDNode()) { //Mapping with artifical Nodes
                 similarity = 0.0; //Bei 0 lassen beste Ergebnisse //Bei negativen Werten keine Konvergenz //>0 monoton fallender Score
-            } else if (node1.getNodeType().equals(NodeType.CONSTRAINT) && node2.getNodeType().equals(NodeType.CONSTRAINT)) { //Mapping
-                if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) { //TODO: Beachten wenn Column mit FD beginnt.
-                    similarity = 0.0; //TODO: 0 oder 1 besser?
-                } else if (node1.getValue().startsWith("UCC#") && node2.getValue().startsWith("UCC#")) {
-                    int uccSize1 = Integer.parseInt(node1.getValue().replaceAll("\\D", ""));
-                    int uccSize2 = Integer.parseInt(node2.getValue().replaceAll("\\D", ""));
-                    similarity = 1.0 / (1.0 + Math.abs(uccSize1 - uccSize2));
-                } else if (node1.getValue().startsWith("UCC") && node2.getValue().startsWith("UCC")) {
-                    similarity = 1.0; //TODO: 0 oder 1 besser?
-                } else if (node1.getValue().startsWith("IND") && node2.getValue().startsWith("IND")) {
-                    similarity = 1.0; //TODO: 0 oder 1 besser?
-                } else {
-                    similarity = -1.0;
-                }
+//            } else if (node1.getNodeType().equals(NodeType.CONSTRAINT) && node2.getNodeType().equals(NodeType.CONSTRAINT)) { //Mapping
+//                if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) { //TODO: Beachten wenn Column mit FD beginnt.
+//                    similarity = 0.0; //TODO: 0 oder 1 besser?
+//                } else if (node1.getValue().startsWith("UCC#") && node2.getValue().startsWith("UCC#")) {
+//                    int uccSize1 = Integer.parseInt(node1.getValue().replaceAll("\\D", ""));
+//                    int uccSize2 = Integer.parseInt(node2.getValue().replaceAll("\\D", ""));
+//                    similarity = 1.0 / (1.0 + Math.abs(uccSize1 - uccSize2));
+//                } else if (node1.getValue().startsWith("UCC") && node2.getValue().startsWith("UCC")) {
+//                    similarity = 1.0; //TODO: 0 oder 1 besser?
+//                } else if (node1.getValue().startsWith("IND") && node2.getValue().startsWith("IND")) {
+//                    similarity = 1.0; //TODO: 0 oder 1 besser?
+//                } else {
+//                    similarity = -1.0;
+//                }
             } else {
                 similarity = l.compare(node1.getValue(), node2.getValue());
             }
@@ -845,27 +842,6 @@ public class SimilarityFlooding extends Matcher {
 //        );
 
         return initialMapping;
-    }
-
-    public double getDatatypeSimilarity(Datatype datatype1, Datatype datatype2) {
-
-        double[][] similarityMatrix = {
-                // STRING, INTEGER, BOOLEAN, FLOAT, DATE, TEXT, GEO_LOCATION
-                {1.00, 0.00, 0.50, 0.25, 0.50, 0.75, 0.25}, // STRING
-                {0.00, 1.00, 0.50, 0.75, 0.25, 0.00, 0.50}, // INTEGER
-                {0.50, 0.50, 1.00, 0.50, 0.00, 0.25, 0.00}, // BOOLEAN
-                {0.25, 0.75, 0.50, 1.00, 0.25, 0.00, 0.75}, // FLOAT
-                {0.50, 0.25, 0.00, 0.25, 1.00, 0.25, 0.00}, // DATE
-                {0.75, 0.00, 0.25, 0.00, 0.25, 1.00, 0.00}, // TEXT
-                {0.25, 0.50, 0.00, 0.75, 0.00, 0.00, 1.00}  // GEO_LOCATION
-        };
-
-        // Get the ordinal values of the datatypes (row and column indices)
-        int index1 = datatype1.ordinal();
-        int index2 = datatype2.ordinal();
-
-        // Return the similarity value from the matrix
-        return similarityMatrix[index1][index2];
     }
 
     public Map<NodePair, Double> similarityFlooding(Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
@@ -937,8 +913,11 @@ public class SimilarityFlooding extends Matcher {
 
                 //Only keep Matchings between Databases/Schemas, Tables and Columns (For our case, only columns are relevant)
                 if (node1.getNodeType().equals(node2.getNodeType())) {
-                    if (node1.getNodeType().equals(NodeType.DATABASE) || node1.getNodeType().equals(NodeType.TABLE) || node1.getNodeType().equals(NodeType.COLUMN)) {
-                        //TODO: Try typing constraints on columns, i.e only keep matches between columns of the same type
+//                    if (node1.getNodeType().equals(NodeType.DATABASE) || node1.getNodeType().equals(NodeType.TABLE) || node1.getNodeType().equals(NodeType.COLUMN)) {
+//                        //TODO: Try typing constraints on columns, i.e only keep matches between columns of the same type
+//                        filteredMapping.put(pair, simValue);
+//                    }
+                    if (node1.getNodeType().equals(NodeType.COLUMN)) {
                         filteredMapping.put(pair, simValue);
                     }
                 }
@@ -970,112 +949,6 @@ public class SimilarityFlooding extends Matcher {
             res = res.substring(0, res.length() - 4);
         }
         return res + ")";
-    }
-
-    //---------------------------------------- Not relevant ------------------------------------------
-
-    public Graph<Node, LabelEdge> transformIntoValentineGraphRepresentation(Database db) {
-
-        Graph<Node, LabelEdge> graphRepresentation = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
-
-        //Valentine:
-        //table_node = Node(TABLE, schema.name)
-        //column_node = Node(COLUMN, schema.name)
-        //col_type_node = Node(COLUMN_TYPE, schema.name)
-
-        //Valentine: Ab hier __init__ (Klasse Graph)
-
-        Node tableNode = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnNode = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node columnTypeNode = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
-
-        graphRepresentation.addVertex(tableNode);
-        graphRepresentation.addVertex(columnNode);
-        graphRepresentation.addVertex(columnTypeNode);
-
-        //Valentine: Unique_id = 1 //Nur eine ID für alle Knoten benutzt
-
-        int uniqueId = 1;
-
-        //TODO: Valentine benutzt Keinen Extra Schema/Database Typ Knoten, sondern fängt direkt mit der Table als Root an
-
-        //Valentine: Ab hier create_graph()
-
-        if (db.getTables().size() > 1) {
-            throw new RuntimeException("Valentine Graph Representation only supports datasets with one table");
-        }
-
-        Table table = db.getTables().get(0); //Valentine unterstützt nur das Matchen von einer Tabelle zu genau einer anderen Tabelle
-
-        Node tableName = new Node(table.getName(), NodeType.TABLE, null, false, null, null);
-        graphRepresentation.addVertex(tableName);
-
-        Node currentTableNode = new Node("NodeID" + uniqueId++, NodeType.TABLE, null, true, tableName, null);
-        graphRepresentation.addVertex(currentTableNode);
-
-        graphRepresentation.addEdge(currentTableNode, tableNode, new LabelEdge("type"));
-        graphRepresentation.addEdge(currentTableNode, tableName, new LabelEdge("name"));
-
-        for (Column column : table.getColumns()) {
-
-            Node columnName = new Node(column.getLabel(), NodeType.COLUMN, column.getDatatype(), false, null, table);
-            graphRepresentation.addVertex(columnName);
-
-            //Valentine: IDNode = Node(NodeID#, schema.name)
-            Node currentColumnNode = new Node("NodeID" + uniqueId++, NodeType.COLUMN, column.getDatatype(), true, columnName, table);
-            graphRepresentation.addVertex(currentColumnNode);
-
-            //Valentine: AttributeNode: Node(column.name, schema.name)
-
-            graphRepresentation.addEdge(currentTableNode, currentColumnNode, new LabelEdge("column"));
-            graphRepresentation.addEdge(currentColumnNode, columnNode, new LabelEdge("type"));
-            graphRepresentation.addEdge(currentColumnNode, columnName, new LabelEdge("name"));
-
-            //Mit ColumnTypeNode verbinden
-            //Valentine: DataTypeNode: Node(column.DataType, schema.Name)
-
-            String valentineDataType = translateIntoValentineDataType(column.getDatatype());
-
-            Node columnDataType = new Node(valentineDataType, NodeType.COLUMN_TYPE, null, false, null, null);
-            boolean dataTypeNodeExistsInGraph = graphRepresentation.containsVertex(columnDataType);
-
-            if (dataTypeNodeExistsInGraph) { //Dann Kante zu
-
-                Set<LabelEdge> edgesOfIdToColumnType = graphRepresentation.incomingEdgesOf(columnDataType);
-                LabelEdge edgeOfIdToColumnType = edgesOfIdToColumnType.stream().findFirst().orElseThrow(() -> new NoSuchElementException("No such data Type edge present in the graph"));
-                Node columnTypeIdentifier = graphRepresentation.getEdgeSource(edgeOfIdToColumnType);
-
-                //TODO: SQL_Type -> DATA_TYPE ändern
-                graphRepresentation.addEdge(currentColumnNode, columnTypeIdentifier, new LabelEdge("SQLtype"));
-
-
-            } else { //Neuen Knoten anlegen
-
-                Node columnTypeIdentifier = new Node("NodeID" + uniqueId++, NodeType.COLUMN_TYPE, null, true, columnDataType, null);
-
-                graphRepresentation.addVertex(columnDataType);
-                graphRepresentation.addVertex(columnTypeIdentifier);
-                graphRepresentation.addEdge(columnTypeIdentifier, columnDataType, new LabelEdge("name"));
-                graphRepresentation.addEdge(columnTypeIdentifier, columnTypeNode, new LabelEdge("type"));
-                graphRepresentation.addEdge(currentColumnNode, columnTypeIdentifier, new LabelEdge("SQLtype"));
-            }
-        }
-
-        return graphRepresentation;
-    }
-
-    private String translateIntoValentineDataType(Datatype datatype) {
-
-        return switch (datatype) {
-            case STRING -> "varchar";
-            case INTEGER -> "int";
-            case BOOLEAN -> "boolean";
-            case FLOAT -> "float";
-            case DATE -> "date";
-            case TEXT -> "varchar";// long string (e.g., comments or descriptions) not implemented yet
-            case GEO_LOCATION -> "location";
-        };
-
     }
 
     private Collection<FunctionalDependency> getAllFDsOfTable(Database db, Table table) {
@@ -1118,6 +991,7 @@ public class SimilarityFlooding extends Matcher {
                 INDs.addAll(INDsOfColumn);
             }
         }
+        //TODO: Check all INDs in same table
         return INDs;
     }
 }

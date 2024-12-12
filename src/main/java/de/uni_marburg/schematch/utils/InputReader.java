@@ -180,13 +180,18 @@ public class InputReader {
             String inputPath = database.getPath();
             String folderName = StringUtils.getFolderName(inputPath);
             Path metadataFolderPath = Paths.get(new File(inputPath).getParent(), "metadata", folderName);
-            Path indFilePath = metadataFolderPath.resolve("inds.txt");
+            Path indFilePath = metadataFolderPath.resolve("inds.txt"); //getIndFilePath
 
             Map<Column, Collection<InclusionDependency>> indMap = new HashMap<>();
             Map<Column, Collection<FunctionalDependency>> fdMap = new HashMap<>();
             Map<Column, Collection<UniqueColumnCombination>> uccMap = new HashMap<>();
 
             Collection<InclusionDependency> inds = readINDFile(indFilePath, database, database, indMap);
+            //Added that INDs are calculated
+            if(inds.isEmpty()) {
+                inds = Metanome.executeIND(database.getTables()); //Find INDs
+            }
+
             Collection<FunctionalDependency> fds = new ArrayList<>();
             Collection<UniqueColumnCombination> uccs = new ArrayList<>();
 

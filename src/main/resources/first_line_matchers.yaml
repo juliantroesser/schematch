@@ -2,50 +2,17 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  useWholeSchema: ["false"]
-  propagationCoefficientPolicy: ["INVERSE_PRODUCT"]
-  fixpointFormula: ["BASIC"]
+  useWholeSchema: ["true"]
+  propagationCoefficientPolicy: ["INVERSE_AVERAGE"]
+  fixpointFormula: ["FORMULA_C"]
   epsilon: ["0.0001"]
   maxIterations: ["100"]
-  FDV1: ["false"]
+  FDV1: ["true"]
   FDV2: ["false"]
   UCCV1: ["false"]
   UCCV2: ["false"]
   INDV1: ["false"]
   INDV2: ["false"]
-#---
-#name: "DatatypeMatcher"
-#packageName: "metadata"
-#---
-#name: "DistinctCountMatcher"
-#packageName: "metadata"
-#---
-#name: "ExtremaMatcher"
-#packageName: "metadata"
-#---
-#name: "NullPercentageMatcher"
-#packageName: "metadata"
-#---
-#name: "NumberOfRowsMatcher"
-#packageName: "metadata"
-#---
-#name: "UniquenessMatcher"
-#packageName: "metadata"
-#---
-#name: "CosineMatcher"
-#packageName: "similarity.label"
-#---
-#name: "HammingMatcher"
-#packageName: "similarity.label"
-#---
-#name: "JaroWinklerMatcher"
-#packageName: "similarity.label"
-#---
-#name: "LevenshteinMatcher"
-#packageName: "similarity.label"
-#---
-#name: "LongestCommonSubsequenceMatcher"
-#packageName: "similarity.label"
 #---
 #name: "SimilarityFlooding"
 #packageName: "matrix_boosting.similarity_flooding"

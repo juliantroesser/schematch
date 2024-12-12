@@ -23,7 +23,7 @@ class GraphTransformationTest {
     //Basisfall: 16 Knoten, 17 Kanten
 
     @Test
-    public void transformIntoGraphRepresentation() {
+    public void transformIntoGraphRepresentationSchema() {
         TestUtils.TestData testData = TestUtils.getTestData();
         Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
         Database sourceDb = scenario.getSourceDatabase();
@@ -32,7 +32,7 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, false, false);
 
         //All Type Nodes
-        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
@@ -62,7 +62,7 @@ class GraphTransformationTest {
         //Check vertices
         Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
 
-        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(schema));
         Assertions.assertTrue(graphRepresentation.containsVertex(column));
         Assertions.assertTrue(graphRepresentation.containsVertex(table));
         Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
@@ -85,8 +85,8 @@ class GraphTransformationTest {
         //All Edges from the Database Node / root-Node
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
         Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, schema));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, schema));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
         Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
 
@@ -130,6 +130,98 @@ class GraphTransformationTest {
     }
 
     @Test
+    public void transformIntoGraphRepresentationTable() {
+        TestUtils.TestData testData = TestUtils.getTestData();
+        Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
+        Database sourceDb = scenario.getSourceDatabase();
+        Table sourceTable = sourceDb.getTables().get(0);
+
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationTable(sourceDb, sourceTable, false, false, false, false, false, false);
+
+        //All Type Nodes
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+
+        //All Name Nodes
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+
+        //All Table Nodes
+        Node NodeID1 = new Node("NodeID1", NodeType.TABLE, null, true, authors, null);
+
+        //All Column Nodes
+        Node NodeID2 = new Node("NodeID2", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+
+        //All ColumnType Nodes
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+
+        //Check vertices
+        Assertions.assertEquals(13, graphRepresentation.vertexSet().size());
+
+        Assertions.assertTrue(graphRepresentation.containsVertex(column));
+        Assertions.assertTrue(graphRepresentation.containsVertex(table));
+        Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
+        Assertions.assertTrue(graphRepresentation.containsVertex(authors));
+        Assertions.assertTrue(graphRepresentation.containsVertex(aid));
+        Assertions.assertTrue(graphRepresentation.containsVertex(name));
+        Assertions.assertTrue(graphRepresentation.containsVertex(integer));
+        Assertions.assertTrue(graphRepresentation.containsVertex(string));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID3));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID4));
+        Assertions.assertTrue(graphRepresentation.containsVertex(NodeID5));
+
+        //Check Edges
+        Assertions.assertEquals(14, graphRepresentation.edgeSet().size());
+
+        //All Edges from the Database Node / root-Node
+
+        //All Edges from the Table Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, authors));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, authors));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, table));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, table));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID1, NodeID2));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID4));
+        Assertions.assertEquals(new LabelEdge("column"), graphRepresentation.getEdge(NodeID1, NodeID4));
+
+        //All Edges from the first column (aid) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, aid));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID2, aid));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID2, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID2, NodeID3));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID2, NodeID3));
+
+        //All Edges from the second column (name) Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, name));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID4, name));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, column));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID4, column));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID4, NodeID5));
+        Assertions.assertEquals(new LabelEdge("datatype"), graphRepresentation.getEdge(NodeID4, NodeID5));
+
+        //All Edges from the Integer Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, integer));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID3, integer));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID3, columnType));
+
+        //All Edges from the String Node
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, string));
+        Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID5, string));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, columnType));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID5, columnType));
+    }
+
+    @Test
     public void transformIntoGraphRepresentationWithFDV1() {
         TestUtils.TestData testData = TestUtils.getTestData();
         Scenario scenario = new Scenario(testData.getScenarios().get("test1").getPath());
@@ -151,7 +243,7 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, true, false, false, false, false, false);
 
         //All Type Nodes
-        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
@@ -181,7 +273,7 @@ class GraphTransformationTest {
         //Check vertices
         Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
 
-        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(schema));
         Assertions.assertTrue(graphRepresentation.containsVertex(column));
         Assertions.assertTrue(graphRepresentation.containsVertex(table));
         Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
@@ -204,8 +296,8 @@ class GraphTransformationTest {
         //All Edges from the Database Node / root-Node
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
         Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, schema));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, schema));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
         Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
 
@@ -274,7 +366,7 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, true, false, false, false, false);
 
         //All Type Nodes
-        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
@@ -308,7 +400,7 @@ class GraphTransformationTest {
         //Check vertices
         Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
 
-        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(schema));
         Assertions.assertTrue(graphRepresentation.containsVertex(column));
         Assertions.assertTrue(graphRepresentation.containsVertex(table));
         Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
@@ -333,8 +425,8 @@ class GraphTransformationTest {
         //All Edges from the Database Node / root-Node
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
         Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, schema));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, schema));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
         Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
 
@@ -377,10 +469,10 @@ class GraphTransformationTest {
         Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
 
         //All Test for Extra Dependency Edges
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, fd1));
-        Assertions.assertEquals(new LabelEdge("determinant"), graphRepresentation.getEdge(NodeID3, fd1));
+        Assertions.assertTrue(graphRepresentation.containsEdge(fd1, NodeID3));
+        Assertions.assertEquals(new LabelEdge("determinant"), graphRepresentation.getEdge(fd1, NodeID3));
         Assertions.assertTrue(graphRepresentation.containsEdge(fd1, NodeID5));
-        Assertions.assertEquals(new LabelEdge("determines"), graphRepresentation.getEdge(fd1, NodeID5));
+        Assertions.assertEquals(new LabelEdge("dependant"), graphRepresentation.getEdge(fd1, NodeID5));
         Assertions.assertTrue(graphRepresentation.containsEdge(fd1, constraint));
         Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(fd1, constraint));
     }
@@ -407,11 +499,10 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, true, false, false, false);
 
         //All Type Nodes
-        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
-        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
 
         //All Name Nodes
         Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
@@ -439,13 +530,12 @@ class GraphTransformationTest {
         Node ucc = new Node("UCC#2", NodeType.CONSTRAINT, null, false, null, null);
 
         //Check vertices
-        Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
+        Assertions.assertEquals(17, graphRepresentation.vertexSet().size());
 
-        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(schema));
         Assertions.assertTrue(graphRepresentation.containsVertex(column));
         Assertions.assertTrue(graphRepresentation.containsVertex(table));
         Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
-        Assertions.assertTrue(graphRepresentation.containsVertex(constraint));
         Assertions.assertTrue(graphRepresentation.containsVertex(source));
         Assertions.assertTrue(graphRepresentation.containsVertex(authors));
         Assertions.assertTrue(graphRepresentation.containsVertex(aid));
@@ -461,13 +551,13 @@ class GraphTransformationTest {
         Assertions.assertTrue(graphRepresentation.containsVertex(ucc));
 
         //Check Edges
-        Assertions.assertEquals(20, graphRepresentation.edgeSet().size());
+        Assertions.assertEquals(19, graphRepresentation.edgeSet().size());
 
         //All Edges from the Database Node / root-Node
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
         Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, schema));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, schema));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
         Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
 
@@ -514,8 +604,6 @@ class GraphTransformationTest {
         Assertions.assertEquals(new LabelEdge("ucc"), graphRepresentation.getEdge(NodeID3, ucc));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID5, ucc));
         Assertions.assertEquals(new LabelEdge("ucc"), graphRepresentation.getEdge(NodeID5, ucc));
-        Assertions.assertTrue(graphRepresentation.containsEdge(ucc, constraint));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(ucc, constraint));
     }
 
     @Test
@@ -542,7 +630,7 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, true, false, false);
 
         //All Type Nodes
-        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
@@ -578,7 +666,7 @@ class GraphTransformationTest {
         //Check vertices
         Assertions.assertEquals(20, graphRepresentation.vertexSet().size());
 
-        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(schema));
         Assertions.assertTrue(graphRepresentation.containsVertex(column));
         Assertions.assertTrue(graphRepresentation.containsVertex(table));
         Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
@@ -600,13 +688,13 @@ class GraphTransformationTest {
         Assertions.assertTrue(graphRepresentation.containsVertex(ucc_size_1));
 
         //Check Edges
-        Assertions.assertEquals(22, graphRepresentation.edgeSet().size());
+        Assertions.assertEquals(23, graphRepresentation.edgeSet().size());
 
         //All Edges from the Database Node / root-Node
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
         Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, schema));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, schema));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
         Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
 
@@ -657,8 +745,10 @@ class GraphTransformationTest {
         Assertions.assertEquals(new LabelEdge("ucc"), graphRepresentation.getEdge(NodeID5, ucc2));
         Assertions.assertTrue(graphRepresentation.containsEdge(ucc2, ucc_size_1));
         Assertions.assertEquals(new LabelEdge("size"), graphRepresentation.getEdge(ucc2, ucc_size_1));
-        Assertions.assertTrue(graphRepresentation.containsEdge(ucc_size_1, constraint));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(ucc_size_1, constraint));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ucc1, constraint));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(ucc1, constraint));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ucc2, constraint));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(ucc2, constraint));
     }
 
     @Test
@@ -682,7 +772,7 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, true, false);
 
         //All Type Nodes
-        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
@@ -712,7 +802,7 @@ class GraphTransformationTest {
         //Check vertices
         Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
 
-        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(schema));
         Assertions.assertTrue(graphRepresentation.containsVertex(column));
         Assertions.assertTrue(graphRepresentation.containsVertex(table));
         Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
@@ -735,8 +825,8 @@ class GraphTransformationTest {
         //All Edges from the Database Node / root-Node
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
         Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, schema));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, schema));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
         Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
 
@@ -804,7 +894,7 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, false, true);
 
         //All Type Nodes
-        Node database = new Node("Database", NodeType.DATABASE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
         Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
         Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
         Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
@@ -838,7 +928,7 @@ class GraphTransformationTest {
         //Check vertices
         Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
 
-        Assertions.assertTrue(graphRepresentation.containsVertex(database));
+        Assertions.assertTrue(graphRepresentation.containsVertex(schema));
         Assertions.assertTrue(graphRepresentation.containsVertex(column));
         Assertions.assertTrue(graphRepresentation.containsVertex(table));
         Assertions.assertTrue(graphRepresentation.containsVertex(columnType));
@@ -863,8 +953,8 @@ class GraphTransformationTest {
         //All Edges from the Database Node / root-Node
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, source));
         Assertions.assertEquals(new LabelEdge("name"), graphRepresentation.getEdge(NodeID1, source));
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, database));
-        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, database));
+        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, schema));
+        Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID1, schema));
         Assertions.assertTrue(graphRepresentation.containsEdge(NodeID1, NodeID2));
         Assertions.assertEquals(new LabelEdge("table"), graphRepresentation.getEdge(NodeID1, NodeID2));
 
@@ -907,8 +997,8 @@ class GraphTransformationTest {
         Assertions.assertEquals(new LabelEdge("type"), graphRepresentation.getEdge(NodeID6, columnType));
 
         //All Test for Extra Dependency Edges
-        Assertions.assertTrue(graphRepresentation.containsEdge(NodeID3, ind1));
-        Assertions.assertEquals(new LabelEdge("referenced"), graphRepresentation.getEdge(NodeID3, ind1));
+        Assertions.assertTrue(graphRepresentation.containsEdge(ind1, NodeID3));
+        Assertions.assertEquals(new LabelEdge("referenced"), graphRepresentation.getEdge(ind1, NodeID3));
         Assertions.assertTrue(graphRepresentation.containsEdge(ind1, NodeID5));
         Assertions.assertEquals(new LabelEdge("dependant"), graphRepresentation.getEdge(ind1, NodeID5));
         Assertions.assertTrue(graphRepresentation.containsEdge(ind1, constraint));
