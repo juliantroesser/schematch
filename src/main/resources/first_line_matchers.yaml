@@ -7,7 +7,7 @@ params:
   fixpointFormula: ["FORMULA_C"]
   epsilon: ["0.0001"]
   maxIterations: ["100"]
-  FDV1: ["true"]
+  FDV1: ["false"]
   FDV2: ["false"]
   UCCV1: ["false"]
   UCCV2: ["false"]
