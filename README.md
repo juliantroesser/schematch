@@ -8,7 +8,7 @@ In the context of my Bachelor Thesis, *"Structural Schema Matching with Similari
 
 ## Usage
 
-To use the enhanced methods described in the thesis, add the following configuration to your `first_line_matcher.yaml` file:
+To use the enhanced methods described in the thesis, add the following configuration to your `first_line_matchers.yaml` file:
 
 ```yaml
 name: "SimilarityFlooding"
