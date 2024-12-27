@@ -61,7 +61,7 @@ public class SimilarityFlooding extends Matcher {
             case "A" -> FixpointFormula.FORMULA_A;
             case "B" -> FixpointFormula.FORMULA_B;
             case "C" -> FixpointFormula.FORMULA_C;
-            case "Basic_Lambda" -> FixpointFormula.BASIC_Lambda;
+            case "BASIC_Lambda" -> FixpointFormula.BASIC_Lambda;
             case "A_Lambda" -> FixpointFormula.FORMULA_A_Lambda;
             case "B_Lambda" -> FixpointFormula.FORMULA_B_Lambda;
             case "C_Lambda" -> FixpointFormula.FORMULA_C_Lambda;
