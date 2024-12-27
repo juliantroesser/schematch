@@ -29,6 +29,10 @@ params:
   UCCSim: ["0.0"] # Initial similarities for UCC-Dependency-ID nodes
   INDSim: ["0.0"] # Initial similarities for IND-Dependency-ID nodes
 ```
+## Datasets used in Thesis Examples
+
+- SimilarityFloodingExample: Includes example used in Chapter 2 to demonstrate how the SF algorithm works.
+- DependencyTest: Includes examples used in Chapter 3 to highlight dependency impact.
 
 ## Documentation
 
