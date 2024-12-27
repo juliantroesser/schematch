@@ -31,7 +31,7 @@ params:
 ```
 ## Datasets used in Thesis Examples
 
-- SimilarityFloodingExample: Includes example used in Chapter 2 to demonstrate how the SF algorithm works.
+- SimilarityFloodingExample: Includes the example used in Chapter 2 to demonstrate how the SF algorithm works.
 - DependencyTest: Includes examples used in Chapter 3 to highlight dependency impact.
 
 ## Documentation
