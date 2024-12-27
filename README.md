@@ -14,17 +14,17 @@ To use the enhanced methods described in the thesis, add the following configura
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  wholeSchema: ["true", "false"] 
+  wholeSchema: ["true", "false"] # Root graph representation at schema node (true) or match pairs of tables (false)
   propCoeffPolicy: ["INV_PROD", "INV_AVG"] # Propagation Coefficient Policy: Inverse Product or Inverse Average
   fixpoint: ["BASIC", "A", "B", "C", "BASIC_Lambda", "A_Lambda", "B_Lambda", "C_Lambda"] # Fixpoint Formula: Basic, A, B, or C; or Lambda adaptations
   eps: ["0.0001"] # Precision of convergence
   maxIter: ["100"] # Maximum number of iterations
-  FDV1: ["true"] # FD-Quick Graph Extension
-  FDV2: ["false"] # FD-Complete Graph Extension
-  UCCV1: ["true"] # UCC-Quick Graph Extension
-  UCCV2: ["false"] # UCC-Complete Graph Extension
-  INDV1: ["true"] # IND-Quick Graph Extension
-  INDV2: ["false"] # IND-Complete Graph Extension
+  FDV1: ["true", "false"] # Use FD-Quick Graph Extension
+  FDV2: ["true", "false"] # Use FD-Complete Graph Extension
+  UCCV1: ["true", "false"] # Use UCC-Quick Graph Extension
+  UCCV2: ["true", "false"] # Use UCC-Complete Graph Extension
+  INDV1: ["true", "false"] # Use IND-Quick Graph Extension
+  INDV2: ["true", "false"] # Use IND-Complete Graph Extension
   FDSim: ["0.0"] # Initial similarities for FD-Dependency-ID nodes
   UCCSim: ["0.0"] # Initial similarities for UCC-Dependency-ID nodes
   INDSim: ["0.0"] # Initial similarities for IND-Dependency-ID nodes
