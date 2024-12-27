@@ -1,0 +1,4 @@
+[tracks.ttitle] --> tracks.extt
+[tracks.n, tracks.ttitle] --> tracks.discid
+[tracks.discid, tracks.n] --> tracks.ttitle
+[tracks.discid, tracks.n] --> tracks.extt

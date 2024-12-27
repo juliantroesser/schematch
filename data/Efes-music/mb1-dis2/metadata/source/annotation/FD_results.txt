@@ -1,0 +1,10 @@
+[annotation.id] --> annotation.created
+[annotation.id] --> annotation.text
+[annotation.id] --> annotation.editor
+[annotation.id] --> annotation.changelog
+[annotation.created] --> annotation.id
+[annotation.created] --> annotation.text
+[annotation.created] --> annotation.editor
+[annotation.created] --> annotation.changelog
+[annotation.changelog, annotation.editor, annotation.text] --> annotation.id
+[annotation.changelog, annotation.editor, annotation.text] --> annotation.created

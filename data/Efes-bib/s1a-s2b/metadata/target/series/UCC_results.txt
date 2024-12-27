@@ -1,0 +1,2 @@
+[series.seriesnm]
+[series.seriesid]

@@ -1,0 +1,6 @@
+[cdtoc.id]
+[cdtoc.discid]
+[cdtoc.freedb_id]
+[cdtoc.track_count]
+[cdtoc.leadout_offset]
+[cdtoc.track_offset]

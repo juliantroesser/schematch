@@ -1,0 +1,30 @@
+[] --> publication.titleext
+[] --> publication.abstractind
+[publication.pid] --> publication.title
+[publication.pid] --> publication.abstract
+[publication.pid] --> publication.category
+[publication.pid] --> publication.book
+[publication.pid] --> publication.journal
+[publication.pid] --> publication.confinfo
+[publication.pid] --> publication.journalann
+[publication.pid] --> publication.language
+[publication.title] --> publication.abstract
+[publication.title] --> publication.category
+[publication.title] --> publication.book
+[publication.title] --> publication.journal
+[publication.title] --> publication.confinfo
+[publication.title] --> publication.journalann
+[publication.title] --> publication.language
+[publication.abstract] --> publication.title
+[publication.abstract] --> publication.category
+[publication.abstract] --> publication.book
+[publication.abstract] --> publication.journal
+[publication.abstract] --> publication.confinfo
+[publication.abstract] --> publication.journalann
+[publication.abstract] --> publication.language
+[publication.category] --> publication.language
+[publication.book, publication.category, publication.journal] --> publication.journalann
+[publication.book, publication.category, publication.journalann] --> publication.confinfo
+[publication.book, publication.journal] --> publication.confinfo
+[publication.book, publication.journal, publication.language] --> publication.journalann
+[publication.journal, publication.journalann] --> publication.language

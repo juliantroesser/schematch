@@ -1,0 +1,10 @@
+[] --> releases_extraartists.join_
+[releases_extraartists.name] --> releases_extraartists.id
+[releases_extraartists.name] --> releases_extraartists.release_id
+[releases_extraartists.name, releases_extraartists.role] --> releases_extraartists.anv
+[releases_extraartists.name, releases_extraartists.role] --> releases_extraartists.tracks
+[releases_extraartists.id, releases_extraartists.role] --> releases_extraartists.name
+[releases_extraartists.id, releases_extraartists.role] --> releases_extraartists.anv
+[releases_extraartists.id, releases_extraartists.role] --> releases_extraartists.release_id
+[releases_extraartists.id, releases_extraartists.role] --> releases_extraartists.tracks
+[releases_extraartists.id, releases_extraartists.release_id] --> releases_extraartists.name

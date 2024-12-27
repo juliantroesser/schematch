@@ -1,0 +1,30 @@
+[] --> artist_alias.edits_pending
+[] --> artist_alias.begin_date_year
+[] --> artist_alias.begin_date_month
+[] --> artist_alias.begin_date_day
+[] --> artist_alias.end_date_year
+[] --> artist_alias.end_date_month
+[] --> artist_alias.end_date_day
+[] --> artist_alias.ended
+[artist_alias.id] --> artist_alias.name
+[artist_alias.id] --> artist_alias.sort_name
+[artist_alias.id] --> artist_alias.artist
+[artist_alias.id] --> artist_alias.last_updated
+[artist_alias.id] --> artist_alias.locale
+[artist_alias.id] --> artist_alias.type
+[artist_alias.id] --> artist_alias.primary_for_locale
+[artist_alias.name] --> artist_alias.id
+[artist_alias.name] --> artist_alias.sort_name
+[artist_alias.name] --> artist_alias.artist
+[artist_alias.name] --> artist_alias.last_updated
+[artist_alias.name] --> artist_alias.locale
+[artist_alias.name] --> artist_alias.type
+[artist_alias.name] --> artist_alias.primary_for_locale
+[artist_alias.sort_name] --> artist_alias.artist
+[artist_alias.sort_name] --> artist_alias.type
+[artist_alias.last_updated, artist_alias.sort_name] --> artist_alias.id
+[artist_alias.last_updated, artist_alias.sort_name] --> artist_alias.name
+[artist_alias.last_updated, artist_alias.sort_name] --> artist_alias.locale
+[artist_alias.locale, artist_alias.sort_name] --> artist_alias.primary_for_locale
+[artist_alias.last_updated] --> artist_alias.type
+[artist_alias.last_updated] --> artist_alias.primary_for_locale

@@ -1,0 +1,5 @@
+[customer.customer_id]
+[customer.last_name]
+[customer.email]
+[customer.address_id]
+[customer.create_date, customer.first_name]

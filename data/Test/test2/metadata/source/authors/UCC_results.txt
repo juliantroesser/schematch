@@ -1,0 +1,6 @@
+[authors.aid]
+[authors.name]
+[authors.username]
+[authors.income]
+[authors.dob]
+[authors.address]

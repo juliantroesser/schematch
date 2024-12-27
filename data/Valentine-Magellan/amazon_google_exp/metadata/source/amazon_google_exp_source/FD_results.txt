@@ -1,0 +1,4 @@
+[amazon_google_exp_source.id] --> amazon_google_exp_source.title
+[amazon_google_exp_source.id] --> amazon_google_exp_source.manufacturer
+[amazon_google_exp_source.id] --> amazon_google_exp_source.price
+[amazon_google_exp_source.price, amazon_google_exp_source.title] --> amazon_google_exp_source.manufacturer

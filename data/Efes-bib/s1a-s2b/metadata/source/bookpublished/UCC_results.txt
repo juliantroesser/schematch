@@ -1,0 +1,2 @@
+[bookpublished.bookid]
+[bookpublished.authid]

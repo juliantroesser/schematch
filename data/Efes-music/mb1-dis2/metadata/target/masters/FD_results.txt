@@ -1,0 +1,15 @@
+[masters.id] --> masters.title
+[masters.id] --> masters.main_release
+[masters.id] --> masters.year
+[masters.id] --> masters.data_quality
+[masters.id] --> masters.notes
+[masters.title] --> masters.id
+[masters.title] --> masters.main_release
+[masters.title] --> masters.year
+[masters.title] --> masters.data_quality
+[masters.title] --> masters.notes
+[masters.main_release] --> masters.id
+[masters.main_release] --> masters.title
+[masters.main_release] --> masters.year
+[masters.main_release] --> masters.data_quality
+[masters.main_release] --> masters.notes

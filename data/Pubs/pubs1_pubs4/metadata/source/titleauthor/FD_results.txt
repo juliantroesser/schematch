@@ -1,0 +1,5 @@
+[titleauthor.au_id, titleauthor.title_id] --> titleauthor.royaltyper
+[titleauthor.au_id, titleauthor.title_id] --> titleauthor.au_ord
+[titleauthor.au_id, titleauthor.royaltyper] --> titleauthor.au_ord
+[titleauthor.au_ord, titleauthor.title_id] --> titleauthor.au_id
+[titleauthor.au_ord, titleauthor.title_id] --> titleauthor.royaltyper

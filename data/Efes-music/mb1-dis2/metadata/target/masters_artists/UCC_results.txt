@@ -1,0 +1,3 @@
+[masters_artists.id]
+[masters_artists.name]
+[masters_artists.join_, masters_artists.master_id]

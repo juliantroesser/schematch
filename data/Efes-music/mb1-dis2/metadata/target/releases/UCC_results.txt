@@ -1,0 +1,3 @@
+[releases.id]
+[releases.title]
+[releases.country, releases.master_id, releases.notes, releases.released]

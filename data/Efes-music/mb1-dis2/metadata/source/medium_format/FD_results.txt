@@ -1,0 +1,13 @@
+[medium_format.id] --> medium_format.name
+[medium_format.id] --> medium_format.child_order
+[medium_format.id] --> medium_format.year
+[medium_format.id] --> medium_format.parent
+[medium_format.id] --> medium_format.has_discids
+[medium_format.name] --> medium_format.id
+[medium_format.name] --> medium_format.child_order
+[medium_format.name] --> medium_format.year
+[medium_format.name] --> medium_format.parent
+[medium_format.name] --> medium_format.has_discids
+[medium_format.child_order, medium_format.parent, medium_format.year] --> medium_format.id
+[medium_format.child_order, medium_format.parent, medium_format.year] --> medium_format.name
+[medium_format.child_order, medium_format.parent] --> medium_format.has_discids

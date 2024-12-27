@@ -1,0 +1,42 @@
+#---
+#name: "DependencyTest"
+#path: "DependencyTest"
+#---
+#name: "Thesis-Examples"
+#path: "Thesis-Examples"
+#---
+#name: "DeNorm"
+#path: "DeNorm"
+#---
+#name: "Efes-bib"
+#path: "Efes-bib"
+---
+name: "Efes-music"
+path: "Efes-music"
+#---
+#name: "ISIA-inventory"
+#path: "ISIA-inventory"
+#---
+#name: "ISIA-real_estate2"
+#path: "ISIA-real_estate2"
+---
+name: "Sakila"
+path: "Sakila"
+#---
+#name: "Valentine-ChEMBL_joinable"
+#path: "Valentine-ChEMBL_joinable"
+#---
+#name: "Valentine-ChEMBL_semantically-joinable"
+#path: "Valentine-ChEMBL_semantically-joinable"
+#---
+#name: "Valentine-ChEMBL_unionable"
+#path: "Valentine-ChEMBL_unionable"
+#---
+#name: "Valentine-ChEMBL_view-unionable"
+#path: "Valentine-ChEMBL_view-unionable"
+#---
+#name: "Valentine-Magellan"
+#path: "Valentine-Magellan"
+#---
+#name: "Valentine-Wikidata"
+#path: "Valentine-Wikidata"

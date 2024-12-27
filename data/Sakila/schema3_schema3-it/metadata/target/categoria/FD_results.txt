@@ -1,0 +1,2 @@
+[categoria.categoria_id] --> categoria.nome
+[categoria.nome] --> categoria.categoria_id

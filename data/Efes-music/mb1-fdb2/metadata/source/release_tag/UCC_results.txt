@@ -1,0 +1,4 @@
+[release_tag.release]
+[release_tag.tag]
+[release_tag.count]
+[release_tag.last_updated]

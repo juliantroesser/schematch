@@ -1,0 +1,13 @@
+[] --> masters_artists.role
+[] --> masters_artists.tracks
+[masters_artists.id] --> masters_artists.name
+[masters_artists.id] --> masters_artists.master_id
+[masters_artists.id] --> masters_artists.anv
+[masters_artists.id] --> masters_artists.join_
+[masters_artists.name] --> masters_artists.id
+[masters_artists.name] --> masters_artists.master_id
+[masters_artists.name] --> masters_artists.anv
+[masters_artists.name] --> masters_artists.join_
+[masters_artists.join_, masters_artists.master_id] --> masters_artists.id
+[masters_artists.join_, masters_artists.master_id] --> masters_artists.name
+[masters_artists.join_, masters_artists.master_id] --> masters_artists.anv

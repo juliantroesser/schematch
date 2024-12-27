@@ -1,0 +1,3 @@
+[tracks.ttitle] --> tracks.extt
+[tracks.discid] --> tracks.extt
+[tracks.discid, tracks.n] --> tracks.ttitle

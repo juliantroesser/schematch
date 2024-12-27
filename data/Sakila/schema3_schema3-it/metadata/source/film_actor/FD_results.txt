@@ -1,0 +1,3 @@
+[film_actor.film_id, film_actor.first_name, film_actor.last_name] --> film_actor.actor_id
+[film_actor.actor_id] --> film_actor.first_name
+[film_actor.actor_id] --> film_actor.last_name

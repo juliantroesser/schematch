@@ -1,0 +1,3 @@
+[musicians_viewunion_source.musician]
+[musicians_viewunion_source.birthDate, musicians_viewunion_source.familyNameLabel, musicians_viewunion_source.givenNameLabel, musicians_viewunion_source.recordLabelLabel, musicians_viewunion_source.websiteLabel]
+[musicians_viewunion_source.birthDate, musicians_viewunion_source.familyNameLabel, musicians_viewunion_source.givenNameLabel, musicians_viewunion_source.recordLabelLabel, musicians_viewunion_source.twitterNameLabel]

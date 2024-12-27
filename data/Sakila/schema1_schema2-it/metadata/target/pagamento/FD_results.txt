@@ -1,0 +1,78 @@
+[pagamento.pagamento_id] --> pagamento.noleggio_id
+[pagamento.pagamento_id] --> pagamento.data_restituzione
+[pagamento.pagamento_id] --> pagamento.data_pagamento
+[pagamento.pagamento_id] --> pagamento.data_noleggio
+[pagamento.pagamento_id] --> pagamento.inventario_id
+[pagamento.pagamento_id] --> pagamento.cliente_id
+[pagamento.pagamento_id] --> pagamento.ammontare
+[pagamento.pagamento_id] --> pagamento.ppersonale_id
+[pagamento.pagamento_id] --> pagamento.npersonale_id
+[pagamento.noleggio_id] --> pagamento.pagamento_id
+[pagamento.noleggio_id] --> pagamento.data_restituzione
+[pagamento.noleggio_id] --> pagamento.data_pagamento
+[pagamento.noleggio_id] --> pagamento.data_noleggio
+[pagamento.noleggio_id] --> pagamento.inventario_id
+[pagamento.noleggio_id] --> pagamento.cliente_id
+[pagamento.noleggio_id] --> pagamento.ammontare
+[pagamento.noleggio_id] --> pagamento.ppersonale_id
+[pagamento.noleggio_id] --> pagamento.npersonale_id
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.pagamento_id
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.noleggio_id
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.data_pagamento
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.data_noleggio
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.cliente_id
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.ammontare
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.ppersonale_id
+[pagamento.data_restituzione, pagamento.inventario_id] --> pagamento.npersonale_id
+[pagamento.cliente_id, pagamento.data_restituzione] --> pagamento.data_pagamento
+[pagamento.cliente_id, pagamento.data_restituzione] --> pagamento.data_noleggio
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.ppersonale_id] --> pagamento.pagamento_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.ppersonale_id] --> pagamento.noleggio_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.ppersonale_id] --> pagamento.inventario_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.ppersonale_id] --> pagamento.npersonale_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.npersonale_id] --> pagamento.pagamento_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.npersonale_id] --> pagamento.noleggio_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.npersonale_id] --> pagamento.inventario_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_restituzione, pagamento.npersonale_id] --> pagamento.ppersonale_id
+[pagamento.data_pagamento] --> pagamento.data_noleggio
+[pagamento.data_pagamento, pagamento.inventario_id] --> pagamento.pagamento_id
+[pagamento.data_pagamento, pagamento.inventario_id] --> pagamento.noleggio_id
+[pagamento.data_pagamento, pagamento.inventario_id] --> pagamento.data_restituzione
+[pagamento.data_pagamento, pagamento.inventario_id] --> pagamento.cliente_id
+[pagamento.data_pagamento, pagamento.inventario_id] --> pagamento.ammontare
+[pagamento.data_pagamento, pagamento.inventario_id] --> pagamento.ppersonale_id
+[pagamento.data_pagamento, pagamento.inventario_id] --> pagamento.npersonale_id
+[pagamento.cliente_id, pagamento.data_pagamento] --> pagamento.data_restituzione
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.ppersonale_id] --> pagamento.pagamento_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.ppersonale_id] --> pagamento.noleggio_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.ppersonale_id] --> pagamento.inventario_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.ppersonale_id] --> pagamento.npersonale_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.npersonale_id] --> pagamento.pagamento_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.npersonale_id] --> pagamento.noleggio_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.npersonale_id] --> pagamento.inventario_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.npersonale_id] --> pagamento.ppersonale_id
+[pagamento.data_noleggio] --> pagamento.data_pagamento
+[pagamento.data_noleggio, pagamento.inventario_id] --> pagamento.pagamento_id
+[pagamento.data_noleggio, pagamento.inventario_id] --> pagamento.noleggio_id
+[pagamento.data_noleggio, pagamento.inventario_id] --> pagamento.data_restituzione
+[pagamento.data_noleggio, pagamento.inventario_id] --> pagamento.cliente_id
+[pagamento.data_noleggio, pagamento.inventario_id] --> pagamento.ammontare
+[pagamento.data_noleggio, pagamento.inventario_id] --> pagamento.ppersonale_id
+[pagamento.data_noleggio, pagamento.inventario_id] --> pagamento.npersonale_id
+[pagamento.cliente_id, pagamento.data_noleggio] --> pagamento.data_restituzione
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.ppersonale_id] --> pagamento.pagamento_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.ppersonale_id] --> pagamento.noleggio_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.ppersonale_id] --> pagamento.inventario_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.ppersonale_id] --> pagamento.npersonale_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.npersonale_id] --> pagamento.pagamento_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.npersonale_id] --> pagamento.noleggio_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.npersonale_id] --> pagamento.inventario_id
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_noleggio, pagamento.npersonale_id] --> pagamento.ppersonale_id
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.pagamento_id
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.noleggio_id
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.data_restituzione
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.data_pagamento
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.data_noleggio
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.ammontare
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.ppersonale_id
+[pagamento.cliente_id, pagamento.inventario_id] --> pagamento.npersonale_id

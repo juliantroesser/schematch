@@ -1,0 +1,4 @@
+[publishers.pub_id]
+[publishers.pub_name]
+[publishers.city]
+[publishers.country, publishers.state]

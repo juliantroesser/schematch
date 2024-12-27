@@ -1,0 +1,7 @@
+[Purchase.Price]
+[Purchase.CID, Purchase.PID]
+[Purchase.CID, Purchase.ProductName]
+[Purchase.CName, Purchase.PID]
+[Purchase.CName, Purchase.ProductName]
+[Purchase.A, Purchase.PID]
+[Purchase.A, Purchase.ProductName]

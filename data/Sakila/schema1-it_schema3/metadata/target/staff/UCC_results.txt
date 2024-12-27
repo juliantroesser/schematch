@@ -1,0 +1,8 @@
+[staff.staff_id]
+[staff.first_name]
+[staff.last_name]
+[staff.address_id]
+[staff.email]
+[staff.store_id]
+[staff.username]
+[staff.password]

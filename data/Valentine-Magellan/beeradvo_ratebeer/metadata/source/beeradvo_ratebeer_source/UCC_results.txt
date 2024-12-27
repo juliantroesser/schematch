@@ -1,0 +1,3 @@
+[beeradvo_ratebeer_source.id]
+[beeradvo_ratebeer_source.Beer_Name, beeradvo_ratebeer_source.Brew_Factory_Name]
+[beeradvo_ratebeer_source.ABV, beeradvo_ratebeer_source.Beer_Name]

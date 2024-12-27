@@ -1,0 +1,4 @@
+[author.aid] --> author.name
+[author.aid] --> author.affiliations
+[author.name] --> author.aid
+[author.name] --> author.affiliations

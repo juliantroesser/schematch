@@ -1,0 +1,279 @@
+[employees.employee_id] --> employees.name
+[employees.employee_id] --> employees.last_name
+[employees.employee_id] --> employees.first_name
+[employees.employee_id] --> employees.address
+[employees.employee_id] --> employees.postal_code
+[employees.employee_id] --> employees.employee_phone_number
+[employees.employee_id] --> employees.birth_day
+[employees.employee_id] --> employees.birth_month
+[employees.employee_id] --> employees.birth_year
+[employees.employee_id] --> employees.hire_day
+[employees.employee_id] --> employees.hire_month
+[employees.employee_id] --> employees.city
+[employees.employee_id] --> employees.hire_year
+[employees.employee_id] --> employees.region
+[employees.employee_id] --> employees.country
+[employees.employee_id] --> employees.employee_area_code
+[employees.name] --> employees.employee_id
+[employees.name] --> employees.last_name
+[employees.name] --> employees.first_name
+[employees.name] --> employees.address
+[employees.name] --> employees.postal_code
+[employees.name] --> employees.employee_phone_number
+[employees.name] --> employees.birth_day
+[employees.name] --> employees.birth_month
+[employees.name] --> employees.birth_year
+[employees.name] --> employees.hire_day
+[employees.name] --> employees.hire_month
+[employees.name] --> employees.city
+[employees.name] --> employees.hire_year
+[employees.name] --> employees.region
+[employees.name] --> employees.country
+[employees.name] --> employees.employee_area_code
+[employees.last_name] --> employees.employee_id
+[employees.last_name] --> employees.name
+[employees.last_name] --> employees.first_name
+[employees.last_name] --> employees.address
+[employees.last_name] --> employees.postal_code
+[employees.last_name] --> employees.employee_phone_number
+[employees.last_name] --> employees.birth_day
+[employees.last_name] --> employees.birth_month
+[employees.last_name] --> employees.birth_year
+[employees.last_name] --> employees.hire_day
+[employees.last_name] --> employees.hire_month
+[employees.last_name] --> employees.city
+[employees.last_name] --> employees.hire_year
+[employees.last_name] --> employees.region
+[employees.last_name] --> employees.country
+[employees.last_name] --> employees.employee_area_code
+[employees.first_name] --> employees.employee_id
+[employees.first_name] --> employees.name
+[employees.first_name] --> employees.last_name
+[employees.first_name] --> employees.address
+[employees.first_name] --> employees.postal_code
+[employees.first_name] --> employees.employee_phone_number
+[employees.first_name] --> employees.birth_day
+[employees.first_name] --> employees.birth_month
+[employees.first_name] --> employees.birth_year
+[employees.first_name] --> employees.hire_day
+[employees.first_name] --> employees.hire_month
+[employees.first_name] --> employees.city
+[employees.first_name] --> employees.hire_year
+[employees.first_name] --> employees.region
+[employees.first_name] --> employees.country
+[employees.first_name] --> employees.employee_area_code
+[employees.address] --> employees.employee_id
+[employees.address] --> employees.name
+[employees.address] --> employees.last_name
+[employees.address] --> employees.first_name
+[employees.address] --> employees.postal_code
+[employees.address] --> employees.employee_phone_number
+[employees.address] --> employees.birth_day
+[employees.address] --> employees.birth_month
+[employees.address] --> employees.birth_year
+[employees.address] --> employees.hire_day
+[employees.address] --> employees.hire_month
+[employees.address] --> employees.city
+[employees.address] --> employees.hire_year
+[employees.address] --> employees.region
+[employees.address] --> employees.country
+[employees.address] --> employees.employee_area_code
+[employees.postal_code] --> employees.employee_id
+[employees.postal_code] --> employees.name
+[employees.postal_code] --> employees.last_name
+[employees.postal_code] --> employees.first_name
+[employees.postal_code] --> employees.address
+[employees.postal_code] --> employees.employee_phone_number
+[employees.postal_code] --> employees.birth_day
+[employees.postal_code] --> employees.birth_month
+[employees.postal_code] --> employees.birth_year
+[employees.postal_code] --> employees.hire_day
+[employees.postal_code] --> employees.hire_month
+[employees.postal_code] --> employees.city
+[employees.postal_code] --> employees.hire_year
+[employees.postal_code] --> employees.region
+[employees.postal_code] --> employees.country
+[employees.postal_code] --> employees.employee_area_code
+[employees.employee_phone_number] --> employees.employee_id
+[employees.employee_phone_number] --> employees.name
+[employees.employee_phone_number] --> employees.last_name
+[employees.employee_phone_number] --> employees.first_name
+[employees.employee_phone_number] --> employees.address
+[employees.employee_phone_number] --> employees.postal_code
+[employees.employee_phone_number] --> employees.birth_day
+[employees.employee_phone_number] --> employees.birth_month
+[employees.employee_phone_number] --> employees.birth_year
+[employees.employee_phone_number] --> employees.hire_day
+[employees.employee_phone_number] --> employees.hire_month
+[employees.employee_phone_number] --> employees.city
+[employees.employee_phone_number] --> employees.hire_year
+[employees.employee_phone_number] --> employees.region
+[employees.employee_phone_number] --> employees.country
+[employees.employee_phone_number] --> employees.employee_area_code
+[employees.birth_day] --> employees.birth_month
+[employees.birth_day] --> employees.city
+[employees.birth_day] --> employees.region
+[employees.birth_day] --> employees.country
+[employees.birth_day] --> employees.employee_area_code
+[employees.birth_day, employees.birth_year] --> employees.employee_id
+[employees.birth_day, employees.birth_year] --> employees.name
+[employees.birth_day, employees.birth_year] --> employees.last_name
+[employees.birth_day, employees.birth_year] --> employees.first_name
+[employees.birth_day, employees.birth_year] --> employees.address
+[employees.birth_day, employees.birth_year] --> employees.postal_code
+[employees.birth_day, employees.birth_year] --> employees.employee_phone_number
+[employees.birth_day, employees.birth_year] --> employees.hire_day
+[employees.birth_day, employees.birth_year] --> employees.hire_month
+[employees.birth_day, employees.birth_year] --> employees.hire_year
+[employees.birth_day, employees.hire_day] --> employees.employee_id
+[employees.birth_day, employees.hire_day] --> employees.name
+[employees.birth_day, employees.hire_day] --> employees.last_name
+[employees.birth_day, employees.hire_day] --> employees.first_name
+[employees.birth_day, employees.hire_day] --> employees.address
+[employees.birth_day, employees.hire_day] --> employees.postal_code
+[employees.birth_day, employees.hire_day] --> employees.employee_phone_number
+[employees.birth_day, employees.hire_day] --> employees.birth_year
+[employees.birth_day, employees.hire_day] --> employees.hire_month
+[employees.birth_day, employees.hire_day] --> employees.hire_year
+[employees.birth_day, employees.hire_month] --> employees.employee_id
+[employees.birth_day, employees.hire_month] --> employees.name
+[employees.birth_day, employees.hire_month] --> employees.last_name
+[employees.birth_day, employees.hire_month] --> employees.first_name
+[employees.birth_day, employees.hire_month] --> employees.address
+[employees.birth_day, employees.hire_month] --> employees.postal_code
+[employees.birth_day, employees.hire_month] --> employees.employee_phone_number
+[employees.birth_day, employees.hire_month] --> employees.birth_year
+[employees.birth_day, employees.hire_month] --> employees.hire_day
+[employees.birth_day, employees.hire_year] --> employees.employee_id
+[employees.birth_day, employees.hire_year] --> employees.name
+[employees.birth_day, employees.hire_year] --> employees.last_name
+[employees.birth_day, employees.hire_year] --> employees.first_name
+[employees.birth_day, employees.hire_year] --> employees.address
+[employees.birth_day, employees.hire_year] --> employees.postal_code
+[employees.birth_day, employees.hire_year] --> employees.employee_phone_number
+[employees.birth_day, employees.hire_year] --> employees.birth_year
+[employees.birth_day, employees.hire_year] --> employees.hire_day
+[employees.birth_day, employees.hire_year] --> employees.hire_month
+[employees.birth_month] --> employees.region
+[employees.birth_month] --> employees.country
+[employees.birth_month] --> employees.employee_area_code
+[employees.birth_month, employees.birth_year] --> employees.employee_id
+[employees.birth_month, employees.birth_year] --> employees.name
+[employees.birth_month, employees.birth_year] --> employees.last_name
+[employees.birth_month, employees.birth_year] --> employees.first_name
+[employees.birth_month, employees.birth_year] --> employees.address
+[employees.birth_month, employees.birth_year] --> employees.postal_code
+[employees.birth_month, employees.birth_year] --> employees.employee_phone_number
+[employees.birth_month, employees.birth_year] --> employees.birth_day
+[employees.birth_month, employees.birth_year] --> employees.hire_day
+[employees.birth_month, employees.birth_year] --> employees.hire_month
+[employees.birth_month, employees.birth_year] --> employees.city
+[employees.birth_month, employees.birth_year] --> employees.hire_year
+[employees.birth_month, employees.hire_day] --> employees.employee_id
+[employees.birth_month, employees.hire_day] --> employees.name
+[employees.birth_month, employees.hire_day] --> employees.last_name
+[employees.birth_month, employees.hire_day] --> employees.first_name
+[employees.birth_month, employees.hire_day] --> employees.address
+[employees.birth_month, employees.hire_day] --> employees.postal_code
+[employees.birth_month, employees.hire_day] --> employees.employee_phone_number
+[employees.birth_month, employees.hire_day] --> employees.birth_day
+[employees.birth_month, employees.hire_day] --> employees.birth_year
+[employees.birth_month, employees.hire_day] --> employees.hire_month
+[employees.birth_month, employees.hire_day] --> employees.city
+[employees.birth_month, employees.hire_day] --> employees.hire_year
+[employees.birth_month, employees.hire_month] --> employees.employee_id
+[employees.birth_month, employees.hire_month] --> employees.name
+[employees.birth_month, employees.hire_month] --> employees.last_name
+[employees.birth_month, employees.hire_month] --> employees.first_name
+[employees.birth_month, employees.hire_month] --> employees.address
+[employees.birth_month, employees.hire_month] --> employees.postal_code
+[employees.birth_month, employees.hire_month] --> employees.employee_phone_number
+[employees.birth_month, employees.hire_month] --> employees.birth_day
+[employees.birth_month, employees.hire_month] --> employees.birth_year
+[employees.birth_month, employees.hire_month] --> employees.hire_day
+[employees.birth_month, employees.hire_month] --> employees.city
+[employees.birth_month, employees.city] --> employees.birth_day
+[employees.birth_month, employees.hire_year] --> employees.employee_id
+[employees.birth_month, employees.hire_year] --> employees.name
+[employees.birth_month, employees.hire_year] --> employees.last_name
+[employees.birth_month, employees.hire_year] --> employees.first_name
+[employees.birth_month, employees.hire_year] --> employees.address
+[employees.birth_month, employees.hire_year] --> employees.postal_code
+[employees.birth_month, employees.hire_year] --> employees.employee_phone_number
+[employees.birth_month, employees.hire_year] --> employees.birth_day
+[employees.birth_month, employees.hire_year] --> employees.birth_year
+[employees.birth_month, employees.hire_year] --> employees.hire_day
+[employees.birth_month, employees.hire_year] --> employees.hire_month
+[employees.birth_month, employees.hire_year] --> employees.city
+[employees.birth_year, employees.hire_day] --> employees.employee_id
+[employees.birth_year, employees.hire_day] --> employees.name
+[employees.birth_year, employees.hire_day] --> employees.last_name
+[employees.birth_year, employees.hire_day] --> employees.first_name
+[employees.birth_year, employees.hire_day] --> employees.address
+[employees.birth_year, employees.hire_day] --> employees.postal_code
+[employees.birth_year, employees.hire_day] --> employees.employee_phone_number
+[employees.birth_year, employees.hire_day] --> employees.birth_day
+[employees.birth_year, employees.hire_day] --> employees.birth_month
+[employees.birth_year, employees.hire_day] --> employees.hire_month
+[employees.birth_year, employees.hire_day] --> employees.city
+[employees.birth_year, employees.hire_day] --> employees.hire_year
+[employees.birth_year, employees.hire_month] --> employees.employee_id
+[employees.birth_year, employees.hire_month] --> employees.name
+[employees.birth_year, employees.hire_month] --> employees.last_name
+[employees.birth_year, employees.hire_month] --> employees.first_name
+[employees.birth_year, employees.hire_month] --> employees.address
+[employees.birth_year, employees.hire_month] --> employees.postal_code
+[employees.birth_year, employees.hire_month] --> employees.employee_phone_number
+[employees.birth_year, employees.hire_month] --> employees.birth_day
+[employees.birth_year, employees.hire_month] --> employees.birth_month
+[employees.birth_year, employees.hire_month] --> employees.hire_day
+[employees.birth_year, employees.hire_month] --> employees.city
+[employees.birth_year, employees.city] --> employees.employee_id
+[employees.birth_year, employees.city] --> employees.name
+[employees.birth_year, employees.city] --> employees.last_name
+[employees.birth_year, employees.city] --> employees.first_name
+[employees.birth_year, employees.city] --> employees.address
+[employees.birth_year, employees.city] --> employees.postal_code
+[employees.birth_year, employees.city] --> employees.employee_phone_number
+[employees.birth_year, employees.city] --> employees.birth_day
+[employees.birth_year, employees.city] --> employees.birth_month
+[employees.birth_year, employees.city] --> employees.hire_day
+[employees.birth_year, employees.city] --> employees.hire_month
+[employees.birth_year, employees.city] --> employees.hire_year
+[employees.birth_year, employees.hire_year] --> employees.employee_id
+[employees.birth_year, employees.hire_year] --> employees.name
+[employees.birth_year, employees.hire_year] --> employees.last_name
+[employees.birth_year, employees.hire_year] --> employees.first_name
+[employees.birth_year, employees.hire_year] --> employees.address
+[employees.birth_year, employees.hire_year] --> employees.postal_code
+[employees.birth_year, employees.hire_year] --> employees.employee_phone_number
+[employees.birth_year, employees.hire_year] --> employees.birth_day
+[employees.birth_year, employees.hire_year] --> employees.birth_month
+[employees.birth_year, employees.hire_year] --> employees.hire_day
+[employees.birth_year, employees.hire_year] --> employees.hire_month
+[employees.birth_year, employees.hire_year] --> employees.city
+[employees.birth_year, employees.hire_year] --> employees.region
+[employees.birth_year, employees.hire_year] --> employees.country
+[employees.birth_year, employees.hire_year] --> employees.employee_area_code
+[employees.hire_day] --> employees.region
+[employees.hire_day] --> employees.country
+[employees.hire_day] --> employees.employee_area_code
+[employees.hire_day, employees.hire_month] --> employees.city
+[employees.city, employees.hire_day] --> employees.hire_month
+[employees.city, employees.hire_day] --> employees.hire_year
+[employees.hire_day, employees.hire_year] --> employees.hire_month
+[employees.hire_day, employees.hire_year] --> employees.city
+[employees.hire_month] --> employees.hire_year
+[employees.hire_month] --> employees.region
+[employees.hire_month] --> employees.country
+[employees.hire_month] --> employees.employee_area_code
+[employees.city, employees.hire_month] --> employees.hire_day
+[employees.city] --> employees.region
+[employees.city] --> employees.country
+[employees.city] --> employees.employee_area_code
+[employees.region] --> employees.country
+[employees.region] --> employees.employee_area_code
+[employees.country] --> employees.region
+[employees.country] --> employees.employee_area_code
+[employees.employee_area_code] --> employees.region
+[employees.employee_area_code] --> employees.country

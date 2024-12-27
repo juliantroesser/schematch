@@ -1,0 +1,8 @@
+[artists.id] --> artists.name
+[artists.id] --> artists.realname
+[artists.id] --> artists.profile
+[artists.id] --> artists.data_quality
+[artists.name] --> artists.id
+[artists.name] --> artists.realname
+[artists.name] --> artists.profile
+[artists.name] --> artists.data_quality

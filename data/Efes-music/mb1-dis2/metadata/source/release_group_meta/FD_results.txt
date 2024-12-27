@@ -1,0 +1,8 @@
+[] --> release_group_meta.release_count
+[] --> release_group_meta.rating
+[] --> release_group_meta.rating_count
+[release_group_meta.id] --> release_group_meta.first_release_date_year
+[release_group_meta.id] --> release_group_meta.first_release_date_month
+[release_group_meta.id] --> release_group_meta.first_release_date_day
+[release_group_meta.first_release_date_month] --> release_group_meta.first_release_date_day
+[release_group_meta.first_release_date_day] --> release_group_meta.first_release_date_month

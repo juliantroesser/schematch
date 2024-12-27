@@ -1,0 +1,2 @@
+[Course.Department] [= [Course.Major]
+[Course.Major] [= [Course.Department]

@@ -1,0 +1,4 @@
+[recording_tag.recording]
+[recording_tag.tag]
+[recording_tag.count]
+[recording_tag.last_updated]

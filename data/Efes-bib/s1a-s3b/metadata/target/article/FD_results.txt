@@ -1,0 +1,105 @@
+[] --> article.note
+[] --> article.remarks
+[] --> article.fullxxxreferences
+[] --> article.oldkey
+[article.articleid] --> article.title
+[article.articleid] --> article.pages
+[article.articleid] --> article.volume
+[article.articleid] --> article.month
+[article.articleid] --> article.abstract
+[article.articleid] --> article.refkey
+[article.articleid] --> article.xxxreferences
+[article.articleid] --> article.year
+[article.articleid] --> article.references_
+[article.articleid] --> article.number
+[article.articleid] --> article.preliminary
+[article.title] --> article.articleid
+[article.title] --> article.pages
+[article.title] --> article.volume
+[article.title] --> article.month
+[article.title] --> article.abstract
+[article.title] --> article.refkey
+[article.title] --> article.xxxreferences
+[article.title] --> article.year
+[article.title] --> article.references_
+[article.title] --> article.number
+[article.title] --> article.preliminary
+[article.pages] --> article.number
+[article.pages] --> article.preliminary
+[article.pages, article.volume] --> article.articleid
+[article.pages, article.volume] --> article.title
+[article.pages, article.volume] --> article.month
+[article.pages, article.volume] --> article.abstract
+[article.pages, article.volume] --> article.refkey
+[article.pages, article.volume] --> article.xxxreferences
+[article.pages, article.volume] --> article.references_
+[article.month, article.pages] --> article.articleid
+[article.month, article.pages] --> article.title
+[article.month, article.pages] --> article.volume
+[article.month, article.pages] --> article.abstract
+[article.month, article.pages] --> article.refkey
+[article.month, article.pages] --> article.xxxreferences
+[article.month, article.pages] --> article.year
+[article.month, article.pages] --> article.references_
+[article.abstract, article.pages] --> article.articleid
+[article.abstract, article.pages] --> article.title
+[article.abstract, article.pages] --> article.volume
+[article.abstract, article.pages] --> article.month
+[article.abstract, article.pages] --> article.xxxreferences
+[article.abstract, article.pages] --> article.year
+[article.abstract, article.pages] --> article.references_
+[article.pages, article.refkey] --> article.articleid
+[article.pages, article.refkey] --> article.title
+[article.pages, article.refkey] --> article.volume
+[article.pages, article.refkey] --> article.month
+[article.pages, article.refkey] --> article.abstract
+[article.pages, article.refkey] --> article.xxxreferences
+[article.pages, article.refkey] --> article.year
+[article.pages, article.refkey] --> article.references_
+[article.pages, article.xxxreferences] --> article.articleid
+[article.pages, article.xxxreferences] --> article.title
+[article.pages, article.xxxreferences] --> article.volume
+[article.pages, article.xxxreferences] --> article.month
+[article.pages, article.xxxreferences] --> article.abstract
+[article.pages, article.xxxreferences] --> article.refkey
+[article.pages, article.xxxreferences] --> article.year
+[article.pages, article.xxxreferences] --> article.references_
+[article.pages, article.year] --> article.articleid
+[article.pages, article.year] --> article.title
+[article.pages, article.year] --> article.volume
+[article.pages, article.year] --> article.month
+[article.pages, article.year] --> article.abstract
+[article.pages, article.year] --> article.refkey
+[article.pages, article.year] --> article.xxxreferences
+[article.pages, article.year] --> article.references_
+[article.pages, article.references_] --> article.articleid
+[article.pages, article.references_] --> article.title
+[article.pages, article.references_] --> article.volume
+[article.pages, article.references_] --> article.month
+[article.pages, article.references_] --> article.abstract
+[article.pages, article.references_] --> article.refkey
+[article.pages, article.references_] --> article.xxxreferences
+[article.pages, article.references_] --> article.year
+[article.volume] --> article.year
+[article.month, article.volume] --> article.references_
+[article.month, article.volume] --> article.number
+[article.abstract, article.month, article.volume] --> article.xxxreferences
+[article.month, article.volume, article.xxxreferences] --> article.refkey
+[article.abstract, article.volume] --> article.references_
+[article.abstract, article.number, article.volume] --> article.xxxreferences
+[article.refkey, article.volume] --> article.references_
+[article.number, article.volume, article.xxxreferences] --> article.refkey
+[article.number, article.volume] --> article.month
+[article.number, article.volume] --> article.references_
+[article.abstract, article.month, article.xxxreferences] --> article.number
+[article.abstract, article.month, article.year] --> article.xxxreferences
+[article.abstract, article.month, article.references_] --> article.number
+[article.month, article.references_, article.refkey] --> article.number
+[article.month, article.xxxreferences, article.year] --> article.refkey
+[article.month, article.references_, article.xxxreferences] --> article.number
+[article.month, article.preliminary, article.xxxreferences] --> article.number
+[article.month, article.year] --> article.volume
+[article.month, article.year] --> article.references_
+[article.month, article.year] --> article.number
+[article.abstract] --> article.refkey
+[article.references_, article.xxxreferences] --> article.refkey

@@ -1,0 +1,4 @@
+[written.pid] --> written.publisher
+[written.pid] --> written.pubyear
+[written.aid, written.publisher] --> written.pubyear
+[written.aid, written.pubyear] --> written.publisher

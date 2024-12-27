@@ -1,0 +1,14 @@
+[target_discounts.discounttype] --> target_discounts.discount
+[target_discounts.discounttype] --> target_discounts.stor_id
+[target_discounts.discounttype] --> target_discounts.lowqty
+[target_discounts.discounttype] --> target_discounts.highqty
+[target_discounts.discount] --> target_discounts.discounttype
+[target_discounts.discount] --> target_discounts.stor_id
+[target_discounts.discount] --> target_discounts.lowqty
+[target_discounts.discount] --> target_discounts.highqty
+[target_discounts.lowqty, target_discounts.stor_id] --> target_discounts.discounttype
+[target_discounts.lowqty, target_discounts.stor_id] --> target_discounts.discount
+[target_discounts.highqty, target_discounts.stor_id] --> target_discounts.discounttype
+[target_discounts.highqty, target_discounts.stor_id] --> target_discounts.discount
+[target_discounts.lowqty] --> target_discounts.highqty
+[target_discounts.highqty] --> target_discounts.lowqty

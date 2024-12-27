@@ -1,0 +1,2 @@
+[pages.citkey] --> pages.pgrange
+[pages.pgrange] --> pages.citkey

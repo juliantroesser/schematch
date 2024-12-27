@@ -1,0 +1,3 @@
+[label_tag.tag] --> label_tag.count
+[label_tag.label, label_tag.tag] --> label_tag.last_updated
+[label_tag.last_updated, label_tag.tag] --> label_tag.label

@@ -1,0 +1,2 @@
+[release_status.id] --> release_status.name
+[release_status.name] --> release_status.id

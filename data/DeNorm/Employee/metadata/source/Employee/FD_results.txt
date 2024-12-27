@@ -1,0 +1,34 @@
+[Employee.EmployeeID] --> Employee.EmployeeName
+[Employee.EmployeeID] --> Employee.ProjectID
+[Employee.EmployeeID] --> Employee.ProjectManager
+[Employee.EmployeeID] --> Employee.ManagerRoom
+[Employee.EmployeeID] --> Employee.Department
+[Employee.EmployeeID] --> Employee.ProjectName
+[Employee.EmployeeID] --> Employee.Salary
+[Employee.EmployeeName] --> Employee.EmployeeID
+[Employee.EmployeeName] --> Employee.ProjectID
+[Employee.EmployeeName] --> Employee.ProjectManager
+[Employee.EmployeeName] --> Employee.ManagerRoom
+[Employee.EmployeeName] --> Employee.Department
+[Employee.EmployeeName] --> Employee.ProjectName
+[Employee.EmployeeName] --> Employee.Salary
+[Employee.ProjectID] --> Employee.ProjectManager
+[Employee.ProjectID] --> Employee.ManagerRoom
+[Employee.ProjectID] --> Employee.ProjectName
+[Employee.ProjectID] --> Employee.Salary
+[Employee.Department, Employee.ProjectID] --> Employee.EmployeeID
+[Employee.Department, Employee.ProjectID] --> Employee.EmployeeName
+[Employee.ProjectManager] --> Employee.ProjectID
+[Employee.ProjectManager] --> Employee.ManagerRoom
+[Employee.ProjectManager] --> Employee.ProjectName
+[Employee.ProjectManager] --> Employee.Salary
+[Employee.Department, Employee.ProjectManager] --> Employee.EmployeeID
+[Employee.Department, Employee.ProjectManager] --> Employee.EmployeeName
+[Employee.ManagerRoom] --> Employee.ProjectID
+[Employee.ManagerRoom] --> Employee.ProjectManager
+[Employee.ManagerRoom] --> Employee.ProjectName
+[Employee.ManagerRoom] --> Employee.Salary
+[Employee.Department, Employee.ManagerRoom] --> Employee.EmployeeID
+[Employee.Department, Employee.ManagerRoom] --> Employee.EmployeeName
+[Employee.ProjectName] --> Employee.Salary
+[Employee.Salary] --> Employee.ProjectName

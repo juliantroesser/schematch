@@ -1,0 +1,2 @@
+[artist_credit.id]
+[artist_credit.name, artist_credit.ref_count]

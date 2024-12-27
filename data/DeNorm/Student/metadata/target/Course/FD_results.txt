@@ -1,0 +1,50 @@
+[Course.Name] --> Course.ID
+[Course.Name] --> Course.G
+[Course.Name] --> Course.Major
+[Course.Name] --> Course.CID
+[Course.Name] --> Course.CourseName
+[Course.Name] --> Course.PID
+[Course.Name] --> Course.PName
+[Course.Name] --> Course.Department
+[Course.ID] --> Course.Major
+[Course.ID] --> Course.CID
+[Course.ID] --> Course.CourseName
+[Course.ID] --> Course.PID
+[Course.ID] --> Course.PName
+[Course.ID] --> Course.Department
+[Course.G, Course.Major] --> Course.ID
+[Course.CID, Course.G] --> Course.ID
+[Course.CourseName, Course.G] --> Course.ID
+[Course.G, Course.PID] --> Course.ID
+[Course.G, Course.PName] --> Course.ID
+[Course.Department, Course.G] --> Course.ID
+[Course.Major] --> Course.CID
+[Course.Major] --> Course.CourseName
+[Course.Major] --> Course.PID
+[Course.Major] --> Course.PName
+[Course.Major] --> Course.Department
+[Course.CID] --> Course.Major
+[Course.CID] --> Course.CourseName
+[Course.CID] --> Course.PID
+[Course.CID] --> Course.PName
+[Course.CID] --> Course.Department
+[Course.CourseName] --> Course.Major
+[Course.CourseName] --> Course.CID
+[Course.CourseName] --> Course.PID
+[Course.CourseName] --> Course.PName
+[Course.CourseName] --> Course.Department
+[Course.PID] --> Course.Major
+[Course.PID] --> Course.CID
+[Course.PID] --> Course.CourseName
+[Course.PID] --> Course.PName
+[Course.PID] --> Course.Department
+[Course.PName] --> Course.Major
+[Course.PName] --> Course.CID
+[Course.PName] --> Course.CourseName
+[Course.PName] --> Course.PID
+[Course.PName] --> Course.Department
+[Course.Department] --> Course.Major
+[Course.Department] --> Course.CID
+[Course.Department] --> Course.CourseName
+[Course.Department] --> Course.PID
+[Course.Department] --> Course.PName

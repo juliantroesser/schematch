@@ -1,0 +1,1 @@
+[artists_members.artist_id, artists_members.name]

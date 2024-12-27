@@ -1,0 +1,17 @@
+[] --> medium.edits_pending
+[medium.id] --> medium.release
+[medium.id] --> medium.last_updated
+[medium.id] --> medium.track_count
+[medium.id] --> medium.format
+[medium.id] --> medium.name
+[medium.id] --> medium.position
+[medium.release] --> medium.format
+[medium.release, medium.track_count] --> medium.last_updated
+[medium.release, medium.track_count] --> medium.name
+[medium.position, medium.release] --> medium.id
+[medium.position, medium.release] --> medium.last_updated
+[medium.position, medium.release] --> medium.track_count
+[medium.position, medium.release] --> medium.name
+[medium.last_updated, medium.track_count] --> medium.name
+[medium.last_updated, medium.position] --> medium.name
+[medium.position, medium.track_count] --> medium.name

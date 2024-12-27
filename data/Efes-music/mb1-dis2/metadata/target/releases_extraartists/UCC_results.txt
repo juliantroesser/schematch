@@ -1,0 +1,2 @@
+[releases_extraartists.name, releases_extraartists.role]
+[releases_extraartists.id, releases_extraartists.role]

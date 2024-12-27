@@ -1,0 +1,3 @@
+[artist_alias.id]
+[artist_alias.last_updated, artist_alias.name]
+[artist_alias.last_updated, artist_alias.sort_name]

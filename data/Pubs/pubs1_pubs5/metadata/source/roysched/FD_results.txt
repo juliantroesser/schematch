@@ -1,0 +1,6 @@
+[roysched.lorange, roysched.title_id] --> roysched.hirange
+[roysched.lorange, roysched.title_id] --> roysched.royalty
+[roysched.hirange, roysched.title_id] --> roysched.lorange
+[roysched.hirange, roysched.title_id] --> roysched.royalty
+[roysched.royalty, roysched.title_id] --> roysched.lorange
+[roysched.royalty, roysched.title_id] --> roysched.hirange

@@ -1,0 +1,27 @@
+[] --> film.data_rilascio
+[] --> film.lingua
+[] --> film.lingua_originale_id
+[film.film_id] --> film.titolo
+[film.film_id] --> film.descrizione
+[film.film_id] --> film.durata
+[film.film_id] --> film.costo_sostituzione
+[film.film_id] --> film.durata_noleggio
+[film.film_id] --> film.voto
+[film.film_id] --> film.tariffa_noleggio
+[film.titolo] --> film.film_id
+[film.titolo] --> film.descrizione
+[film.titolo] --> film.durata
+[film.titolo] --> film.costo_sostituzione
+[film.titolo] --> film.durata_noleggio
+[film.titolo] --> film.voto
+[film.titolo] --> film.tariffa_noleggio
+[film.descrizione] --> film.film_id
+[film.descrizione] --> film.titolo
+[film.descrizione] --> film.durata
+[film.descrizione] --> film.costo_sostituzione
+[film.descrizione] --> film.durata_noleggio
+[film.descrizione] --> film.voto
+[film.descrizione] --> film.tariffa_noleggio
+[film.costo_sostituzione, film.durata, film.durata_noleggio, film.tariffa_noleggio, film.voto] --> film.film_id
+[film.costo_sostituzione, film.durata, film.durata_noleggio, film.tariffa_noleggio, film.voto] --> film.titolo
+[film.costo_sostituzione, film.durata, film.durata_noleggio, film.tariffa_noleggio, film.voto] --> film.descrizione

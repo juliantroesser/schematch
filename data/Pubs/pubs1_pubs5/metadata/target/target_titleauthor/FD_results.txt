@@ -1,0 +1,5 @@
+[target_titleauthor.au_id, target_titleauthor.title_id] --> target_titleauthor.royaltyper
+[target_titleauthor.au_id, target_titleauthor.title_id] --> target_titleauthor.au_ord
+[target_titleauthor.au_id, target_titleauthor.royaltyper] --> target_titleauthor.au_ord
+[target_titleauthor.au_ord, target_titleauthor.title_id] --> target_titleauthor.au_id
+[target_titleauthor.au_ord, target_titleauthor.title_id] --> target_titleauthor.royaltyper

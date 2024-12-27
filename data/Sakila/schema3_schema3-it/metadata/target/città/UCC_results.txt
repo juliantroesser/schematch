@@ -1,0 +1,2 @@
+[città.città_id]
+[città.città, città.stato_id]

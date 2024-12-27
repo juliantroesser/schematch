@@ -1,0 +1,11 @@
+[] --> masters_videos.embed
+[masters_videos.src] --> masters_videos.title
+[masters_videos.src] --> masters_videos.description
+[masters_videos.src] --> masters_videos.duration
+[masters_videos.src] --> masters_videos.master_id
+[masters_videos.title] --> masters_videos.description
+[masters_videos.title] --> masters_videos.duration
+[masters_videos.title] --> masters_videos.master_id
+[masters_videos.description] --> masters_videos.title
+[masters_videos.description] --> masters_videos.duration
+[masters_videos.description] --> masters_videos.master_id

@@ -1,0 +1,2 @@
+[booktitle.bktitlenm]
+[booktitle.bktitleid]

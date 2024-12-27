@@ -1,0 +1,2 @@
+[label_alias_type.id] --> label_alias_type.name
+[label_alias_type.name] --> label_alias_type.id

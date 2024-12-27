@@ -1,0 +1,5 @@
+[dblp_acm_source.id] --> dblp_acm_source.title
+[dblp_acm_source.id] --> dblp_acm_source.authors
+[dblp_acm_source.id] --> dblp_acm_source.year
+[dblp_acm_source.id] --> dblp_acm_source.venue
+[dblp_acm_source.title, dblp_acm_source.year] --> dblp_acm_source.venue

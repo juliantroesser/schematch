@@ -1,0 +1,62 @@
+[] --> indirizzo.indirizzo2
+[indirizzo.indirizzo_id] --> indirizzo.indirizzo
+[indirizzo.indirizzo_id] --> indirizzo.telefono
+[indirizzo.indirizzo_id] --> indirizzo.città_id
+[indirizzo.indirizzo_id] --> indirizzo.città
+[indirizzo.indirizzo_id] --> indirizzo.codice_postale
+[indirizzo.indirizzo_id] --> indirizzo.distretto
+[indirizzo.indirizzo_id] --> indirizzo.stato_id
+[indirizzo.indirizzo_id] --> indirizzo.stato
+[indirizzo.indirizzo] --> indirizzo.indirizzo_id
+[indirizzo.indirizzo] --> indirizzo.telefono
+[indirizzo.indirizzo] --> indirizzo.città_id
+[indirizzo.indirizzo] --> indirizzo.città
+[indirizzo.indirizzo] --> indirizzo.codice_postale
+[indirizzo.indirizzo] --> indirizzo.distretto
+[indirizzo.indirizzo] --> indirizzo.stato_id
+[indirizzo.indirizzo] --> indirizzo.stato
+[indirizzo.telefono] --> indirizzo.codice_postale
+[indirizzo.città_id, indirizzo.telefono] --> indirizzo.indirizzo_id
+[indirizzo.città_id, indirizzo.telefono] --> indirizzo.indirizzo
+[indirizzo.città_id, indirizzo.telefono] --> indirizzo.distretto
+[indirizzo.città, indirizzo.telefono] --> indirizzo.indirizzo_id
+[indirizzo.città, indirizzo.telefono] --> indirizzo.indirizzo
+[indirizzo.città, indirizzo.telefono] --> indirizzo.distretto
+[indirizzo.distretto, indirizzo.telefono] --> indirizzo.indirizzo_id
+[indirizzo.distretto, indirizzo.telefono] --> indirizzo.indirizzo
+[indirizzo.distretto, indirizzo.telefono] --> indirizzo.città_id
+[indirizzo.distretto, indirizzo.telefono] --> indirizzo.città
+[indirizzo.distretto, indirizzo.telefono] --> indirizzo.stato_id
+[indirizzo.distretto, indirizzo.telefono] --> indirizzo.stato
+[indirizzo.stato_id, indirizzo.telefono] --> indirizzo.indirizzo_id
+[indirizzo.stato_id, indirizzo.telefono] --> indirizzo.indirizzo
+[indirizzo.stato_id, indirizzo.telefono] --> indirizzo.città_id
+[indirizzo.stato_id, indirizzo.telefono] --> indirizzo.città
+[indirizzo.stato_id, indirizzo.telefono] --> indirizzo.distretto
+[indirizzo.stato, indirizzo.telefono] --> indirizzo.indirizzo_id
+[indirizzo.stato, indirizzo.telefono] --> indirizzo.indirizzo
+[indirizzo.stato, indirizzo.telefono] --> indirizzo.città_id
+[indirizzo.stato, indirizzo.telefono] --> indirizzo.città
+[indirizzo.stato, indirizzo.telefono] --> indirizzo.distretto
+[indirizzo.città_id] --> indirizzo.città
+[indirizzo.città_id] --> indirizzo.stato_id
+[indirizzo.città_id] --> indirizzo.stato
+[indirizzo.città_id, indirizzo.codice_postale] --> indirizzo.distretto
+[indirizzo.città_id, indirizzo.distretto] --> indirizzo.codice_postale
+[indirizzo.città] --> indirizzo.città_id
+[indirizzo.città] --> indirizzo.stato_id
+[indirizzo.città] --> indirizzo.stato
+[indirizzo.città, indirizzo.codice_postale] --> indirizzo.distretto
+[indirizzo.città, indirizzo.distretto] --> indirizzo.codice_postale
+[indirizzo.codice_postale, indirizzo.distretto] --> indirizzo.città_id
+[indirizzo.codice_postale, indirizzo.distretto] --> indirizzo.città
+[indirizzo.codice_postale, indirizzo.distretto] --> indirizzo.stato_id
+[indirizzo.codice_postale, indirizzo.distretto] --> indirizzo.stato
+[indirizzo.codice_postale, indirizzo.stato_id] --> indirizzo.città_id
+[indirizzo.codice_postale, indirizzo.stato_id] --> indirizzo.città
+[indirizzo.codice_postale, indirizzo.stato_id] --> indirizzo.distretto
+[indirizzo.codice_postale, indirizzo.stato] --> indirizzo.città_id
+[indirizzo.codice_postale, indirizzo.stato] --> indirizzo.città
+[indirizzo.codice_postale, indirizzo.stato] --> indirizzo.distretto
+[indirizzo.stato_id] --> indirizzo.stato
+[indirizzo.stato] --> indirizzo.stato_id

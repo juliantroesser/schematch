@@ -1,0 +1,5 @@
+[recording.id]
+[recording.gid]
+[recording.length, recording.name]
+[recording.last_updated, recording.name]
+[recording.comment, recording.name]

@@ -1,0 +1,4 @@
+[discounts.discounttype]
+[discounts.discount]
+[discounts.lowqty, discounts.stor_id]
+[discounts.highqty, discounts.stor_id]

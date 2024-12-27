@@ -1,0 +1,4 @@
+[discs.discid]
+[discs.dtitle]
+[discs.disc_length]
+[discs.dgenre, discs.dyear, discs.submitted_via]

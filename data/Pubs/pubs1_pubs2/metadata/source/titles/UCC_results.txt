@@ -1,0 +1,7 @@
+[titles.title_id]
+[titles.title]
+[titles.notes]
+[titles.pubdate, titles.type, titles.ytd_sales]
+[titles.price, titles.pubdate, titles.type]
+[titles.price, titles.pub_id, titles.pubdate]
+[titles.advance, titles.pubdate, titles.type]

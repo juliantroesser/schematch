@@ -1,0 +1,4 @@
+[] --> script_language.frequency
+[script_language.id] --> script_language.language
+[script_language.id] --> script_language.script
+[script_language.language, script_language.script] --> script_language.id

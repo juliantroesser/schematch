@@ -1,0 +1,2 @@
+[artist_tag.artist, artist_tag.tag] --> artist_tag.last_updated
+[artist_tag.artist, artist_tag.tag] --> artist_tag.count

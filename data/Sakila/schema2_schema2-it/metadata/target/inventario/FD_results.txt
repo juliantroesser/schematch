@@ -1,0 +1,2 @@
+[inventario.inventario_id] --> inventario.film_id
+[inventario.inventario_id] --> inventario.negozio_id

@@ -1,0 +1,4 @@
+[film_categoria.film_id] --> film_categoria.categoria_id
+[film_categoria.film_id] --> film_categoria.nome_categoria
+[film_categoria.categoria_id] --> film_categoria.nome_categoria
+[film_categoria.nome_categoria] --> film_categoria.categoria_id

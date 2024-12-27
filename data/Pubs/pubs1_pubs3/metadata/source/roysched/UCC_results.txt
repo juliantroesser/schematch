@@ -1,0 +1,3 @@
+[roysched.lorange, roysched.title_id]
+[roysched.hirange, roysched.title_id]
+[roysched.royalty, roysched.title_id]

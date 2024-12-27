@@ -1,0 +1,168 @@
+[] --> article.note
+[article.articleid] --> article.title
+[article.articleid] --> article.class
+[article.articleid] --> article.journal
+[article.articleid] --> article.annote
+[article.articleid] --> article.year
+[article.articleid] --> article.vol
+[article.articleid] --> article.pages
+[article.articleid] --> article.num
+[article.articleid] --> article.month
+[article.articleid] --> article.loc
+[article.title] --> article.articleid
+[article.title] --> article.class
+[article.title] --> article.journal
+[article.title] --> article.annote
+[article.title] --> article.year
+[article.title] --> article.vol
+[article.title] --> article.pages
+[article.title] --> article.num
+[article.title] --> article.month
+[article.title] --> article.loc
+[article.class] --> article.annote
+[article.class, article.journal] --> article.articleid
+[article.class, article.journal] --> article.title
+[article.class, article.journal] --> article.year
+[article.class, article.journal] --> article.vol
+[article.class, article.journal] --> article.pages
+[article.class, article.journal] --> article.num
+[article.class, article.journal] --> article.month
+[article.class, article.journal] --> article.loc
+[article.class, article.year] --> article.articleid
+[article.class, article.year] --> article.title
+[article.class, article.year] --> article.journal
+[article.class, article.year] --> article.vol
+[article.class, article.year] --> article.pages
+[article.class, article.year] --> article.num
+[article.class, article.year] --> article.month
+[article.class, article.year] --> article.loc
+[article.class, article.vol] --> article.num
+[article.class, article.pages, article.vol] --> article.articleid
+[article.class, article.pages, article.vol] --> article.title
+[article.class, article.pages, article.vol] --> article.journal
+[article.class, article.pages, article.vol] --> article.year
+[article.class, article.pages, article.vol] --> article.month
+[article.class, article.loc, article.vol] --> article.articleid
+[article.class, article.loc, article.vol] --> article.title
+[article.class, article.loc, article.vol] --> article.journal
+[article.class, article.loc, article.vol] --> article.year
+[article.class, article.loc, article.vol] --> article.month
+[article.class, article.pages] --> article.loc
+[article.class, article.num, article.pages] --> article.articleid
+[article.class, article.num, article.pages] --> article.title
+[article.class, article.num, article.pages] --> article.journal
+[article.class, article.num, article.pages] --> article.year
+[article.class, article.num, article.pages] --> article.month
+[article.class, article.num] --> article.vol
+[article.class, article.loc, article.num] --> article.articleid
+[article.class, article.loc, article.num] --> article.title
+[article.class, article.loc, article.num] --> article.journal
+[article.class, article.loc, article.num] --> article.year
+[article.class, article.loc, article.num] --> article.month
+[article.class, article.month] --> article.articleid
+[article.class, article.month] --> article.title
+[article.class, article.month] --> article.journal
+[article.class, article.month] --> article.year
+[article.class, article.month] --> article.vol
+[article.class, article.month] --> article.pages
+[article.class, article.month] --> article.num
+[article.class, article.month] --> article.loc
+[article.class, article.loc] --> article.pages
+[article.annote, article.journal] --> article.year
+[article.annote, article.journal] --> article.vol
+[article.annote, article.journal] --> article.pages
+[article.annote, article.journal] --> article.loc
+[article.annote, article.journal, article.num] --> article.articleid
+[article.annote, article.journal, article.num] --> article.title
+[article.annote, article.journal, article.num] --> article.class
+[article.annote, article.journal, article.month] --> article.articleid
+[article.annote, article.journal, article.month] --> article.title
+[article.annote, article.journal, article.month] --> article.class
+[article.journal, article.year] --> article.annote
+[article.journal, article.year] --> article.vol
+[article.journal, article.year] --> article.pages
+[article.journal, article.year] --> article.loc
+[article.journal, article.num, article.year] --> article.articleid
+[article.journal, article.num, article.year] --> article.title
+[article.journal, article.num, article.year] --> article.class
+[article.journal, article.month, article.year] --> article.articleid
+[article.journal, article.month, article.year] --> article.title
+[article.journal, article.month, article.year] --> article.class
+[article.journal, article.vol] --> article.annote
+[article.journal, article.vol] --> article.year
+[article.journal, article.vol] --> article.pages
+[article.journal, article.vol] --> article.loc
+[article.journal, article.num, article.vol] --> article.articleid
+[article.journal, article.num, article.vol] --> article.title
+[article.journal, article.num, article.vol] --> article.class
+[article.journal, article.month, article.vol] --> article.articleid
+[article.journal, article.month, article.vol] --> article.title
+[article.journal, article.month, article.vol] --> article.class
+[article.journal, article.pages] --> article.annote
+[article.journal, article.pages] --> article.year
+[article.journal, article.pages] --> article.vol
+[article.journal, article.pages] --> article.loc
+[article.journal, article.num, article.pages] --> article.articleid
+[article.journal, article.num, article.pages] --> article.title
+[article.journal, article.num, article.pages] --> article.class
+[article.journal, article.month, article.pages] --> article.articleid
+[article.journal, article.month, article.pages] --> article.title
+[article.journal, article.month, article.pages] --> article.class
+[article.journal, article.num] --> article.month
+[article.journal, article.loc, article.num] --> article.articleid
+[article.journal, article.loc, article.num] --> article.title
+[article.journal, article.loc, article.num] --> article.class
+[article.journal, article.month] --> article.num
+[article.journal, article.loc, article.month] --> article.articleid
+[article.journal, article.loc, article.month] --> article.title
+[article.journal, article.loc, article.month] --> article.class
+[article.journal, article.loc] --> article.annote
+[article.journal, article.loc] --> article.year
+[article.journal, article.loc] --> article.vol
+[article.journal, article.loc] --> article.pages
+[article.annote, article.vol, article.year] --> article.journal
+[article.annote, article.vol, article.year] --> article.pages
+[article.annote, article.pages, article.year] --> article.journal
+[article.annote, article.pages, article.year] --> article.vol
+[article.annote, article.num, article.year] --> article.articleid
+[article.annote, article.num, article.year] --> article.title
+[article.annote, article.num, article.year] --> article.class
+[article.annote, article.num, article.year] --> article.journal
+[article.annote, article.num, article.year] --> article.pages
+[article.annote, article.num, article.year] --> article.month
+[article.annote, article.month, article.year] --> article.articleid
+[article.annote, article.month, article.year] --> article.title
+[article.annote, article.month, article.year] --> article.class
+[article.annote, article.month, article.year] --> article.journal
+[article.annote, article.loc, article.year] --> article.journal
+[article.annote, article.loc, article.year] --> article.vol
+[article.annote, article.loc, article.year] --> article.pages
+[article.annote, article.month, article.vol] --> article.articleid
+[article.annote, article.month, article.vol] --> article.title
+[article.annote, article.month, article.vol] --> article.class
+[article.annote, article.month, article.vol] --> article.journal
+[article.annote, article.month, article.vol] --> article.year
+[article.annote, article.month, article.vol] --> article.num
+[article.annote, article.loc, article.vol] --> article.pages
+[article.annote, article.pages] --> article.loc
+[article.annote, article.month, article.num] --> article.articleid
+[article.annote, article.month, article.num] --> article.title
+[article.annote, article.month, article.num] --> article.class
+[article.annote, article.month, article.num] --> article.journal
+[article.annote, article.month, article.num] --> article.year
+[article.annote, article.month, article.num] --> article.vol
+[article.annote, article.loc, article.num] --> article.pages
+[article.annote, article.month] --> article.pages
+[article.annote, article.month] --> article.loc
+[article.vol, article.year] --> article.loc
+[article.num, article.pages, article.year] --> article.month
+[article.num, article.year] --> article.vol
+[article.num, article.year] --> article.loc
+[article.month, article.year] --> article.vol
+[article.month, article.year] --> article.pages
+[article.month, article.year] --> article.num
+[article.month, article.year] --> article.loc
+[article.pages, article.vol] --> article.loc
+[article.month, article.pages, article.vol] --> article.num
+[article.month, article.vol] --> article.loc
+[article.loc, article.month, article.num] --> article.vol

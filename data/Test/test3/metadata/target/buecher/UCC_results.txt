@@ -1,0 +1,2 @@
+[buecher.titel]
+[buecher.numPages]

@@ -1,0 +1,6 @@
+[isrc.id]
+[isrc.recording]
+[isrc.isrc]
+[isrc.source]
+[isrc.edits_pending]
+[isrc.created]

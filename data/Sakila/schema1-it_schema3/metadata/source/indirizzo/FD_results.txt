@@ -1,0 +1,15 @@
+[] --> indirizzo.indirizzo2
+[] --> indirizzo.codice_postale
+[] --> indirizzo.telefono
+[indirizzo.indirizzo_id] --> indirizzo.indirizzo
+[indirizzo.indirizzo_id] --> indirizzo.distretto
+[indirizzo.indirizzo_id] --> indirizzo.città_id
+[indirizzo.indirizzo] --> indirizzo.indirizzo_id
+[indirizzo.indirizzo] --> indirizzo.distretto
+[indirizzo.indirizzo] --> indirizzo.città_id
+[indirizzo.distretto] --> indirizzo.indirizzo_id
+[indirizzo.distretto] --> indirizzo.indirizzo
+[indirizzo.distretto] --> indirizzo.città_id
+[indirizzo.città_id] --> indirizzo.indirizzo_id
+[indirizzo.città_id] --> indirizzo.indirizzo
+[indirizzo.città_id] --> indirizzo.distretto

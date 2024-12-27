@@ -1,0 +1,6 @@
+[label.id]
+[label.gid]
+[label.name]
+[label.sort_name]
+[label.area, label.begin_date_year]
+[label.area, label.type]

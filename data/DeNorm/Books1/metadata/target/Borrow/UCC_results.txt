@@ -1,0 +1,5 @@
+[Borrow.Date]
+[Borrow.ID, Borrow.Person]
+[Borrow.ID, Borrow.PName]
+[Borrow.Name, Borrow.Person]
+[Borrow.Name, Borrow.PName]

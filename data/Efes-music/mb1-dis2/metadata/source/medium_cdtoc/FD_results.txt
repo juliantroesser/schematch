@@ -1,0 +1,8 @@
+[] --> medium_cdtoc.edits_pending
+[] --> medium_cdtoc.last_updated
+[medium_cdtoc.id] --> medium_cdtoc.medium
+[medium_cdtoc.id] --> medium_cdtoc.cdtoc
+[medium_cdtoc.medium] --> medium_cdtoc.id
+[medium_cdtoc.medium] --> medium_cdtoc.cdtoc
+[medium_cdtoc.cdtoc] --> medium_cdtoc.id
+[medium_cdtoc.cdtoc] --> medium_cdtoc.medium

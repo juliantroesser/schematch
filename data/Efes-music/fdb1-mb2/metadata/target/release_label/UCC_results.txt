@@ -1,0 +1,3 @@
+[release_label.id]
+[release_label.label, release_label.release]
+[release_label.catalog_number, release_label.label]

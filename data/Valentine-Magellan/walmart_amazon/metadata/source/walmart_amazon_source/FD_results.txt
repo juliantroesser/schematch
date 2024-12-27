@@ -1,0 +1,10 @@
+[walmart_amazon_source.id] --> walmart_amazon_source.title
+[walmart_amazon_source.id] --> walmart_amazon_source.modelno
+[walmart_amazon_source.id] --> walmart_amazon_source.price
+[walmart_amazon_source.id] --> walmart_amazon_source.brand
+[walmart_amazon_source.id] --> walmart_amazon_source.category
+[walmart_amazon_source.title] --> walmart_amazon_source.brand
+[walmart_amazon_source.title] --> walmart_amazon_source.category
+[walmart_amazon_source.modelno, walmart_amazon_source.title] --> walmart_amazon_source.id
+[walmart_amazon_source.modelno, walmart_amazon_source.title] --> walmart_amazon_source.price
+[walmart_amazon_source.brand, walmart_amazon_source.modelno, walmart_amazon_source.price] --> walmart_amazon_source.category

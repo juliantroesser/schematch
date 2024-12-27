@@ -1,0 +1,22 @@
+[fodors_zagats_target.id] --> fodors_zagats_target.name
+[fodors_zagats_target.id] --> fodors_zagats_target.class
+[fodors_zagats_target.id] --> fodors_zagats_target.phone
+[fodors_zagats_target.id] --> fodors_zagats_target.addr
+[fodors_zagats_target.id] --> fodors_zagats_target.type
+[fodors_zagats_target.id] --> fodors_zagats_target.city
+[fodors_zagats_target.name] --> fodors_zagats_target.id
+[fodors_zagats_target.name] --> fodors_zagats_target.class
+[fodors_zagats_target.name] --> fodors_zagats_target.phone
+[fodors_zagats_target.name] --> fodors_zagats_target.addr
+[fodors_zagats_target.name] --> fodors_zagats_target.type
+[fodors_zagats_target.name] --> fodors_zagats_target.city
+[fodors_zagats_target.class] --> fodors_zagats_target.id
+[fodors_zagats_target.class] --> fodors_zagats_target.name
+[fodors_zagats_target.class] --> fodors_zagats_target.phone
+[fodors_zagats_target.class] --> fodors_zagats_target.addr
+[fodors_zagats_target.class] --> fodors_zagats_target.type
+[fodors_zagats_target.class] --> fodors_zagats_target.city
+[fodors_zagats_target.phone] --> fodors_zagats_target.addr
+[fodors_zagats_target.phone] --> fodors_zagats_target.city
+[fodors_zagats_target.addr, fodors_zagats_target.type] --> fodors_zagats_target.phone
+[fodors_zagats_target.addr, fodors_zagats_target.type] --> fodors_zagats_target.city

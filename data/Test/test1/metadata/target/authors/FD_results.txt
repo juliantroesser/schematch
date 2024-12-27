@@ -1,0 +1,2 @@
+[authors.authorid] --> authors.full_name
+[authors.full_name] --> authors.authorid

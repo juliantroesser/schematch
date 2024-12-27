@@ -1,0 +1,2 @@
+[] --> label_meta.rating
+[] --> label_meta.rating_count

@@ -1,0 +1,2 @@
+[pub_info.pub_id] --> pub_info.pr_info
+[pub_info.pr_info] --> pub_info.pub_id

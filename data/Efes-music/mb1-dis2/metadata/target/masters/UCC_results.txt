@@ -1,0 +1,3 @@
+[masters.id]
+[masters.title]
+[masters.main_release]

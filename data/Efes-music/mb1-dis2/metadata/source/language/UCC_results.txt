@@ -1,0 +1,4 @@
+[language.id]
+[language.name]
+[language.iso_code_2t, language.iso_code_3]
+[language.iso_code_2b, language.iso_code_3]

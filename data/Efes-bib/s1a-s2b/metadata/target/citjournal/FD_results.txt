@@ -1,0 +1,2 @@
+[citjournal.citkey] --> citjournal.jrnlid
+[citjournal.jrnlid] --> citjournal.citkey

@@ -1,0 +1,2 @@
+[masters_images.uri]
+[masters_images.uri150]

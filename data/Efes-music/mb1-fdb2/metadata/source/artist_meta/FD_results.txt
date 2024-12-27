@@ -1,0 +1,2 @@
+[artist_meta.id] --> artist_meta.rating
+[artist_meta.id] --> artist_meta.rating_count

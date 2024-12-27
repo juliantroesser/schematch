@@ -1,0 +1,7 @@
+[medium.id]
+[medium.last_updated, medium.release]
+[medium.name, medium.release]
+[medium.position, medium.release]
+[medium.format, medium.last_updated, medium.track_count]
+[medium.format, medium.name, medium.track_count]
+[medium.format, medium.position, medium.track_count]

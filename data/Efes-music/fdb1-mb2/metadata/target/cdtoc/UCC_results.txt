@@ -1,0 +1,3 @@
+[cdtoc.id]
+[cdtoc.discid]
+[cdtoc.track_offset]

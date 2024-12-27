@@ -1,0 +1,5 @@
+[Books.DueDate]
+[Books.BookID, Books.BorrowerID]
+[Books.BookID, Books.BorrowerName]
+[Books.BorrowerID, Books.Title]
+[Books.BorrowerName, Books.Title]

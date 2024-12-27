@@ -1,0 +1,5 @@
+[cliente.cliente_id]
+[cliente.cognome]
+[cliente.email]
+[cliente.indirizzo_id]
+[cliente.data_creazione, cliente.nome]

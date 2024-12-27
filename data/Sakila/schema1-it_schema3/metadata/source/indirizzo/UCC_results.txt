@@ -1,0 +1,4 @@
+[indirizzo.indirizzo_id]
+[indirizzo.indirizzo]
+[indirizzo.distretto]
+[indirizzo.città_id]

@@ -1,0 +1,2 @@
+[beeradvo_ratebeer_target.id]
+[beeradvo_ratebeer_target.Beer_Name]

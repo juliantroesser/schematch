@@ -1,0 +1,73 @@
+[products.product_id] --> products.product_name
+[products.product_id] --> products.quantity_per_unit
+[products.product_id] --> products.unit_price
+[products.product_id] --> products.units_in_stock
+[products.product_id] --> products.supplier_id
+[products.product_id] --> products.units_on_order
+[products.product_id] --> products.category_id
+[products.product_id] --> products.reorder_level
+[products.product_id] --> products.discontinued
+[products.product_name] --> products.product_id
+[products.product_name] --> products.quantity_per_unit
+[products.product_name] --> products.unit_price
+[products.product_name] --> products.units_in_stock
+[products.product_name] --> products.supplier_id
+[products.product_name] --> products.units_on_order
+[products.product_name] --> products.category_id
+[products.product_name] --> products.reorder_level
+[products.product_name] --> products.discontinued
+[products.quantity_per_unit] --> products.discontinued
+[products.quantity_per_unit, products.unit_price] --> products.supplier_id
+[products.quantity_per_unit, products.unit_price] --> products.units_on_order
+[products.quantity_per_unit, products.unit_price] --> products.category_id
+[products.quantity_per_unit, products.reorder_level, products.unit_price] --> products.product_id
+[products.quantity_per_unit, products.reorder_level, products.unit_price] --> products.product_name
+[products.quantity_per_unit, products.reorder_level, products.unit_price] --> products.units_in_stock
+[products.quantity_per_unit, products.units_in_stock] --> products.product_id
+[products.quantity_per_unit, products.units_in_stock] --> products.product_name
+[products.quantity_per_unit, products.units_in_stock] --> products.unit_price
+[products.quantity_per_unit, products.units_in_stock] --> products.supplier_id
+[products.quantity_per_unit, products.units_in_stock] --> products.units_on_order
+[products.quantity_per_unit, products.units_in_stock] --> products.category_id
+[products.quantity_per_unit, products.units_in_stock] --> products.reorder_level
+[products.quantity_per_unit, products.supplier_id] --> products.category_id
+[products.quantity_per_unit, products.units_on_order] --> products.category_id
+[products.quantity_per_unit, products.reorder_level] --> products.units_on_order
+[products.quantity_per_unit, products.reorder_level] --> products.category_id
+[products.unit_price, products.units_in_stock] --> products.product_id
+[products.unit_price, products.units_in_stock] --> products.product_name
+[products.unit_price, products.units_in_stock] --> products.quantity_per_unit
+[products.unit_price, products.units_in_stock] --> products.supplier_id
+[products.unit_price, products.units_in_stock] --> products.units_on_order
+[products.unit_price, products.units_in_stock] --> products.category_id
+[products.unit_price, products.units_in_stock] --> products.reorder_level
+[products.unit_price, products.units_in_stock] --> products.discontinued
+[products.supplier_id, products.unit_price] --> products.quantity_per_unit
+[products.supplier_id, products.unit_price] --> products.units_on_order
+[products.supplier_id, products.unit_price] --> products.category_id
+[products.supplier_id, products.unit_price] --> products.discontinued
+[products.reorder_level, products.supplier_id, products.unit_price] --> products.product_id
+[products.reorder_level, products.supplier_id, products.unit_price] --> products.product_name
+[products.reorder_level, products.supplier_id, products.unit_price] --> products.units_in_stock
+[products.reorder_level, products.unit_price, products.units_on_order] --> products.product_id
+[products.reorder_level, products.unit_price, products.units_on_order] --> products.product_name
+[products.reorder_level, products.unit_price, products.units_on_order] --> products.quantity_per_unit
+[products.reorder_level, products.unit_price, products.units_on_order] --> products.units_in_stock
+[products.reorder_level, products.unit_price, products.units_on_order] --> products.supplier_id
+[products.reorder_level, products.unit_price, products.units_on_order] --> products.category_id
+[products.category_id, products.unit_price] --> products.units_on_order
+[products.category_id, products.unit_price] --> products.discontinued
+[products.category_id, products.reorder_level, products.unit_price] --> products.product_id
+[products.category_id, products.reorder_level, products.unit_price] --> products.product_name
+[products.category_id, products.reorder_level, products.unit_price] --> products.quantity_per_unit
+[products.category_id, products.reorder_level, products.unit_price] --> products.units_in_stock
+[products.category_id, products.reorder_level, products.unit_price] --> products.supplier_id
+[products.reorder_level, products.unit_price] --> products.discontinued
+[products.supplier_id, products.units_in_stock] --> products.units_on_order
+[products.supplier_id, products.units_in_stock] --> products.category_id
+[products.supplier_id, products.units_in_stock] --> products.discontinued
+[products.reorder_level, products.supplier_id, products.units_in_stock] --> products.product_id
+[products.reorder_level, products.supplier_id, products.units_in_stock] --> products.product_name
+[products.reorder_level, products.supplier_id, products.units_in_stock] --> products.quantity_per_unit
+[products.reorder_level, products.supplier_id, products.units_in_stock] --> products.unit_price
+[products.category_id, products.reorder_level, products.units_in_stock] --> products.discontinued

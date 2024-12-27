@@ -1,0 +1,3 @@
+[artist_credit_name.artist, artist_credit_name.artist_credit]
+[artist_credit_name.artist_credit, artist_credit_name.name]
+[artist_credit_name.artist_credit, artist_credit_name.position]

@@ -1,0 +1,65 @@
+[Borrow.DueDate] --> Borrow.ID
+[Borrow.DueDate] --> Borrow.Author
+[Borrow.DueDate] --> Borrow.ISBN
+[Borrow.DueDate] --> Borrow.T
+[Borrow.DueDate] --> Borrow.G
+[Borrow.DueDate] --> Borrow.BorrowerID
+[Borrow.DueDate] --> Borrow.BN
+[Borrow.DueDate] --> Borrow.BranchID
+[Borrow.ID] --> Borrow.Author
+[Borrow.ID] --> Borrow.ISBN
+[Borrow.ID] --> Borrow.T
+[Borrow.ID] --> Borrow.G
+[Borrow.ID] --> Borrow.BorrowerID
+[Borrow.ID] --> Borrow.BN
+[Borrow.ID] --> Borrow.BranchID
+[Borrow.Author] --> Borrow.ID
+[Borrow.Author] --> Borrow.ISBN
+[Borrow.Author] --> Borrow.T
+[Borrow.Author] --> Borrow.G
+[Borrow.Author] --> Borrow.BorrowerID
+[Borrow.Author] --> Borrow.BN
+[Borrow.Author] --> Borrow.BranchID
+[Borrow.ISBN] --> Borrow.ID
+[Borrow.ISBN] --> Borrow.Author
+[Borrow.ISBN] --> Borrow.T
+[Borrow.ISBN] --> Borrow.G
+[Borrow.ISBN] --> Borrow.BorrowerID
+[Borrow.ISBN] --> Borrow.BN
+[Borrow.ISBN] --> Borrow.BranchID
+[Borrow.T] --> Borrow.BorrowerID
+[Borrow.T] --> Borrow.BN
+[Borrow.G, Borrow.T] --> Borrow.ID
+[Borrow.G, Borrow.T] --> Borrow.Author
+[Borrow.G, Borrow.T] --> Borrow.ISBN
+[Borrow.G, Borrow.T] --> Borrow.BranchID
+[Borrow.BranchID, Borrow.T] --> Borrow.ID
+[Borrow.BranchID, Borrow.T] --> Borrow.Author
+[Borrow.BranchID, Borrow.T] --> Borrow.ISBN
+[Borrow.BranchID, Borrow.T] --> Borrow.G
+[Borrow.BorrowerID, Borrow.G] --> Borrow.ID
+[Borrow.BorrowerID, Borrow.G] --> Borrow.Author
+[Borrow.BorrowerID, Borrow.G] --> Borrow.ISBN
+[Borrow.BorrowerID, Borrow.G] --> Borrow.BranchID
+[Borrow.BN, Borrow.G] --> Borrow.ID
+[Borrow.BN, Borrow.G] --> Borrow.Author
+[Borrow.BN, Borrow.G] --> Borrow.ISBN
+[Borrow.BN, Borrow.G] --> Borrow.BranchID
+[Borrow.BranchID, Borrow.G] --> Borrow.ID
+[Borrow.BranchID, Borrow.G] --> Borrow.Author
+[Borrow.BranchID, Borrow.G] --> Borrow.ISBN
+[Borrow.BranchID, Borrow.G] --> Borrow.T
+[Borrow.BranchID, Borrow.G] --> Borrow.BorrowerID
+[Borrow.BranchID, Borrow.G] --> Borrow.BN
+[Borrow.BorrowerID] --> Borrow.T
+[Borrow.BorrowerID] --> Borrow.BN
+[Borrow.BorrowerID, Borrow.BranchID] --> Borrow.ID
+[Borrow.BorrowerID, Borrow.BranchID] --> Borrow.Author
+[Borrow.BorrowerID, Borrow.BranchID] --> Borrow.ISBN
+[Borrow.BorrowerID, Borrow.BranchID] --> Borrow.G
+[Borrow.BN] --> Borrow.T
+[Borrow.BN] --> Borrow.BorrowerID
+[Borrow.BN, Borrow.BranchID] --> Borrow.ID
+[Borrow.BN, Borrow.BranchID] --> Borrow.Author
+[Borrow.BN, Borrow.BranchID] --> Borrow.ISBN
+[Borrow.BN, Borrow.BranchID] --> Borrow.G

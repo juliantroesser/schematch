@@ -1,0 +1,64 @@
+[target_titles.title_id] --> target_titles.title
+[target_titles.title_id] --> target_titles.notes
+[target_titles.title_id] --> target_titles.ytd_sales
+[target_titles.title_id] --> target_titles.price
+[target_titles.title_id] --> target_titles.advance
+[target_titles.title_id] --> target_titles.pubdate
+[target_titles.title_id] --> target_titles.type
+[target_titles.title_id] --> target_titles.royalty
+[target_titles.title_id] --> target_titles.pub_id
+[target_titles.title] --> target_titles.title_id
+[target_titles.title] --> target_titles.notes
+[target_titles.title] --> target_titles.ytd_sales
+[target_titles.title] --> target_titles.price
+[target_titles.title] --> target_titles.advance
+[target_titles.title] --> target_titles.pubdate
+[target_titles.title] --> target_titles.type
+[target_titles.title] --> target_titles.royalty
+[target_titles.title] --> target_titles.pub_id
+[target_titles.notes] --> target_titles.title_id
+[target_titles.notes] --> target_titles.title
+[target_titles.notes] --> target_titles.ytd_sales
+[target_titles.notes] --> target_titles.price
+[target_titles.notes] --> target_titles.advance
+[target_titles.notes] --> target_titles.pubdate
+[target_titles.notes] --> target_titles.type
+[target_titles.notes] --> target_titles.royalty
+[target_titles.notes] --> target_titles.pub_id
+[target_titles.ytd_sales] --> target_titles.royalty
+[target_titles.price, target_titles.ytd_sales] --> target_titles.advance
+[target_titles.pubdate, target_titles.type, target_titles.ytd_sales] --> target_titles.title_id
+[target_titles.pubdate, target_titles.type, target_titles.ytd_sales] --> target_titles.title
+[target_titles.pubdate, target_titles.type, target_titles.ytd_sales] --> target_titles.notes
+[target_titles.pub_id, target_titles.pubdate, target_titles.ytd_sales] --> target_titles.advance
+[target_titles.type, target_titles.ytd_sales] --> target_titles.price
+[target_titles.type, target_titles.ytd_sales] --> target_titles.advance
+[target_titles.type, target_titles.ytd_sales] --> target_titles.pub_id
+[target_titles.advance, target_titles.price] --> target_titles.ytd_sales
+[target_titles.advance, target_titles.price] --> target_titles.royalty
+[target_titles.price, target_titles.pubdate] --> target_titles.royalty
+[target_titles.price, target_titles.pubdate, target_titles.type] --> target_titles.title_id
+[target_titles.price, target_titles.pubdate, target_titles.type] --> target_titles.title
+[target_titles.price, target_titles.pubdate, target_titles.type] --> target_titles.notes
+[target_titles.price, target_titles.pub_id, target_titles.pubdate] --> target_titles.title_id
+[target_titles.price, target_titles.pub_id, target_titles.pubdate] --> target_titles.title
+[target_titles.price, target_titles.pub_id, target_titles.pubdate] --> target_titles.notes
+[target_titles.price, target_titles.type] --> target_titles.ytd_sales
+[target_titles.price, target_titles.type] --> target_titles.advance
+[target_titles.price, target_titles.type] --> target_titles.royalty
+[target_titles.price, target_titles.type] --> target_titles.pub_id
+[target_titles.price, target_titles.pub_id] --> target_titles.ytd_sales
+[target_titles.price, target_titles.pub_id] --> target_titles.advance
+[target_titles.price, target_titles.pub_id] --> target_titles.type
+[target_titles.price, target_titles.pub_id] --> target_titles.royalty
+[target_titles.advance, target_titles.pubdate, target_titles.type] --> target_titles.title_id
+[target_titles.advance, target_titles.pubdate, target_titles.type] --> target_titles.title
+[target_titles.advance, target_titles.pubdate, target_titles.type] --> target_titles.notes
+[target_titles.advance, target_titles.pubdate, target_titles.type] --> target_titles.ytd_sales
+[target_titles.advance, target_titles.pubdate, target_titles.type] --> target_titles.price
+[target_titles.advance, target_titles.pubdate, target_titles.royalty] --> target_titles.ytd_sales
+[target_titles.advance, target_titles.pub_id, target_titles.pubdate] --> target_titles.ytd_sales
+[target_titles.advance, target_titles.type] --> target_titles.royalty
+[target_titles.advance, target_titles.type] --> target_titles.pub_id
+[target_titles.advance, target_titles.pub_id] --> target_titles.royalty
+[target_titles.pubdate, target_titles.type] --> target_titles.pub_id

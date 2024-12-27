@@ -1,0 +1,3 @@
+[releases_artists.id]
+[releases_artists.name]
+[releases_artists.join_, releases_artists.release_id]

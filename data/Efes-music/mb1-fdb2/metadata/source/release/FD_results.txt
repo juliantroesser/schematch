@@ -1,0 +1,56 @@
+[] --> release.status
+[] --> release.comment
+[] --> release.edits_pending
+[] --> release.quality
+[release.id] --> release.gid
+[release.id] --> release.name
+[release.id] --> release.release_group
+[release.id] --> release.artist_credit
+[release.id] --> release.last_updated
+[release.id] --> release.language
+[release.id] --> release.barcode
+[release.id] --> release.packaging
+[release.id] --> release.script
+[release.gid] --> release.id
+[release.gid] --> release.name
+[release.gid] --> release.release_group
+[release.gid] --> release.artist_credit
+[release.gid] --> release.last_updated
+[release.gid] --> release.language
+[release.gid] --> release.barcode
+[release.gid] --> release.packaging
+[release.gid] --> release.script
+[release.name] --> release.id
+[release.name] --> release.gid
+[release.name] --> release.release_group
+[release.name] --> release.artist_credit
+[release.name] --> release.last_updated
+[release.name] --> release.language
+[release.name] --> release.barcode
+[release.name] --> release.packaging
+[release.name] --> release.script
+[release.release_group] --> release.id
+[release.release_group] --> release.gid
+[release.release_group] --> release.name
+[release.release_group] --> release.artist_credit
+[release.release_group] --> release.last_updated
+[release.release_group] --> release.language
+[release.release_group] --> release.barcode
+[release.release_group] --> release.packaging
+[release.release_group] --> release.script
+[release.artist_credit] --> release.language
+[release.artist_credit] --> release.packaging
+[release.artist_credit] --> release.script
+[release.artist_credit, release.last_updated] --> release.id
+[release.artist_credit, release.last_updated] --> release.gid
+[release.artist_credit, release.last_updated] --> release.name
+[release.artist_credit, release.last_updated] --> release.release_group
+[release.artist_credit, release.barcode] --> release.id
+[release.artist_credit, release.barcode] --> release.gid
+[release.artist_credit, release.barcode] --> release.name
+[release.artist_credit, release.barcode] --> release.release_group
+[release.artist_credit, release.barcode] --> release.last_updated
+[release.last_updated] --> release.barcode
+[release.last_updated] --> release.packaging
+[release.last_updated, release.script] --> release.language
+[release.language] --> release.script

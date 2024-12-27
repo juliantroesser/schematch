@@ -1,0 +1,19 @@
+[noleggio.noleggio_id] --> noleggio.data_restituzione
+[noleggio.noleggio_id] --> noleggio.data_noleggio
+[noleggio.noleggio_id] --> noleggio.inventario_id
+[noleggio.noleggio_id] --> noleggio.cliente_id
+[noleggio.noleggio_id] --> noleggio.personale_id
+[noleggio.data_restituzione, noleggio.inventario_id] --> noleggio.noleggio_id
+[noleggio.data_restituzione, noleggio.inventario_id] --> noleggio.data_noleggio
+[noleggio.data_restituzione, noleggio.inventario_id] --> noleggio.cliente_id
+[noleggio.data_restituzione, noleggio.inventario_id] --> noleggio.personale_id
+[noleggio.cliente_id, noleggio.data_restituzione] --> noleggio.data_noleggio
+[noleggio.data_noleggio, noleggio.inventario_id] --> noleggio.noleggio_id
+[noleggio.data_noleggio, noleggio.inventario_id] --> noleggio.data_restituzione
+[noleggio.data_noleggio, noleggio.inventario_id] --> noleggio.cliente_id
+[noleggio.data_noleggio, noleggio.inventario_id] --> noleggio.personale_id
+[noleggio.cliente_id, noleggio.data_noleggio] --> noleggio.data_restituzione
+[noleggio.cliente_id, noleggio.inventario_id] --> noleggio.noleggio_id
+[noleggio.cliente_id, noleggio.inventario_id] --> noleggio.data_restituzione
+[noleggio.cliente_id, noleggio.inventario_id] --> noleggio.data_noleggio
+[noleggio.cliente_id, noleggio.inventario_id] --> noleggio.personale_id

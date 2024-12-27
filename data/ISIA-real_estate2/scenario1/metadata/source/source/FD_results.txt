@@ -1,0 +1,1041 @@
+[] --> source.type
+[source.house_address] --> source.house_description
+[source.house_address] --> source.house_price
+[source.house_address] --> source.agent_name
+[source.house_address] --> source.building_area
+[source.house_address] --> source.agent_email
+[source.house_address] --> source.school
+[source.house_address] --> source.agent_phone
+[source.house_address] --> source.firm_name
+[source.house_address] --> source.firm_address
+[source.house_address] --> source.utilities
+[source.house_address] --> source.lot_area
+[source.house_address] --> source.num_rooms
+[source.house_address] --> source.garage
+[source.house_address] --> source.fireplace
+[source.house_address] --> source.sewer
+[source.house_address] --> source.water
+[source.house_address] --> source.electricity
+[source.house_description] --> source.fireplace
+[source.house_description, source.house_price] --> source.lot_area
+[source.house_description, source.house_price] --> source.sewer
+[source.house_description, source.house_price] --> source.water
+[source.firm_address, source.house_description, source.house_price] --> source.house_address
+[source.house_description, source.house_price, source.utilities] --> source.house_address
+[source.house_description, source.house_price, source.utilities] --> source.agent_name
+[source.house_description, source.house_price, source.utilities] --> source.building_area
+[source.house_description, source.house_price, source.utilities] --> source.agent_email
+[source.house_description, source.house_price, source.utilities] --> source.school
+[source.house_description, source.house_price, source.utilities] --> source.agent_phone
+[source.house_description, source.house_price, source.utilities] --> source.firm_name
+[source.house_description, source.house_price, source.utilities] --> source.num_rooms
+[source.garage, source.house_description, source.house_price] --> source.house_address
+[source.garage, source.house_description, source.house_price] --> source.agent_name
+[source.garage, source.house_description, source.house_price] --> source.building_area
+[source.garage, source.house_description, source.house_price] --> source.agent_email
+[source.garage, source.house_description, source.house_price] --> source.school
+[source.garage, source.house_description, source.house_price] --> source.agent_phone
+[source.garage, source.house_description, source.house_price] --> source.firm_name
+[source.garage, source.house_description, source.house_price] --> source.num_rooms
+[source.agent_name, source.house_description] --> source.house_address
+[source.agent_name, source.house_description] --> source.house_price
+[source.agent_name, source.house_description] --> source.building_area
+[source.agent_name, source.house_description] --> source.school
+[source.agent_name, source.house_description] --> source.utilities
+[source.agent_name, source.house_description] --> source.lot_area
+[source.agent_name, source.house_description] --> source.num_rooms
+[source.agent_name, source.house_description] --> source.garage
+[source.agent_name, source.house_description] --> source.sewer
+[source.agent_name, source.house_description] --> source.water
+[source.agent_name, source.house_description] --> source.electricity
+[source.building_area, source.house_description] --> source.house_address
+[source.building_area, source.house_description] --> source.house_price
+[source.building_area, source.house_description] --> source.agent_name
+[source.building_area, source.house_description] --> source.agent_email
+[source.building_area, source.house_description] --> source.school
+[source.building_area, source.house_description] --> source.agent_phone
+[source.building_area, source.house_description] --> source.firm_name
+[source.building_area, source.house_description] --> source.firm_address
+[source.building_area, source.house_description] --> source.utilities
+[source.building_area, source.house_description] --> source.lot_area
+[source.building_area, source.house_description] --> source.num_rooms
+[source.building_area, source.house_description] --> source.garage
+[source.building_area, source.house_description] --> source.sewer
+[source.building_area, source.house_description] --> source.water
+[source.building_area, source.house_description] --> source.electricity
+[source.agent_email, source.house_description] --> source.house_address
+[source.agent_email, source.house_description] --> source.house_price
+[source.agent_email, source.house_description] --> source.agent_name
+[source.agent_email, source.house_description] --> source.building_area
+[source.agent_email, source.house_description] --> source.school
+[source.agent_email, source.house_description] --> source.agent_phone
+[source.agent_email, source.house_description] --> source.firm_name
+[source.agent_email, source.house_description] --> source.firm_address
+[source.agent_email, source.house_description] --> source.utilities
+[source.agent_email, source.house_description] --> source.lot_area
+[source.agent_email, source.house_description] --> source.num_rooms
+[source.agent_email, source.house_description] --> source.garage
+[source.agent_email, source.house_description] --> source.sewer
+[source.agent_email, source.house_description] --> source.water
+[source.agent_email, source.house_description] --> source.electricity
+[source.house_description, source.school] --> source.house_address
+[source.house_description, source.school] --> source.house_price
+[source.house_description, source.school] --> source.agent_name
+[source.house_description, source.school] --> source.building_area
+[source.house_description, source.school] --> source.agent_email
+[source.house_description, source.school] --> source.agent_phone
+[source.house_description, source.school] --> source.firm_name
+[source.house_description, source.school] --> source.firm_address
+[source.house_description, source.school] --> source.utilities
+[source.house_description, source.school] --> source.lot_area
+[source.house_description, source.school] --> source.num_rooms
+[source.house_description, source.school] --> source.garage
+[source.house_description, source.school] --> source.sewer
+[source.house_description, source.school] --> source.water
+[source.house_description, source.school] --> source.electricity
+[source.agent_phone, source.house_description] --> source.house_address
+[source.agent_phone, source.house_description] --> source.house_price
+[source.agent_phone, source.house_description] --> source.agent_name
+[source.agent_phone, source.house_description] --> source.building_area
+[source.agent_phone, source.house_description] --> source.agent_email
+[source.agent_phone, source.house_description] --> source.school
+[source.agent_phone, source.house_description] --> source.firm_name
+[source.agent_phone, source.house_description] --> source.firm_address
+[source.agent_phone, source.house_description] --> source.utilities
+[source.agent_phone, source.house_description] --> source.lot_area
+[source.agent_phone, source.house_description] --> source.num_rooms
+[source.agent_phone, source.house_description] --> source.garage
+[source.agent_phone, source.house_description] --> source.sewer
+[source.agent_phone, source.house_description] --> source.water
+[source.agent_phone, source.house_description] --> source.electricity
+[source.firm_name, source.house_description] --> source.house_address
+[source.firm_name, source.house_description] --> source.house_price
+[source.firm_name, source.house_description] --> source.agent_name
+[source.firm_name, source.house_description] --> source.building_area
+[source.firm_name, source.house_description] --> source.agent_email
+[source.firm_name, source.house_description] --> source.school
+[source.firm_name, source.house_description] --> source.agent_phone
+[source.firm_name, source.house_description] --> source.firm_address
+[source.firm_name, source.house_description] --> source.utilities
+[source.firm_name, source.house_description] --> source.lot_area
+[source.firm_name, source.house_description] --> source.num_rooms
+[source.firm_name, source.house_description] --> source.garage
+[source.firm_name, source.house_description] --> source.sewer
+[source.firm_name, source.house_description] --> source.water
+[source.firm_name, source.house_description] --> source.electricity
+[source.firm_address, source.house_description] --> source.utilities
+[source.firm_address, source.house_description] --> source.garage
+[source.firm_address, source.house_description, source.lot_area] --> source.house_address
+[source.firm_address, source.house_description, source.lot_area] --> source.agent_name
+[source.firm_address, source.house_description, source.lot_area] --> source.building_area
+[source.firm_address, source.house_description, source.lot_area] --> source.agent_email
+[source.firm_address, source.house_description, source.lot_area] --> source.school
+[source.firm_address, source.house_description, source.lot_area] --> source.agent_phone
+[source.firm_address, source.house_description, source.lot_area] --> source.firm_name
+[source.firm_address, source.house_description, source.lot_area] --> source.num_rooms
+[source.firm_address, source.house_description, source.sewer] --> source.house_address
+[source.firm_address, source.house_description, source.sewer] --> source.agent_name
+[source.firm_address, source.house_description, source.sewer] --> source.building_area
+[source.firm_address, source.house_description, source.sewer] --> source.agent_email
+[source.firm_address, source.house_description, source.sewer] --> source.school
+[source.firm_address, source.house_description, source.sewer] --> source.agent_phone
+[source.firm_address, source.house_description, source.sewer] --> source.firm_name
+[source.firm_address, source.house_description, source.sewer] --> source.num_rooms
+[source.firm_address, source.house_description, source.water] --> source.house_address
+[source.firm_address, source.house_description, source.water] --> source.agent_name
+[source.firm_address, source.house_description, source.water] --> source.building_area
+[source.firm_address, source.house_description, source.water] --> source.agent_email
+[source.firm_address, source.house_description, source.water] --> source.school
+[source.firm_address, source.house_description, source.water] --> source.agent_phone
+[source.firm_address, source.house_description, source.water] --> source.firm_name
+[source.firm_address, source.house_description, source.water] --> source.num_rooms
+[source.electricity, source.firm_address, source.house_description] --> source.house_address
+[source.electricity, source.firm_address, source.house_description] --> source.agent_name
+[source.electricity, source.firm_address, source.house_description] --> source.building_area
+[source.electricity, source.firm_address, source.house_description] --> source.agent_email
+[source.electricity, source.firm_address, source.house_description] --> source.school
+[source.electricity, source.firm_address, source.house_description] --> source.agent_phone
+[source.electricity, source.firm_address, source.house_description] --> source.firm_name
+[source.electricity, source.firm_address, source.house_description] --> source.num_rooms
+[source.house_description, source.utilities] --> source.firm_address
+[source.house_description, source.utilities] --> source.garage
+[source.house_description, source.lot_area, source.utilities] --> source.house_address
+[source.house_description, source.lot_area, source.utilities] --> source.agent_name
+[source.house_description, source.lot_area, source.utilities] --> source.building_area
+[source.house_description, source.lot_area, source.utilities] --> source.agent_email
+[source.house_description, source.lot_area, source.utilities] --> source.school
+[source.house_description, source.lot_area, source.utilities] --> source.agent_phone
+[source.house_description, source.lot_area, source.utilities] --> source.firm_name
+[source.house_description, source.lot_area, source.utilities] --> source.num_rooms
+[source.house_description, source.sewer, source.utilities] --> source.house_address
+[source.house_description, source.sewer, source.utilities] --> source.agent_name
+[source.house_description, source.sewer, source.utilities] --> source.building_area
+[source.house_description, source.sewer, source.utilities] --> source.agent_email
+[source.house_description, source.sewer, source.utilities] --> source.school
+[source.house_description, source.sewer, source.utilities] --> source.agent_phone
+[source.house_description, source.sewer, source.utilities] --> source.firm_name
+[source.house_description, source.sewer, source.utilities] --> source.num_rooms
+[source.house_description, source.utilities, source.water] --> source.house_address
+[source.house_description, source.utilities, source.water] --> source.agent_name
+[source.house_description, source.utilities, source.water] --> source.building_area
+[source.house_description, source.utilities, source.water] --> source.agent_email
+[source.house_description, source.utilities, source.water] --> source.school
+[source.house_description, source.utilities, source.water] --> source.agent_phone
+[source.house_description, source.utilities, source.water] --> source.firm_name
+[source.house_description, source.utilities, source.water] --> source.num_rooms
+[source.electricity, source.house_description, source.utilities] --> source.house_address
+[source.electricity, source.house_description, source.utilities] --> source.agent_name
+[source.electricity, source.house_description, source.utilities] --> source.building_area
+[source.electricity, source.house_description, source.utilities] --> source.agent_email
+[source.electricity, source.house_description, source.utilities] --> source.school
+[source.electricity, source.house_description, source.utilities] --> source.agent_phone
+[source.electricity, source.house_description, source.utilities] --> source.firm_name
+[source.electricity, source.house_description, source.utilities] --> source.num_rooms
+[source.house_description, source.lot_area] --> source.house_price
+[source.house_description, source.lot_area] --> source.sewer
+[source.house_description, source.lot_area] --> source.water
+[source.house_description, source.lot_area] --> source.electricity
+[source.garage, source.house_description, source.lot_area] --> source.house_address
+[source.garage, source.house_description, source.lot_area] --> source.agent_name
+[source.garage, source.house_description, source.lot_area] --> source.building_area
+[source.garage, source.house_description, source.lot_area] --> source.agent_email
+[source.garage, source.house_description, source.lot_area] --> source.school
+[source.garage, source.house_description, source.lot_area] --> source.agent_phone
+[source.garage, source.house_description, source.lot_area] --> source.firm_name
+[source.garage, source.house_description, source.lot_area] --> source.num_rooms
+[source.house_description, source.num_rooms] --> source.house_address
+[source.house_description, source.num_rooms] --> source.house_price
+[source.house_description, source.num_rooms] --> source.agent_name
+[source.house_description, source.num_rooms] --> source.building_area
+[source.house_description, source.num_rooms] --> source.agent_email
+[source.house_description, source.num_rooms] --> source.school
+[source.house_description, source.num_rooms] --> source.agent_phone
+[source.house_description, source.num_rooms] --> source.firm_name
+[source.house_description, source.num_rooms] --> source.firm_address
+[source.house_description, source.num_rooms] --> source.utilities
+[source.house_description, source.num_rooms] --> source.lot_area
+[source.house_description, source.num_rooms] --> source.garage
+[source.house_description, source.num_rooms] --> source.sewer
+[source.house_description, source.num_rooms] --> source.water
+[source.house_description, source.num_rooms] --> source.electricity
+[source.garage, source.house_description] --> source.firm_address
+[source.garage, source.house_description] --> source.utilities
+[source.garage, source.house_description, source.sewer] --> source.house_address
+[source.garage, source.house_description, source.sewer] --> source.agent_name
+[source.garage, source.house_description, source.sewer] --> source.building_area
+[source.garage, source.house_description, source.sewer] --> source.agent_email
+[source.garage, source.house_description, source.sewer] --> source.school
+[source.garage, source.house_description, source.sewer] --> source.agent_phone
+[source.garage, source.house_description, source.sewer] --> source.firm_name
+[source.garage, source.house_description, source.sewer] --> source.num_rooms
+[source.garage, source.house_description, source.water] --> source.house_address
+[source.garage, source.house_description, source.water] --> source.agent_name
+[source.garage, source.house_description, source.water] --> source.building_area
+[source.garage, source.house_description, source.water] --> source.agent_email
+[source.garage, source.house_description, source.water] --> source.school
+[source.garage, source.house_description, source.water] --> source.agent_phone
+[source.garage, source.house_description, source.water] --> source.firm_name
+[source.garage, source.house_description, source.water] --> source.num_rooms
+[source.electricity, source.garage, source.house_description] --> source.house_address
+[source.electricity, source.garage, source.house_description] --> source.agent_name
+[source.electricity, source.garage, source.house_description] --> source.building_area
+[source.electricity, source.garage, source.house_description] --> source.agent_email
+[source.electricity, source.garage, source.house_description] --> source.school
+[source.electricity, source.garage, source.house_description] --> source.agent_phone
+[source.electricity, source.garage, source.house_description] --> source.firm_name
+[source.electricity, source.garage, source.house_description] --> source.num_rooms
+[source.house_description, source.sewer] --> source.house_price
+[source.house_description, source.sewer] --> source.lot_area
+[source.house_description, source.sewer] --> source.water
+[source.house_description, source.sewer] --> source.electricity
+[source.house_description, source.water] --> source.house_price
+[source.house_description, source.water] --> source.lot_area
+[source.house_description, source.water] --> source.sewer
+[source.house_description, source.water] --> source.electricity
+[source.electricity, source.house_description] --> source.house_price
+[source.electricity, source.house_description] --> source.lot_area
+[source.electricity, source.house_description] --> source.sewer
+[source.electricity, source.house_description] --> source.water
+[source.house_price] --> source.electricity
+[source.agent_name, source.house_price] --> source.building_area
+[source.agent_name, source.house_price] --> source.school
+[source.agent_name, source.house_price] --> source.num_rooms
+[source.agent_name, source.house_price] --> source.garage
+[source.agent_name, source.house_price] --> source.fireplace
+[source.agent_name, source.house_price] --> source.sewer
+[source.agent_name, source.house_price] --> source.water
+[source.agent_name, source.house_price, source.utilities] --> source.house_address
+[source.agent_name, source.house_price, source.utilities] --> source.house_description
+[source.agent_name, source.house_price, source.lot_area] --> source.house_address
+[source.agent_name, source.house_price, source.lot_area] --> source.house_description
+[source.agent_name, source.house_price, source.lot_area] --> source.utilities
+[source.building_area, source.house_price] --> source.school
+[source.building_area, source.house_price] --> source.garage
+[source.building_area, source.house_price] --> source.fireplace
+[source.building_area, source.house_price] --> source.sewer
+[source.building_area, source.house_price] --> source.water
+[source.building_area, source.house_price, source.lot_area] --> source.utilities
+[source.building_area, source.house_price, source.num_rooms] --> source.agent_name
+[source.building_area, source.house_price, source.num_rooms] --> source.agent_email
+[source.building_area, source.house_price, source.num_rooms] --> source.agent_phone
+[source.building_area, source.house_price, source.num_rooms] --> source.firm_name
+[source.building_area, source.house_price, source.num_rooms] --> source.firm_address
+[source.agent_email, source.house_price] --> source.agent_name
+[source.agent_email, source.house_price] --> source.building_area
+[source.agent_email, source.house_price] --> source.school
+[source.agent_email, source.house_price] --> source.agent_phone
+[source.agent_email, source.house_price] --> source.firm_name
+[source.agent_email, source.house_price] --> source.firm_address
+[source.agent_email, source.house_price] --> source.num_rooms
+[source.agent_email, source.house_price] --> source.garage
+[source.agent_email, source.house_price] --> source.fireplace
+[source.agent_email, source.house_price] --> source.sewer
+[source.agent_email, source.house_price] --> source.water
+[source.agent_email, source.house_price, source.utilities] --> source.house_address
+[source.agent_email, source.house_price, source.utilities] --> source.house_description
+[source.agent_email, source.house_price, source.lot_area] --> source.house_address
+[source.agent_email, source.house_price, source.lot_area] --> source.house_description
+[source.agent_email, source.house_price, source.lot_area] --> source.utilities
+[source.house_price, source.school] --> source.building_area
+[source.house_price, source.school] --> source.garage
+[source.house_price, source.school] --> source.fireplace
+[source.house_price, source.school] --> source.sewer
+[source.house_price, source.school] --> source.water
+[source.house_price, source.lot_area, source.school] --> source.utilities
+[source.house_price, source.num_rooms, source.school] --> source.agent_name
+[source.house_price, source.num_rooms, source.school] --> source.agent_email
+[source.house_price, source.num_rooms, source.school] --> source.agent_phone
+[source.house_price, source.num_rooms, source.school] --> source.firm_name
+[source.house_price, source.num_rooms, source.school] --> source.firm_address
+[source.agent_phone, source.house_price] --> source.agent_name
+[source.agent_phone, source.house_price] --> source.building_area
+[source.agent_phone, source.house_price] --> source.agent_email
+[source.agent_phone, source.house_price] --> source.school
+[source.agent_phone, source.house_price] --> source.firm_name
+[source.agent_phone, source.house_price] --> source.firm_address
+[source.agent_phone, source.house_price] --> source.num_rooms
+[source.agent_phone, source.house_price] --> source.garage
+[source.agent_phone, source.house_price] --> source.fireplace
+[source.agent_phone, source.house_price] --> source.sewer
+[source.agent_phone, source.house_price] --> source.water
+[source.agent_phone, source.house_price, source.utilities] --> source.house_address
+[source.agent_phone, source.house_price, source.utilities] --> source.house_description
+[source.agent_phone, source.house_price, source.lot_area] --> source.house_address
+[source.agent_phone, source.house_price, source.lot_area] --> source.house_description
+[source.agent_phone, source.house_price, source.lot_area] --> source.utilities
+[source.firm_name, source.house_price] --> source.agent_name
+[source.firm_name, source.house_price] --> source.building_area
+[source.firm_name, source.house_price] --> source.agent_email
+[source.firm_name, source.house_price] --> source.school
+[source.firm_name, source.house_price] --> source.agent_phone
+[source.firm_name, source.house_price] --> source.firm_address
+[source.firm_name, source.house_price] --> source.num_rooms
+[source.firm_name, source.house_price] --> source.garage
+[source.firm_name, source.house_price] --> source.fireplace
+[source.firm_name, source.house_price] --> source.sewer
+[source.firm_name, source.house_price] --> source.water
+[source.firm_name, source.house_price, source.utilities] --> source.house_address
+[source.firm_name, source.house_price, source.utilities] --> source.house_description
+[source.firm_name, source.house_price, source.lot_area] --> source.house_address
+[source.firm_name, source.house_price, source.lot_area] --> source.house_description
+[source.firm_name, source.house_price, source.lot_area] --> source.utilities
+[source.firm_address, source.house_price] --> source.agent_name
+[source.firm_address, source.house_price] --> source.building_area
+[source.firm_address, source.house_price] --> source.agent_email
+[source.firm_address, source.house_price] --> source.school
+[source.firm_address, source.house_price] --> source.agent_phone
+[source.firm_address, source.house_price] --> source.firm_name
+[source.firm_address, source.house_price] --> source.num_rooms
+[source.firm_address, source.house_price] --> source.garage
+[source.firm_address, source.house_price] --> source.fireplace
+[source.firm_address, source.house_price] --> source.sewer
+[source.firm_address, source.house_price] --> source.water
+[source.firm_address, source.house_price, source.utilities] --> source.house_address
+[source.firm_address, source.house_price, source.utilities] --> source.house_description
+[source.firm_address, source.house_price, source.lot_area] --> source.house_address
+[source.firm_address, source.house_price, source.lot_area] --> source.house_description
+[source.firm_address, source.house_price, source.lot_area] --> source.utilities
+[source.house_price, source.utilities] --> source.lot_area
+[source.house_price, source.utilities] --> source.garage
+[source.house_price, source.utilities] --> source.fireplace
+[source.house_price, source.num_rooms, source.utilities] --> source.house_address
+[source.house_price, source.num_rooms, source.utilities] --> source.house_description
+[source.house_price, source.num_rooms, source.utilities] --> source.agent_name
+[source.house_price, source.num_rooms, source.utilities] --> source.building_area
+[source.house_price, source.num_rooms, source.utilities] --> source.agent_email
+[source.house_price, source.num_rooms, source.utilities] --> source.school
+[source.house_price, source.num_rooms, source.utilities] --> source.agent_phone
+[source.house_price, source.num_rooms, source.utilities] --> source.firm_name
+[source.house_price, source.num_rooms, source.utilities] --> source.firm_address
+[source.house_price, source.num_rooms, source.utilities] --> source.sewer
+[source.house_price, source.num_rooms, source.utilities] --> source.water
+[source.house_price, source.sewer, source.utilities] --> source.building_area
+[source.house_price, source.sewer, source.utilities] --> source.school
+[source.house_price, source.utilities, source.water] --> source.building_area
+[source.house_price, source.utilities, source.water] --> source.school
+[source.house_price, source.lot_area] --> source.fireplace
+[source.house_price, source.lot_area, source.num_rooms] --> source.house_address
+[source.house_price, source.lot_area, source.num_rooms] --> source.house_description
+[source.house_price, source.lot_area, source.num_rooms] --> source.agent_name
+[source.house_price, source.lot_area, source.num_rooms] --> source.building_area
+[source.house_price, source.lot_area, source.num_rooms] --> source.agent_email
+[source.house_price, source.lot_area, source.num_rooms] --> source.school
+[source.house_price, source.lot_area, source.num_rooms] --> source.agent_phone
+[source.house_price, source.lot_area, source.num_rooms] --> source.firm_name
+[source.house_price, source.lot_area, source.num_rooms] --> source.firm_address
+[source.house_price, source.lot_area, source.num_rooms] --> source.utilities
+[source.house_price, source.lot_area, source.num_rooms] --> source.garage
+[source.house_price, source.lot_area, source.num_rooms] --> source.sewer
+[source.house_price, source.lot_area, source.num_rooms] --> source.water
+[source.garage, source.house_price, source.lot_area] --> source.utilities
+[source.garage, source.house_price, source.lot_area, source.sewer] --> source.building_area
+[source.garage, source.house_price, source.lot_area, source.sewer] --> source.school
+[source.garage, source.house_price, source.lot_area, source.water] --> source.building_area
+[source.garage, source.house_price, source.lot_area, source.water] --> source.school
+[source.garage, source.house_price, source.num_rooms] --> source.sewer
+[source.garage, source.house_price, source.num_rooms] --> source.water
+[source.fireplace, source.house_price, source.num_rooms] --> source.garage
+[source.fireplace, source.house_price, source.num_rooms] --> source.sewer
+[source.fireplace, source.house_price, source.num_rooms] --> source.water
+[source.house_price, source.num_rooms, source.sewer] --> source.garage
+[source.house_price, source.num_rooms, source.water] --> source.garage
+[source.garage, source.house_price] --> source.fireplace
+[source.house_price, source.sewer] --> source.fireplace
+[source.house_price, source.sewer] --> source.water
+[source.house_price, source.water] --> source.fireplace
+[source.house_price, source.water] --> source.sewer
+[source.agent_name] --> source.agent_email
+[source.agent_name] --> source.agent_phone
+[source.agent_name] --> source.firm_name
+[source.agent_name] --> source.firm_address
+[source.agent_name, source.building_area] --> source.fireplace
+[source.agent_name, source.building_area, source.num_rooms, source.school] --> source.house_price
+[source.agent_name, source.building_area, source.garage, source.school] --> source.house_price
+[source.agent_name, source.building_area, source.utilities] --> source.school
+[source.agent_name, source.building_area, source.utilities] --> source.lot_area
+[source.agent_name, source.building_area, source.utilities] --> source.sewer
+[source.agent_name, source.building_area, source.utilities] --> source.water
+[source.agent_name, source.building_area, source.num_rooms, source.utilities] --> source.house_address
+[source.agent_name, source.building_area, source.num_rooms, source.utilities] --> source.house_description
+[source.agent_name, source.building_area, source.num_rooms, source.utilities] --> source.house_price
+[source.agent_name, source.building_area, source.garage, source.utilities] --> source.house_address
+[source.agent_name, source.building_area, source.garage, source.utilities] --> source.house_description
+[source.agent_name, source.building_area, source.garage, source.utilities] --> source.house_price
+[source.agent_name, source.building_area, source.electricity, source.utilities] --> source.house_address
+[source.agent_name, source.building_area, source.electricity, source.utilities] --> source.house_description
+[source.agent_name, source.building_area, source.lot_area, source.num_rooms, source.sewer] --> source.house_address
+[source.agent_name, source.building_area, source.lot_area, source.num_rooms, source.sewer] --> source.house_description
+[source.agent_name, source.building_area, source.lot_area, source.num_rooms, source.water] --> source.house_address
+[source.agent_name, source.building_area, source.lot_area, source.num_rooms, source.water] --> source.house_description
+[source.agent_name, source.building_area, source.garage, source.lot_area, source.sewer] --> source.house_address
+[source.agent_name, source.building_area, source.garage, source.lot_area, source.sewer] --> source.house_description
+[source.agent_name, source.building_area, source.garage, source.lot_area, source.water] --> source.house_address
+[source.agent_name, source.building_area, source.garage, source.lot_area, source.water] --> source.house_description
+[source.agent_name, source.building_area, source.lot_area, source.sewer] --> source.utilities
+[source.agent_name, source.building_area, source.lot_area, source.water] --> source.utilities
+[source.agent_name, source.building_area, source.electricity, source.lot_area] --> source.house_address
+[source.agent_name, source.building_area, source.electricity, source.lot_area] --> source.house_description
+[source.agent_name, source.building_area, source.electricity, source.lot_area] --> source.utilities
+[source.agent_name, source.building_area, source.num_rooms] --> source.garage
+[source.agent_name, source.building_area, source.num_rooms, source.sewer] --> source.house_price
+[source.agent_name, source.building_area, source.num_rooms, source.water] --> source.house_price
+[source.agent_name, source.building_area, source.garage] --> source.num_rooms
+[source.agent_name, source.building_area, source.garage, source.sewer] --> source.house_price
+[source.agent_name, source.building_area, source.garage, source.sewer] --> source.electricity
+[source.agent_name, source.building_area, source.garage, source.water] --> source.house_price
+[source.agent_name, source.building_area, source.garage, source.water] --> source.electricity
+[source.agent_name, source.building_area, source.sewer] --> source.school
+[source.agent_name, source.building_area, source.sewer] --> source.water
+[source.agent_name, source.building_area, source.water] --> source.school
+[source.agent_name, source.building_area, source.water] --> source.sewer
+[source.agent_name, source.building_area, source.electricity] --> source.house_price
+[source.agent_name, source.building_area, source.electricity] --> source.school
+[source.agent_name, source.building_area, source.electricity] --> source.num_rooms
+[source.agent_name, source.building_area, source.electricity] --> source.garage
+[source.agent_name, source.building_area, source.electricity] --> source.sewer
+[source.agent_name, source.building_area, source.electricity] --> source.water
+[source.agent_name, source.school] --> source.sewer
+[source.agent_name, source.school] --> source.water
+[source.agent_name, source.school, source.utilities] --> source.fireplace
+[source.agent_name, source.num_rooms, source.school, source.utilities] --> source.house_address
+[source.agent_name, source.num_rooms, source.school, source.utilities] --> source.house_description
+[source.agent_name, source.num_rooms, source.school, source.utilities] --> source.house_price
+[source.agent_name, source.num_rooms, source.school, source.utilities] --> source.building_area
+[source.agent_name, source.garage, source.school, source.utilities] --> source.house_address
+[source.agent_name, source.garage, source.school, source.utilities] --> source.house_description
+[source.agent_name, source.garage, source.school, source.utilities] --> source.house_price
+[source.agent_name, source.garage, source.school, source.utilities] --> source.building_area
+[source.agent_name, source.lot_area, source.school] --> source.utilities
+[source.agent_name, source.lot_area, source.school] --> source.fireplace
+[source.agent_name, source.lot_area, source.num_rooms, source.school] --> source.house_address
+[source.agent_name, source.lot_area, source.num_rooms, source.school] --> source.house_description
+[source.agent_name, source.lot_area, source.num_rooms, source.school] --> source.house_price
+[source.agent_name, source.lot_area, source.num_rooms, source.school] --> source.building_area
+[source.agent_name, source.garage, source.lot_area, source.school] --> source.house_address
+[source.agent_name, source.garage, source.lot_area, source.school] --> source.house_description
+[source.agent_name, source.garage, source.lot_area, source.school] --> source.house_price
+[source.agent_name, source.garage, source.lot_area, source.school] --> source.building_area
+[source.agent_name, source.num_rooms, source.school] --> source.garage
+[source.agent_name, source.num_rooms, source.school] --> source.fireplace
+[source.agent_name, source.num_rooms, source.school] --> source.electricity
+[source.agent_name, source.garage, source.school] --> source.num_rooms
+[source.agent_name, source.garage, source.school] --> source.fireplace
+[source.agent_name, source.garage, source.school] --> source.electricity
+[source.agent_name, source.lot_area, source.utilities] --> source.fireplace
+[source.agent_name, source.garage, source.lot_area, source.sewer, source.utilities] --> source.num_rooms
+[source.agent_name, source.garage, source.lot_area, source.utilities, source.water] --> source.num_rooms
+[source.agent_name, source.num_rooms, source.utilities] --> source.lot_area
+[source.agent_name, source.num_rooms, source.utilities] --> source.garage
+[source.agent_name, source.num_rooms, source.utilities] --> source.fireplace
+[source.agent_name, source.num_rooms, source.utilities] --> source.sewer
+[source.agent_name, source.num_rooms, source.utilities] --> source.water
+[source.agent_name, source.num_rooms, source.utilities] --> source.electricity
+[source.agent_name, source.garage, source.utilities] --> source.electricity
+[source.agent_name, source.fireplace, source.utilities] --> source.lot_area
+[source.agent_name, source.sewer, source.utilities] --> source.water
+[source.agent_name, source.utilities, source.water] --> source.sewer
+[source.agent_name, source.garage, source.lot_area, source.num_rooms] --> source.fireplace
+[source.agent_name, source.garage, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_name, source.fireplace, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_name, source.fireplace, source.garage, source.lot_area, source.sewer] --> source.utilities
+[source.agent_name, source.electricity, source.garage, source.lot_area, source.sewer] --> source.utilities
+[source.agent_name, source.electricity, source.garage, source.lot_area, source.sewer] --> source.num_rooms
+[source.agent_name, source.electricity, source.garage, source.lot_area, source.water] --> source.num_rooms
+[source.agent_name, source.electricity, source.garage, source.lot_area] --> source.fireplace
+[source.agent_name, source.lot_area, source.sewer] --> source.water
+[source.agent_name, source.fireplace, source.num_rooms] --> source.garage
+[source.agent_name, source.num_rooms, source.sewer] --> source.water
+[source.agent_name, source.num_rooms, source.sewer] --> source.electricity
+[source.agent_name, source.num_rooms, source.water] --> source.electricity
+[source.agent_name, source.electricity, source.num_rooms] --> source.water
+[source.agent_name, source.fireplace, source.garage, source.sewer] --> source.num_rooms
+[source.agent_name, source.fireplace, source.garage, source.sewer] --> source.electricity
+[source.agent_name, source.fireplace, source.garage, source.water] --> source.num_rooms
+[source.agent_name, source.fireplace, source.garage, source.water] --> source.electricity
+[source.agent_name, source.garage, source.sewer] --> source.water
+[source.agent_name, source.fireplace, source.sewer] --> source.water
+[source.agent_email, source.building_area] --> source.fireplace
+[source.agent_email, source.building_area, source.school] --> source.water
+[source.agent_email, source.agent_phone, source.building_area, source.lot_area, source.school] --> source.utilities
+[source.agent_email, source.building_area, source.firm_name, source.lot_area, source.school] --> source.utilities
+[source.agent_email, source.building_area, source.firm_address, source.lot_area, source.school] --> source.utilities
+[source.agent_email, source.building_area, source.lot_area, source.num_rooms, source.school] --> source.house_address
+[source.agent_email, source.building_area, source.lot_area, source.num_rooms, source.school] --> source.house_description
+[source.agent_email, source.building_area, source.lot_area, source.num_rooms, source.school] --> source.utilities
+[source.agent_email, source.building_area, source.garage, source.lot_area, source.school] --> source.utilities
+[source.agent_email, source.building_area, source.num_rooms, source.school] --> source.house_price
+[source.agent_email, source.building_area, source.num_rooms, source.school] --> source.agent_name
+[source.agent_email, source.building_area, source.num_rooms, source.school] --> source.electricity
+[source.agent_email, source.building_area, source.garage, source.school] --> source.agent_phone
+[source.agent_email, source.building_area, source.garage, source.school] --> source.firm_name
+[source.agent_email, source.building_area, source.garage, source.school] --> source.electricity
+[source.agent_email, source.agent_phone, source.building_area, source.lot_area, source.num_rooms, source.sewer] --> source.house_address
+[source.agent_email, source.agent_phone, source.building_area, source.lot_area, source.num_rooms, source.sewer] --> source.house_description
+[source.agent_email, source.agent_phone, source.building_area, source.lot_area, source.num_rooms, source.water] --> source.house_address
+[source.agent_email, source.agent_phone, source.building_area, source.lot_area, source.num_rooms, source.water] --> source.house_description
+[source.agent_email, source.agent_phone, source.building_area, source.electricity, source.lot_area, source.num_rooms] --> source.house_address
+[source.agent_email, source.agent_phone, source.building_area, source.electricity, source.lot_area, source.num_rooms] --> source.house_description
+[source.agent_email, source.agent_phone, source.building_area, source.lot_area, source.sewer] --> source.utilities
+[source.agent_email, source.agent_phone, source.building_area, source.lot_area, source.water] --> source.utilities
+[source.agent_email, source.agent_phone, source.building_area, source.electricity, source.lot_area] --> source.utilities
+[source.agent_email, source.agent_phone, source.building_area, source.num_rooms] --> source.agent_name
+[source.agent_email, source.agent_phone, source.building_area, source.num_rooms, source.sewer] --> source.house_price
+[source.agent_email, source.agent_phone, source.building_area, source.num_rooms, source.water] --> source.house_price
+[source.agent_email, source.agent_phone, source.building_area, source.electricity, source.num_rooms] --> source.house_price
+[source.agent_email, source.agent_phone, source.building_area, source.water] --> source.school
+[source.agent_email, source.agent_phone, source.building_area, source.electricity] --> source.school
+[source.agent_email, source.agent_phone, source.building_area, source.electricity] --> source.garage
+[source.agent_email, source.building_area, source.firm_name, source.lot_area, source.num_rooms, source.sewer] --> source.house_address
+[source.agent_email, source.building_area, source.firm_name, source.lot_area, source.num_rooms, source.sewer] --> source.house_description
+[source.agent_email, source.building_area, source.firm_name, source.lot_area, source.num_rooms, source.water] --> source.house_address
+[source.agent_email, source.building_area, source.firm_name, source.lot_area, source.num_rooms, source.water] --> source.house_description
+[source.agent_email, source.building_area, source.electricity, source.firm_name, source.lot_area, source.num_rooms] --> source.house_address
+[source.agent_email, source.building_area, source.electricity, source.firm_name, source.lot_area, source.num_rooms] --> source.house_description
+[source.agent_email, source.building_area, source.firm_name, source.lot_area, source.sewer] --> source.utilities
+[source.agent_email, source.building_area, source.firm_name, source.lot_area, source.water] --> source.utilities
+[source.agent_email, source.building_area, source.electricity, source.firm_name, source.lot_area] --> source.utilities
+[source.agent_email, source.building_area, source.firm_name, source.num_rooms] --> source.agent_name
+[source.agent_email, source.building_area, source.firm_name, source.num_rooms, source.sewer] --> source.house_price
+[source.agent_email, source.building_area, source.firm_name, source.num_rooms, source.water] --> source.house_price
+[source.agent_email, source.building_area, source.electricity, source.firm_name, source.num_rooms] --> source.house_price
+[source.agent_email, source.building_area, source.firm_name, source.water] --> source.school
+[source.agent_email, source.building_area, source.electricity, source.firm_name] --> source.school
+[source.agent_email, source.building_area, source.electricity, source.firm_name] --> source.garage
+[source.agent_email, source.building_area, source.firm_address] --> source.agent_phone
+[source.agent_email, source.building_area, source.firm_address] --> source.firm_name
+[source.agent_email, source.building_area, source.firm_address, source.lot_area, source.num_rooms, source.sewer] --> source.house_address
+[source.agent_email, source.building_area, source.firm_address, source.lot_area, source.num_rooms, source.sewer] --> source.house_description
+[source.agent_email, source.building_area, source.firm_address, source.lot_area, source.num_rooms, source.water] --> source.house_address
+[source.agent_email, source.building_area, source.firm_address, source.lot_area, source.num_rooms, source.water] --> source.house_description
+[source.agent_email, source.building_area, source.electricity, source.firm_address, source.lot_area, source.num_rooms] --> source.house_address
+[source.agent_email, source.building_area, source.electricity, source.firm_address, source.lot_area, source.num_rooms] --> source.house_description
+[source.agent_email, source.building_area, source.firm_address, source.lot_area, source.sewer] --> source.utilities
+[source.agent_email, source.building_area, source.firm_address, source.lot_area, source.water] --> source.utilities
+[source.agent_email, source.building_area, source.electricity, source.firm_address, source.lot_area] --> source.utilities
+[source.agent_email, source.building_area, source.firm_address, source.num_rooms] --> source.agent_name
+[source.agent_email, source.building_area, source.firm_address, source.num_rooms, source.sewer] --> source.house_price
+[source.agent_email, source.building_area, source.firm_address, source.num_rooms, source.water] --> source.house_price
+[source.agent_email, source.building_area, source.electricity, source.firm_address, source.num_rooms] --> source.house_price
+[source.agent_email, source.building_area, source.firm_address, source.sewer] --> source.school
+[source.agent_email, source.building_area, source.firm_address, source.water] --> source.school
+[source.agent_email, source.building_area, source.electricity, source.firm_address] --> source.school
+[source.agent_email, source.building_area, source.electricity, source.firm_address] --> source.garage
+[source.agent_email, source.building_area, source.utilities] --> source.school
+[source.agent_email, source.building_area, source.utilities] --> source.agent_phone
+[source.agent_email, source.building_area, source.utilities] --> source.firm_name
+[source.agent_email, source.building_area, source.utilities] --> source.firm_address
+[source.agent_email, source.building_area, source.utilities] --> source.lot_area
+[source.agent_email, source.building_area, source.utilities] --> source.sewer
+[source.agent_email, source.building_area, source.utilities] --> source.water
+[source.agent_email, source.building_area, source.num_rooms, source.utilities] --> source.house_address
+[source.agent_email, source.building_area, source.num_rooms, source.utilities] --> source.house_description
+[source.agent_email, source.building_area, source.num_rooms, source.utilities] --> source.house_price
+[source.agent_email, source.building_area, source.num_rooms, source.utilities] --> source.agent_name
+[source.agent_email, source.building_area, source.num_rooms, source.utilities] --> source.garage
+[source.agent_email, source.building_area, source.num_rooms, source.utilities] --> source.electricity
+[source.agent_email, source.building_area, source.garage, source.utilities] --> source.electricity
+[source.agent_email, source.building_area, source.electricity, source.utilities] --> source.garage
+[source.agent_email, source.building_area, source.garage, source.lot_area, source.num_rooms, source.sewer] --> source.house_address
+[source.agent_email, source.building_area, source.garage, source.lot_area, source.num_rooms, source.sewer] --> source.house_description
+[source.agent_email, source.building_area, source.garage, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_email, source.building_area, source.garage, source.lot_area, source.num_rooms, source.water] --> source.house_address
+[source.agent_email, source.building_area, source.garage, source.lot_area, source.num_rooms, source.water] --> source.house_description
+[source.agent_email, source.building_area, source.garage, source.lot_area, source.num_rooms, source.water] --> source.utilities
+[source.agent_email, source.building_area, source.electricity, source.garage, source.lot_area, source.num_rooms] --> source.house_address
+[source.agent_email, source.building_area, source.electricity, source.garage, source.lot_area, source.num_rooms] --> source.house_description
+[source.agent_email, source.building_area, source.electricity, source.garage, source.lot_area, source.num_rooms] --> source.utilities
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.sewer] --> source.house_price
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.sewer] --> source.agent_name
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.sewer] --> source.school
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.sewer] --> source.agent_phone
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.sewer] --> source.firm_name
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.sewer] --> source.firm_address
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.water] --> source.house_price
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.water] --> source.agent_name
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.water] --> source.school
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.water] --> source.agent_phone
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.water] --> source.firm_name
+[source.agent_email, source.building_area, source.garage, source.num_rooms, source.water] --> source.firm_address
+[source.agent_email, source.building_area, source.electricity, source.garage, source.num_rooms] --> source.house_price
+[source.agent_email, source.building_area, source.electricity, source.garage, source.num_rooms] --> source.agent_name
+[source.agent_email, source.building_area, source.electricity, source.garage, source.num_rooms] --> source.school
+[source.agent_email, source.building_area, source.electricity, source.garage, source.num_rooms] --> source.agent_phone
+[source.agent_email, source.building_area, source.electricity, source.garage, source.num_rooms] --> source.firm_name
+[source.agent_email, source.building_area, source.electricity, source.garage, source.num_rooms] --> source.firm_address
+[source.agent_email, source.building_area, source.num_rooms, source.sewer] --> source.electricity
+[source.agent_email, source.building_area, source.garage, source.sewer] --> source.electricity
+[source.agent_email, source.building_area, source.garage, source.water] --> source.electricity
+[source.agent_email, source.building_area, source.sewer] --> source.water
+[source.agent_email, source.building_area, source.water] --> source.sewer
+[source.agent_email, source.building_area, source.electricity] --> source.sewer
+[source.agent_email, source.building_area, source.electricity] --> source.water
+[source.agent_phone, source.building_area, source.school] --> source.sewer
+[source.agent_phone, source.building_area, source.school] --> source.water
+[source.building_area, source.firm_name, source.school] --> source.sewer
+[source.building_area, source.firm_name, source.school] --> source.water
+[source.building_area, source.firm_address, source.school] --> source.sewer
+[source.building_area, source.firm_address, source.school] --> source.water
+[source.building_area, source.electricity, source.firm_address, source.num_rooms, source.school] --> source.agent_phone
+[source.building_area, source.electricity, source.firm_address, source.num_rooms, source.school] --> source.firm_name
+[source.building_area, source.electricity, source.firm_address, source.garage, source.school] --> source.agent_phone
+[source.building_area, source.electricity, source.firm_address, source.garage, source.school] --> source.firm_name
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.school] --> source.agent_phone
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.school] --> source.firm_name
+[source.building_area, source.school, source.utilities] --> source.fireplace
+[source.building_area, source.num_rooms, source.school, source.sewer, source.utilities] --> source.house_address
+[source.building_area, source.num_rooms, source.school, source.sewer, source.utilities] --> source.house_description
+[source.building_area, source.num_rooms, source.school, source.sewer, source.utilities] --> source.house_price
+[source.building_area, source.num_rooms, source.school, source.sewer, source.utilities] --> source.agent_name
+[source.building_area, source.num_rooms, source.school, source.utilities, source.water] --> source.house_address
+[source.building_area, source.num_rooms, source.school, source.utilities, source.water] --> source.house_description
+[source.building_area, source.num_rooms, source.school, source.utilities, source.water] --> source.house_price
+[source.building_area, source.num_rooms, source.school, source.utilities, source.water] --> source.agent_name
+[source.building_area, source.electricity, source.num_rooms, source.school, source.utilities] --> source.house_address
+[source.building_area, source.electricity, source.num_rooms, source.school, source.utilities] --> source.house_description
+[source.building_area, source.electricity, source.num_rooms, source.school, source.utilities] --> source.house_price
+[source.building_area, source.electricity, source.num_rooms, source.school, source.utilities] --> source.agent_name
+[source.building_area, source.electricity, source.school, source.utilities] --> source.sewer
+[source.building_area, source.electricity, source.school, source.utilities] --> source.water
+[source.building_area, source.num_rooms, source.school] --> source.garage
+[source.building_area, source.num_rooms, source.school] --> source.fireplace
+[source.building_area, source.garage, source.school] --> source.fireplace
+[source.building_area, source.school, source.sewer] --> source.water
+[source.building_area, source.school, source.water] --> source.sewer
+[source.agent_phone, source.building_area] --> source.firm_name
+[source.agent_phone, source.building_area] --> source.firm_address
+[source.agent_phone, source.building_area] --> source.fireplace
+[source.agent_phone, source.building_area, source.utilities] --> source.lot_area
+[source.agent_phone, source.building_area, source.utilities] --> source.water
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.house_address
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.house_description
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.house_price
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.agent_name
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.agent_email
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.school
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.sewer
+[source.agent_phone, source.building_area, source.num_rooms, source.utilities] --> source.electricity
+[source.agent_phone, source.building_area, source.garage, source.utilities] --> source.agent_email
+[source.agent_phone, source.building_area, source.garage, source.utilities] --> source.school
+[source.agent_phone, source.building_area, source.garage, source.utilities] --> source.sewer
+[source.agent_phone, source.building_area, source.garage, source.utilities] --> source.electricity
+[source.agent_phone, source.building_area, source.num_rooms] --> source.garage
+[source.agent_phone, source.building_area, source.num_rooms, source.water] --> source.school
+[source.agent_phone, source.building_area, source.num_rooms, source.water] --> source.sewer
+[source.agent_phone, source.building_area, source.electricity, source.num_rooms] --> source.school
+[source.agent_phone, source.building_area, source.electricity, source.num_rooms] --> source.sewer
+[source.agent_phone, source.building_area, source.garage, source.water] --> source.school
+[source.agent_phone, source.building_area, source.garage, source.water] --> source.sewer
+[source.agent_phone, source.building_area, source.electricity, source.garage] --> source.school
+[source.agent_phone, source.building_area, source.electricity, source.garage] --> source.sewer
+[source.agent_phone, source.building_area, source.sewer] --> source.school
+[source.agent_phone, source.building_area, source.sewer] --> source.water
+[source.agent_phone, source.building_area, source.electricity] --> source.water
+[source.building_area, source.firm_name] --> source.agent_phone
+[source.building_area, source.firm_name] --> source.firm_address
+[source.building_area, source.firm_name] --> source.fireplace
+[source.building_area, source.firm_name, source.utilities] --> source.lot_area
+[source.building_area, source.firm_name, source.utilities] --> source.water
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.house_address
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.house_description
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.house_price
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.agent_name
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.agent_email
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.school
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.sewer
+[source.building_area, source.firm_name, source.num_rooms, source.utilities] --> source.electricity
+[source.building_area, source.firm_name, source.garage, source.utilities] --> source.agent_email
+[source.building_area, source.firm_name, source.garage, source.utilities] --> source.school
+[source.building_area, source.firm_name, source.garage, source.utilities] --> source.sewer
+[source.building_area, source.firm_name, source.garage, source.utilities] --> source.electricity
+[source.building_area, source.firm_name, source.num_rooms] --> source.garage
+[source.building_area, source.firm_name, source.num_rooms, source.water] --> source.school
+[source.building_area, source.firm_name, source.num_rooms, source.water] --> source.sewer
+[source.building_area, source.electricity, source.firm_name, source.num_rooms] --> source.school
+[source.building_area, source.electricity, source.firm_name, source.num_rooms] --> source.sewer
+[source.building_area, source.firm_name, source.garage, source.water] --> source.school
+[source.building_area, source.firm_name, source.garage, source.water] --> source.sewer
+[source.building_area, source.electricity, source.firm_name, source.garage] --> source.school
+[source.building_area, source.electricity, source.firm_name, source.garage] --> source.sewer
+[source.building_area, source.firm_name, source.sewer] --> source.school
+[source.building_area, source.firm_name, source.sewer] --> source.water
+[source.building_area, source.electricity, source.firm_name] --> source.water
+[source.building_area, source.firm_address, source.utilities] --> source.lot_area
+[source.building_area, source.firm_address, source.utilities] --> source.fireplace
+[source.building_area, source.firm_address, source.utilities] --> source.water
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.house_address
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.house_description
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.house_price
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.agent_name
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.agent_email
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.school
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.agent_phone
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.firm_name
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.sewer
+[source.building_area, source.firm_address, source.num_rooms, source.utilities] --> source.electricity
+[source.building_area, source.firm_address, source.garage, source.utilities] --> source.agent_email
+[source.building_area, source.firm_address, source.garage, source.utilities] --> source.school
+[source.building_area, source.firm_address, source.garage, source.utilities] --> source.agent_phone
+[source.building_area, source.firm_address, source.garage, source.utilities] --> source.firm_name
+[source.building_area, source.firm_address, source.garage, source.utilities] --> source.sewer
+[source.building_area, source.firm_address, source.garage, source.utilities] --> source.electricity
+[source.building_area, source.firm_address, source.sewer, source.utilities] --> source.school
+[source.building_area, source.electricity, source.firm_address, source.utilities] --> source.agent_phone
+[source.building_area, source.electricity, source.firm_address, source.utilities] --> source.firm_name
+[source.building_area, source.firm_address, source.lot_area, source.sewer] --> source.water
+[source.building_area, source.electricity, source.firm_address, source.lot_area] --> source.water
+[source.building_area, source.firm_address, source.num_rooms] --> source.garage
+[source.building_area, source.fireplace, source.firm_address, source.num_rooms, source.sewer] --> source.school
+[source.building_area, source.fireplace, source.firm_address, source.num_rooms, source.water] --> source.school
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.num_rooms] --> source.school
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.num_rooms] --> source.agent_phone
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.num_rooms] --> source.firm_name
+[source.building_area, source.firm_address, source.num_rooms, source.sewer] --> source.water
+[source.building_area, source.firm_address, source.num_rooms, source.water] --> source.sewer
+[source.building_area, source.electricity, source.firm_address, source.num_rooms] --> source.sewer
+[source.building_area, source.electricity, source.firm_address, source.num_rooms] --> source.water
+[source.building_area, source.fireplace, source.firm_address, source.garage, source.sewer] --> source.school
+[source.building_area, source.fireplace, source.firm_address, source.garage, source.water] --> source.school
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.garage] --> source.school
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.garage] --> source.agent_phone
+[source.building_area, source.electricity, source.fireplace, source.firm_address, source.garage] --> source.firm_name
+[source.building_area, source.firm_address, source.garage, source.sewer] --> source.water
+[source.building_area, source.firm_address, source.garage, source.water] --> source.sewer
+[source.building_area, source.electricity, source.firm_address, source.garage] --> source.sewer
+[source.building_area, source.electricity, source.firm_address, source.garage] --> source.water
+[source.building_area, source.fireplace, source.firm_address, source.sewer] --> source.water
+[source.building_area, source.electricity, source.fireplace, source.firm_address] --> source.water
+[source.building_area, source.electricity, source.firm_address, source.sewer] --> source.water
+[source.building_area, source.num_rooms, source.utilities] --> source.lot_area
+[source.building_area, source.garage, source.num_rooms, source.sewer, source.utilities] --> source.water
+[source.building_area, source.electricity, source.garage, source.num_rooms, source.utilities] --> source.sewer
+[source.building_area, source.electricity, source.garage, source.num_rooms, source.utilities] --> source.water
+[source.building_area, source.num_rooms, source.utilities, source.water] --> source.sewer
+[source.building_area, source.electricity, source.garage, source.sewer, source.utilities] --> source.water
+[source.building_area, source.garage, source.utilities, source.water] --> source.sewer
+[source.building_area, source.garage, source.num_rooms, source.water] --> source.sewer
+[source.agent_email, source.school] --> source.sewer
+[source.agent_email, source.agent_phone, source.garage, source.school, source.water] --> source.fireplace
+[source.agent_email, source.agent_phone, source.electricity, source.garage, source.school] --> source.fireplace
+[source.agent_email, source.firm_name, source.school] --> source.agent_phone
+[source.agent_email, source.firm_name, source.garage, source.school, source.water] --> source.fireplace
+[source.agent_email, source.electricity, source.firm_name, source.garage, source.school] --> source.fireplace
+[source.agent_email, source.firm_address, source.lot_area, source.school] --> source.agent_phone
+[source.agent_email, source.fireplace, source.firm_address, source.school] --> source.agent_phone
+[source.agent_email, source.school, source.utilities] --> source.agent_phone
+[source.agent_email, source.school, source.utilities] --> source.firm_name
+[source.agent_email, source.school, source.utilities] --> source.firm_address
+[source.agent_email, source.school, source.utilities] --> source.fireplace
+[source.agent_email, source.school, source.utilities] --> source.water
+[source.agent_email, source.num_rooms, source.school, source.utilities] --> source.electricity
+[source.agent_email, source.garage, source.school, source.utilities] --> source.electricity
+[source.agent_email, source.garage, source.lot_area, source.num_rooms, source.school] --> source.utilities
+[source.agent_email, source.fireplace, source.lot_area, source.num_rooms, source.school] --> source.utilities
+[source.agent_email, source.lot_area, source.num_rooms, source.school, source.water] --> source.utilities
+[source.agent_email, source.electricity, source.lot_area, source.num_rooms, source.school] --> source.utilities
+[source.agent_email, source.garage, source.lot_area, source.school] --> source.agent_phone
+[source.agent_email, source.garage, source.lot_area, source.school] --> source.firm_name
+[source.agent_email, source.garage, source.lot_area, source.school] --> source.fireplace
+[source.agent_email, source.garage, source.lot_area, source.school] --> source.water
+[source.agent_email, source.garage, source.lot_area, source.school] --> source.electricity
+[source.agent_email, source.lot_area, source.school, source.water] --> source.fireplace
+[source.agent_email, source.electricity, source.lot_area, source.school] --> source.fireplace
+[source.agent_email, source.num_rooms, source.school] --> source.agent_phone
+[source.agent_email, source.num_rooms, source.school] --> source.firm_name
+[source.agent_email, source.num_rooms, source.school] --> source.firm_address
+[source.agent_email, source.garage, source.num_rooms, source.school] --> source.fireplace
+[source.agent_email, source.garage, source.num_rooms, source.school] --> source.water
+[source.agent_email, source.garage, source.num_rooms, source.school] --> source.electricity
+[source.agent_email, source.fireplace, source.num_rooms, source.school] --> source.electricity
+[source.agent_email, source.num_rooms, source.school, source.water] --> source.fireplace
+[source.agent_email, source.electricity, source.num_rooms, source.school] --> source.fireplace
+[source.agent_email, source.garage, source.school] --> source.firm_address
+[source.agent_email, source.fireplace, source.garage, source.school] --> source.agent_phone
+[source.agent_email, source.fireplace, source.garage, source.school] --> source.firm_name
+[source.agent_email, source.fireplace, source.garage, source.school] --> source.electricity
+[source.agent_email, source.garage, source.school, source.water] --> source.electricity
+[source.agent_email, source.fireplace, source.school] --> source.water
+[source.agent_email, source.electricity, source.school] --> source.water
+[source.agent_email, source.agent_phone] --> source.firm_name
+[source.agent_email, source.agent_phone] --> source.firm_address
+[source.agent_email, source.agent_phone, source.garage, source.lot_area, source.utilities] --> source.electricity
+[source.agent_email, source.agent_phone, source.num_rooms, source.utilities] --> source.sewer
+[source.agent_email, source.agent_phone, source.num_rooms, source.utilities] --> source.water
+[source.agent_email, source.agent_phone, source.num_rooms, source.utilities] --> source.electricity
+[source.agent_email, source.agent_phone, source.garage, source.lot_area, source.num_rooms] --> source.fireplace
+[source.agent_email, source.agent_phone, source.garage, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_email, source.agent_phone, source.fireplace, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_email, source.agent_phone, source.electricity, source.garage, source.lot_area, source.sewer] --> source.fireplace
+[source.agent_email, source.firm_name] --> source.firm_address
+[source.agent_email, source.firm_name, source.utilities] --> source.agent_phone
+[source.agent_email, source.firm_name, source.garage, source.lot_area, source.utilities] --> source.electricity
+[source.agent_email, source.firm_name, source.num_rooms, source.utilities] --> source.sewer
+[source.agent_email, source.firm_name, source.num_rooms, source.utilities] --> source.water
+[source.agent_email, source.firm_name, source.num_rooms, source.utilities] --> source.electricity
+[source.agent_email, source.firm_name, source.garage, source.lot_area, source.num_rooms] --> source.fireplace
+[source.agent_email, source.firm_name, source.garage, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_email, source.fireplace, source.firm_name, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_email, source.electricity, source.firm_name, source.garage, source.lot_area, source.sewer] --> source.fireplace
+[source.agent_email, source.firm_name, source.num_rooms] --> source.agent_phone
+[source.agent_email, source.firm_name, source.garage] --> source.agent_phone
+[source.agent_email, source.firm_name, source.sewer] --> source.agent_phone
+[source.agent_email, source.firm_name, source.water] --> source.agent_phone
+[source.agent_email, source.electricity, source.firm_name] --> source.agent_phone
+[source.agent_email, source.firm_address, source.lot_area, source.utilities] --> source.agent_phone
+[source.agent_email, source.firm_address, source.garage, source.lot_area, source.utilities] --> source.electricity
+[source.agent_email, source.firm_address, source.num_rooms, source.utilities] --> source.agent_phone
+[source.agent_email, source.firm_address, source.num_rooms, source.utilities] --> source.firm_name
+[source.agent_email, source.firm_address, source.num_rooms, source.utilities] --> source.sewer
+[source.agent_email, source.firm_address, source.num_rooms, source.utilities] --> source.water
+[source.agent_email, source.firm_address, source.num_rooms, source.utilities] --> source.electricity
+[source.agent_email, source.fireplace, source.firm_address, source.utilities] --> source.agent_phone
+[source.agent_email, source.firm_address, source.sewer, source.utilities] --> source.agent_phone
+[source.agent_email, source.firm_address, source.sewer, source.utilities] --> source.firm_name
+[source.agent_email, source.firm_address, source.utilities, source.water] --> source.agent_phone
+[source.agent_email, source.firm_address, source.utilities, source.water] --> source.firm_name
+[source.agent_email, source.electricity, source.firm_address, source.utilities] --> source.agent_phone
+[source.agent_email, source.electricity, source.firm_address, source.utilities] --> source.firm_name
+[source.agent_email, source.firm_address, source.lot_area] --> source.firm_name
+[source.agent_email, source.firm_address, source.lot_area, source.num_rooms] --> source.agent_phone
+[source.agent_email, source.firm_address, source.garage, source.lot_area, source.num_rooms] --> source.fireplace
+[source.agent_email, source.firm_address, source.garage, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_email, source.fireplace, source.firm_address, source.lot_area, source.num_rooms, source.sewer] --> source.utilities
+[source.agent_email, source.firm_address, source.garage, source.lot_area] --> source.agent_phone
+[source.agent_email, source.electricity, source.firm_address, source.garage, source.lot_area, source.sewer] --> source.fireplace
+[source.agent_email, source.firm_address, source.lot_area, source.sewer] --> source.agent_phone
+[source.agent_email, source.firm_address, source.lot_area, source.water] --> source.agent_phone
+[source.agent_email, source.electricity, source.firm_address, source.lot_area] --> source.agent_phone
+[source.agent_email, source.firm_address, source.garage, source.num_rooms] --> source.agent_phone
+[source.agent_email, source.firm_address, source.garage, source.num_rooms] --> source.firm_name
+[source.agent_email, source.fireplace, source.firm_address, source.num_rooms] --> source.agent_phone
+[source.agent_email, source.fireplace, source.firm_address, source.garage] --> source.agent_phone
+[source.agent_email, source.fireplace, source.firm_address] --> source.firm_name
+[source.agent_email, source.fireplace, source.firm_address, source.sewer] --> source.agent_phone
+[source.agent_email, source.fireplace, source.firm_address, source.water] --> source.agent_phone
+[source.agent_email, source.electricity, source.fireplace, source.firm_address] --> source.agent_phone
+[source.agent_email, source.garage, source.lot_area, source.utilities] --> source.fireplace
+[source.agent_email, source.garage, source.lot_area, source.sewer, source.utilities] --> source.electricity
+[source.agent_email, source.garage, source.lot_area, source.utilities, source.water] --> source.electricity
+[source.agent_email, source.lot_area, source.sewer, source.utilities, source.water] --> source.fireplace
+[source.agent_email, source.num_rooms, source.utilities] --> source.fireplace
+[source.agent_email, source.garage, source.num_rooms, source.sewer, source.utilities] --> source.agent_phone
+[source.agent_email, source.garage, source.num_rooms, source.sewer, source.utilities] --> source.firm_name
+[source.agent_email, source.garage, source.num_rooms, source.sewer, source.utilities] --> source.firm_address
+[source.agent_email, source.garage, source.num_rooms, source.utilities, source.water] --> source.agent_phone
+[source.agent_email, source.garage, source.num_rooms, source.utilities, source.water] --> source.firm_name
+[source.agent_email, source.garage, source.num_rooms, source.utilities, source.water] --> source.firm_address
+[source.agent_email, source.electricity, source.garage, source.num_rooms, source.utilities] --> source.agent_phone
+[source.agent_email, source.electricity, source.garage, source.num_rooms, source.utilities] --> source.firm_name
+[source.agent_email, source.electricity, source.garage, source.num_rooms, source.utilities] --> source.firm_address
+[source.agent_email, source.num_rooms, source.sewer, source.utilities] --> source.lot_area
+[source.agent_email, source.num_rooms, source.sewer, source.utilities] --> source.water
+[source.agent_email, source.num_rooms, source.sewer, source.utilities] --> source.electricity
+[source.agent_email, source.num_rooms, source.utilities, source.water] --> source.lot_area
+[source.agent_email, source.num_rooms, source.utilities, source.water] --> source.sewer
+[source.agent_email, source.electricity, source.num_rooms, source.utilities] --> source.lot_area
+[source.agent_email, source.electricity, source.num_rooms, source.utilities] --> source.sewer
+[source.agent_email, source.electricity, source.num_rooms, source.utilities] --> source.water
+[source.agent_email, source.garage, source.sewer, source.utilities] --> source.water
+[source.agent_email, source.garage, source.utilities, source.water] --> source.sewer
+[source.agent_email, source.fireplace, source.utilities, source.water] --> source.sewer
+[source.agent_email, source.electricity, source.fireplace, source.utilities] --> source.lot_area
+[source.agent_email, source.fireplace, source.garage, source.lot_area, source.sewer] --> source.electricity
+[source.agent_email, source.fireplace, source.garage, source.lot_area, source.water] --> source.electricity
+[source.agent_email, source.garage, source.lot_area, source.sewer] --> source.water
+[source.agent_email, source.garage, source.num_rooms, source.sewer] --> source.water
+[source.agent_email, source.garage, source.num_rooms, source.sewer] --> source.electricity
+[source.agent_email, source.electricity, source.garage, source.num_rooms] --> source.water
+[source.agent_email, source.fireplace, source.num_rooms, source.sewer] --> source.electricity
+[source.agent_email, source.electricity, source.num_rooms, source.sewer] --> source.water
+[source.agent_email, source.num_rooms, source.water] --> source.electricity
+[source.agent_email, source.fireplace, source.sewer] --> source.water
+[source.agent_phone, source.school] --> source.firm_name
+[source.agent_phone, source.school] --> source.firm_address
+[source.agent_phone, source.school, source.utilities] --> source.sewer
+[source.agent_phone, source.school, source.utilities] --> source.water
+[source.agent_phone, source.num_rooms, source.school, source.utilities] --> source.agent_email
+[source.agent_phone, source.num_rooms, source.school, source.utilities] --> source.electricity
+[source.agent_phone, source.garage, source.school, source.utilities] --> source.agent_email
+[source.agent_phone, source.garage, source.school, source.utilities] --> source.electricity
+[source.agent_phone, source.garage, source.lot_area, source.school] --> source.sewer
+[source.agent_phone, source.lot_area, source.school, source.water] --> source.sewer
+[source.agent_phone, source.num_rooms, source.school] --> source.sewer
+[source.agent_phone, source.fireplace, source.num_rooms, source.school] --> source.water
+[source.agent_phone, source.fireplace, source.garage, source.school] --> source.water
+[source.firm_name, source.school] --> source.firm_address
+[source.firm_name, source.school, source.utilities] --> source.agent_phone
+[source.firm_name, source.school, source.utilities] --> source.sewer
+[source.firm_name, source.school, source.utilities] --> source.water
+[source.firm_name, source.num_rooms, source.school, source.utilities] --> source.agent_email
+[source.firm_name, source.num_rooms, source.school, source.utilities] --> source.electricity
+[source.firm_name, source.garage, source.school, source.utilities] --> source.agent_email
+[source.firm_name, source.garage, source.school, source.utilities] --> source.electricity
+[source.fireplace, source.firm_name, source.garage, source.lot_area, source.school] --> source.sewer
+[source.firm_name, source.lot_area, source.school, source.water] --> source.sewer
+[source.firm_name, source.num_rooms, source.school] --> source.agent_phone
+[source.firm_name, source.num_rooms, source.school] --> source.sewer
+[source.fireplace, source.firm_name, source.num_rooms, source.school] --> source.water
+[source.fireplace, source.firm_name, source.garage, source.school] --> source.water
+[source.fireplace, source.firm_name, source.school] --> source.agent_phone
+[source.firm_name, source.school, source.sewer] --> source.agent_phone
+[source.firm_name, source.school, source.water] --> source.agent_phone
+[source.firm_address, source.garage, source.num_rooms, source.school, source.utilities] --> source.agent_email
+[source.firm_address, source.garage, source.num_rooms, source.school, source.utilities] --> source.agent_phone
+[source.firm_address, source.garage, source.num_rooms, source.school, source.utilities] --> source.firm_name
+[source.firm_address, source.garage, source.num_rooms, source.school, source.utilities] --> source.electricity
+[source.firm_address, source.garage, source.school, source.utilities] --> source.sewer
+[source.firm_address, source.garage, source.school, source.utilities] --> source.water
+[source.electricity, source.firm_address, source.garage, source.school, source.utilities] --> source.agent_email
+[source.electricity, source.firm_address, source.school, source.utilities] --> source.agent_phone
+[source.electricity, source.firm_address, source.school, source.utilities] --> source.firm_name
+[source.electricity, source.firm_address, source.school, source.utilities] --> source.sewer
+[source.electricity, source.firm_address, source.school, source.utilities] --> source.water
+[source.electricity, source.firm_address, source.garage, source.num_rooms, source.school] --> source.sewer
+[source.school, source.utilities] --> source.lot_area
+[source.num_rooms, source.school, source.utilities] --> source.fireplace
+[source.num_rooms, source.school, source.sewer, source.utilities] --> source.agent_email
+[source.num_rooms, source.school, source.sewer, source.utilities] --> source.agent_phone
+[source.num_rooms, source.school, source.sewer, source.utilities] --> source.firm_name
+[source.num_rooms, source.school, source.sewer, source.utilities] --> source.firm_address
+[source.num_rooms, source.school, source.sewer, source.utilities] --> source.electricity
+[source.num_rooms, source.school, source.utilities, source.water] --> source.agent_email
+[source.num_rooms, source.school, source.utilities, source.water] --> source.agent_phone
+[source.num_rooms, source.school, source.utilities, source.water] --> source.firm_name
+[source.num_rooms, source.school, source.utilities, source.water] --> source.firm_address
+[source.num_rooms, source.school, source.utilities, source.water] --> source.electricity
+[source.electricity, source.num_rooms, source.school, source.utilities] --> source.agent_email
+[source.electricity, source.num_rooms, source.school, source.utilities] --> source.agent_phone
+[source.electricity, source.num_rooms, source.school, source.utilities] --> source.firm_name
+[source.electricity, source.num_rooms, source.school, source.utilities] --> source.firm_address
+[source.electricity, source.num_rooms, source.school, source.utilities] --> source.sewer
+[source.electricity, source.num_rooms, source.school, source.utilities] --> source.water
+[source.garage, source.school, source.utilities] --> source.fireplace
+[source.school, source.sewer, source.utilities] --> source.water
+[source.school, source.utilities, source.water] --> source.sewer
+[source.electricity, source.num_rooms, source.school, source.water] --> source.sewer
+[source.agent_phone, source.firm_name] --> source.firm_address
+[source.agent_phone, source.firm_address] --> source.firm_name
+[source.agent_phone, source.garage, source.lot_area, source.utilities] --> source.fireplace
+[source.agent_phone, source.electricity, source.garage, source.lot_area, source.utilities] --> source.agent_email
+[source.agent_phone, source.num_rooms, source.utilities] --> source.lot_area
+[source.agent_phone, source.garage, source.num_rooms, source.utilities] --> source.fireplace
+[source.agent_phone, source.garage, source.num_rooms, source.utilities] --> source.sewer
+[source.agent_phone, source.garage, source.num_rooms, source.utilities] --> source.water
+[source.agent_phone, source.electricity, source.garage, source.num_rooms, source.utilities] --> source.agent_email
+[source.agent_phone, source.fireplace, source.num_rooms, source.utilities] --> source.water
+[source.agent_phone, source.num_rooms, source.sewer, source.utilities] --> source.fireplace
+[source.agent_phone, source.num_rooms, source.sewer, source.utilities] --> source.water
+[source.agent_phone, source.electricity, source.num_rooms, source.sewer, source.utilities] --> source.agent_email
+[source.agent_phone, source.num_rooms, source.utilities, source.water] --> source.fireplace
+[source.agent_phone, source.electricity, source.fireplace, source.garage, source.utilities] --> source.agent_email
+[source.agent_phone, source.garage, source.sewer, source.utilities] --> source.water
+[source.agent_phone, source.garage, source.utilities, source.water] --> source.sewer
+[source.agent_phone, source.fireplace, source.sewer, source.utilities] --> source.water
+[source.agent_phone, source.electricity, source.fireplace, source.utilities] --> source.lot_area
+[source.agent_phone, source.num_rooms] --> source.firm_name
+[source.agent_phone, source.num_rooms] --> source.firm_address
+[source.agent_phone, source.electricity, source.fireplace, source.garage, source.num_rooms] --> source.water
+[source.agent_phone, source.fireplace, source.num_rooms, source.sewer] --> source.water
+[source.agent_phone, source.garage] --> source.firm_name
+[source.agent_phone, source.garage] --> source.firm_address
+[source.agent_phone, source.fireplace, source.garage, source.sewer] --> source.water
+[source.agent_phone, source.sewer] --> source.firm_name
+[source.agent_phone, source.sewer] --> source.firm_address
+[source.agent_phone, source.water] --> source.firm_name
+[source.agent_phone, source.water] --> source.firm_address
+[source.agent_phone, source.electricity] --> source.firm_name
+[source.agent_phone, source.electricity] --> source.firm_address
+[source.firm_name, source.garage, source.lot_area, source.utilities] --> source.fireplace
+[source.electricity, source.firm_name, source.garage, source.lot_area, source.utilities] --> source.agent_email
+[source.firm_name, source.num_rooms, source.utilities] --> source.lot_area
+[source.firm_name, source.garage, source.num_rooms, source.utilities] --> source.fireplace
+[source.firm_name, source.garage, source.num_rooms, source.utilities] --> source.sewer
+[source.firm_name, source.garage, source.num_rooms, source.utilities] --> source.water
+[source.electricity, source.firm_name, source.garage, source.num_rooms, source.utilities] --> source.agent_email
+[source.fireplace, source.firm_name, source.num_rooms, source.utilities] --> source.water
+[source.firm_name, source.num_rooms, source.sewer, source.utilities] --> source.fireplace
+[source.firm_name, source.num_rooms, source.sewer, source.utilities] --> source.water
+[source.firm_name, source.num_rooms, source.utilities, source.water] --> source.fireplace
+[source.electricity, source.fireplace, source.firm_name, source.garage, source.utilities] --> source.agent_email
+[source.firm_name, source.garage, source.sewer, source.utilities] --> source.water
+[source.firm_name, source.garage, source.utilities, source.water] --> source.sewer
+[source.electricity, source.firm_name, source.garage, source.utilities] --> source.agent_phone
+[source.fireplace, source.firm_name, source.sewer, source.utilities] --> source.water
+[source.electricity, source.fireplace, source.firm_name, source.utilities] --> source.lot_area
+[source.firm_name, source.num_rooms] --> source.firm_address
+[source.firm_name, source.garage, source.num_rooms] --> source.agent_phone
+[source.electricity, source.fireplace, source.firm_name, source.garage, source.num_rooms] --> source.water
+[source.fireplace, source.firm_name, source.num_rooms, source.sewer] --> source.water
+[source.fireplace, source.firm_name, source.garage, source.sewer] --> source.water
+[source.electricity, source.fireplace, source.firm_name, source.garage] --> source.agent_phone
+[source.electricity, source.firm_name] --> source.firm_address
+[source.firm_address, source.garage, source.lot_area, source.utilities] --> source.fireplace
+[source.firm_address, source.num_rooms, source.utilities] --> source.lot_area
+[source.firm_address, source.garage, source.num_rooms, source.utilities] --> source.fireplace
+[source.firm_address, source.garage, source.num_rooms, source.utilities, source.water] --> source.sewer
+[source.firm_address, source.num_rooms, source.sewer, source.utilities] --> source.fireplace
+[source.firm_address, source.num_rooms, source.sewer, source.utilities] --> source.water
+[source.firm_address, source.num_rooms, source.utilities, source.water] --> source.fireplace
+[source.firm_address, source.garage, source.sewer, source.utilities] --> source.water
+[source.fireplace, source.firm_address, source.sewer, source.utilities] --> source.water
+[source.electricity, source.fireplace, source.firm_address, source.utilities] --> source.lot_area
+[source.electricity, source.garage, source.num_rooms, source.utilities, source.water] --> source.sewer

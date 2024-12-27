@@ -1,0 +1,4 @@
+[address.address_id]
+[address.address]
+[address.district]
+[address.city_id]

@@ -1,0 +1,21 @@
+[target_sales.oqgqekwu] --> target_sales.mytbomla
+[target_sales.oqgqekwu] --> target_sales.ypsvoqcd
+[target_sales.oqgqekwu] --> target_sales.pmyfduli
+[target_sales.oqgqekwu, target_sales.zkcphiuu] --> target_sales.xduxlrfi
+[target_sales.xduxlrfi, target_sales.zkcphiuu] --> target_sales.oqgqekwu
+[target_sales.xduxlrfi, target_sales.zkcphiuu] --> target_sales.mytbomla
+[target_sales.xduxlrfi, target_sales.zkcphiuu] --> target_sales.ypsvoqcd
+[target_sales.xduxlrfi, target_sales.zkcphiuu] --> target_sales.pmyfduli
+[target_sales.mytbomla, target_sales.pmyfduli, target_sales.zkcphiuu] --> target_sales.oqgqekwu
+[target_sales.mytbomla, target_sales.pmyfduli, target_sales.zkcphiuu] --> target_sales.xduxlrfi
+[target_sales.mytbomla, target_sales.pmyfduli, target_sales.zkcphiuu] --> target_sales.ypsvoqcd
+[target_sales.ypsvoqcd, target_sales.zkcphiuu] --> target_sales.oqgqekwu
+[target_sales.ypsvoqcd, target_sales.zkcphiuu] --> target_sales.xduxlrfi
+[target_sales.ypsvoqcd, target_sales.zkcphiuu] --> target_sales.mytbomla
+[target_sales.ypsvoqcd, target_sales.zkcphiuu] --> target_sales.pmyfduli
+[target_sales.mytbomla, target_sales.xduxlrfi, target_sales.ypsvoqcd] --> target_sales.oqgqekwu
+[target_sales.mytbomla, target_sales.pmyfduli, target_sales.xduxlrfi] --> target_sales.oqgqekwu
+[target_sales.mytbomla, target_sales.pmyfduli, target_sales.xduxlrfi] --> target_sales.ypsvoqcd
+[target_sales.pmyfduli, target_sales.xduxlrfi, target_sales.ypsvoqcd] --> target_sales.oqgqekwu
+[target_sales.pmyfduli, target_sales.xduxlrfi, target_sales.ypsvoqcd] --> target_sales.mytbomla
+[target_sales.mytbomla, target_sales.ypsvoqcd] --> target_sales.pmyfduli

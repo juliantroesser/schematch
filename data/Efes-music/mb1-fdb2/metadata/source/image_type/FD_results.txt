@@ -1,0 +1,2 @@
+[image_type.mime_type] --> image_type.suffix
+[image_type.suffix] --> image_type.mime_type

@@ -1,0 +1,2 @@
+[location.lid]
+[location.countryorigin, location.countrypub]

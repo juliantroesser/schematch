@@ -1,0 +1,33 @@
+[agents.agent_id] --> agents.agent_name
+[agents.agent_id] --> agents.agent_last_name
+[agents.agent_id] --> agents.agent_first_name
+[agents.agent_id] --> agents.agent_email
+[agents.agent_id] --> agents.agent_phone_number
+[agents.agent_id] --> agents.agent_area_code
+[agents.agent_name] --> agents.agent_last_name
+[agents.agent_name] --> agents.agent_first_name
+[agents.agent_name] --> agents.agent_email
+[agents.agent_name] --> agents.agent_phone_number
+[agents.agent_name] --> agents.agent_area_code
+[agents.agent_first_name, agents.agent_last_name] --> agents.agent_name
+[agents.agent_first_name, agents.agent_last_name] --> agents.agent_email
+[agents.agent_first_name, agents.agent_last_name] --> agents.agent_phone_number
+[agents.agent_first_name, agents.agent_last_name] --> agents.agent_area_code
+[agents.agent_email, agents.agent_last_name] --> agents.agent_name
+[agents.agent_email, agents.agent_last_name] --> agents.agent_first_name
+[agents.agent_email, agents.agent_last_name] --> agents.agent_phone_number
+[agents.agent_email, agents.agent_last_name] --> agents.agent_area_code
+[agents.agent_last_name, agents.agent_phone_number] --> agents.agent_area_code
+[agents.agent_area_code, agents.agent_last_name] --> agents.agent_phone_number
+[agents.agent_email, agents.agent_first_name] --> agents.agent_name
+[agents.agent_email, agents.agent_first_name] --> agents.agent_last_name
+[agents.agent_email, agents.agent_first_name] --> agents.agent_phone_number
+[agents.agent_email, agents.agent_first_name] --> agents.agent_area_code
+[agents.agent_first_name, agents.agent_phone_number] --> agents.agent_name
+[agents.agent_first_name, agents.agent_phone_number] --> agents.agent_last_name
+[agents.agent_first_name, agents.agent_phone_number] --> agents.agent_email
+[agents.agent_first_name, agents.agent_phone_number] --> agents.agent_area_code
+[agents.agent_area_code, agents.agent_first_name] --> agents.agent_name
+[agents.agent_area_code, agents.agent_first_name] --> agents.agent_last_name
+[agents.agent_area_code, agents.agent_first_name] --> agents.agent_email
+[agents.agent_area_code, agents.agent_first_name] --> agents.agent_phone_number

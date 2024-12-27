@@ -1,0 +1,6 @@
+[target_roysched.lorange, target_roysched.title_id] --> target_roysched.hirange
+[target_roysched.lorange, target_roysched.title_id] --> target_roysched.royalty
+[target_roysched.hirange, target_roysched.title_id] --> target_roysched.lorange
+[target_roysched.hirange, target_roysched.title_id] --> target_roysched.royalty
+[target_roysched.royalty, target_roysched.title_id] --> target_roysched.lorange
+[target_roysched.royalty, target_roysched.title_id] --> target_roysched.hirange

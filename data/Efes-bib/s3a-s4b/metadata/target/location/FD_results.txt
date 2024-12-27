@@ -1,0 +1,3 @@
+[location.lid] --> location.countryorigin
+[location.lid] --> location.countrypub
+[location.countryorigin, location.countrypub] --> location.lid

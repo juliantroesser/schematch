@@ -1,0 +1,43 @@
+[] --> incollection.num
+[] --> incollection.note
+[] --> incollection.annote
+[incollection.collid] --> incollection.title
+[incollection.collid] --> incollection.bktitle
+[incollection.collid] --> incollection.year
+[incollection.collid] --> incollection.class
+[incollection.collid] --> incollection.month
+[incollection.collid] --> incollection.pages
+[incollection.collid] --> incollection.loc
+[incollection.collid] --> incollection.vol
+[incollection.title] --> incollection.collid
+[incollection.title] --> incollection.bktitle
+[incollection.title] --> incollection.year
+[incollection.title] --> incollection.class
+[incollection.title] --> incollection.month
+[incollection.title] --> incollection.pages
+[incollection.title] --> incollection.loc
+[incollection.title] --> incollection.vol
+[incollection.bktitle] --> incollection.year
+[incollection.bktitle] --> incollection.class
+[incollection.bktitle] --> incollection.month
+[incollection.bktitle] --> incollection.pages
+[incollection.bktitle] --> incollection.vol
+[incollection.bktitle, incollection.loc] --> incollection.collid
+[incollection.bktitle, incollection.loc] --> incollection.title
+[incollection.year] --> incollection.bktitle
+[incollection.year] --> incollection.class
+[incollection.year] --> incollection.month
+[incollection.year] --> incollection.pages
+[incollection.year] --> incollection.vol
+[incollection.loc, incollection.year] --> incollection.collid
+[incollection.loc, incollection.year] --> incollection.title
+[incollection.class] --> incollection.bktitle
+[incollection.class] --> incollection.year
+[incollection.class] --> incollection.month
+[incollection.class] --> incollection.pages
+[incollection.class] --> incollection.vol
+[incollection.class, incollection.loc] --> incollection.collid
+[incollection.class, incollection.loc] --> incollection.title
+[incollection.month] --> incollection.vol
+[incollection.pages, incollection.vol] --> incollection.month
+[incollection.loc, incollection.vol] --> incollection.month

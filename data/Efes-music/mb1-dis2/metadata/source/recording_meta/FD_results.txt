@@ -1,0 +1,2 @@
+[] --> recording_meta.rating
+[] --> recording_meta.rating_count

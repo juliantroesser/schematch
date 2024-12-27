@@ -1,0 +1,14 @@
+[artist_credit_name.artist] --> artist_credit_name.name
+[artist_credit_name.artist] --> artist_credit_name.artist_credit
+[artist_credit_name.artist] --> artist_credit_name.position
+[artist_credit_name.artist] --> artist_credit_name.join_phrase
+[artist_credit_name.name] --> artist_credit_name.artist
+[artist_credit_name.name] --> artist_credit_name.artist_credit
+[artist_credit_name.name] --> artist_credit_name.position
+[artist_credit_name.name] --> artist_credit_name.join_phrase
+[artist_credit_name.artist_credit, artist_credit_name.position] --> artist_credit_name.artist
+[artist_credit_name.artist_credit, artist_credit_name.position] --> artist_credit_name.name
+[artist_credit_name.artist_credit, artist_credit_name.position] --> artist_credit_name.join_phrase
+[artist_credit_name.artist_credit, artist_credit_name.join_phrase] --> artist_credit_name.artist
+[artist_credit_name.artist_credit, artist_credit_name.join_phrase] --> artist_credit_name.name
+[artist_credit_name.artist_credit, artist_credit_name.join_phrase] --> artist_credit_name.position

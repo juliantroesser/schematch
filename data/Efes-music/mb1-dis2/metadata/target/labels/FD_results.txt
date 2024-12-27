@@ -1,0 +1,9 @@
+[] --> labels.contactinfo
+[labels.id] --> labels.name
+[labels.id] --> labels.profile
+[labels.id] --> labels.parentlabel
+[labels.id] --> labels.data_quality
+[labels.name] --> labels.id
+[labels.name] --> labels.profile
+[labels.name] --> labels.parentlabel
+[labels.name] --> labels.data_quality

@@ -1,0 +1,2 @@
+[art_type.id] --> art_type.name
+[art_type.name] --> art_type.id

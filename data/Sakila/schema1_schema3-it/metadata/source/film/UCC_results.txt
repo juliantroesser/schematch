@@ -1,0 +1,4 @@
+[film.film_id]
+[film.title]
+[film.description]
+[film.length, film.rating, film.rental_duration, film.rental_rate, film.replacement_cost]

@@ -1,0 +1,128 @@
+[] --> cliente.indirizzo2
+[cliente.cliente_id] --> cliente.cognome
+[cliente.cliente_id] --> cliente.email
+[cliente.cliente_id] --> cliente.indirizzo_id
+[cliente.cliente_id] --> cliente.indirizzo
+[cliente.cliente_id] --> cliente.città_id
+[cliente.cliente_id] --> cliente.codice_postale
+[cliente.cliente_id] --> cliente.telefono
+[cliente.cliente_id] --> cliente.nome
+[cliente.cliente_id] --> cliente.distretto
+[cliente.cliente_id] --> cliente.negozio_id
+[cliente.cliente_id] --> cliente.attivo
+[cliente.cliente_id] --> cliente.data_creazione
+[cliente.cognome] --> cliente.cliente_id
+[cliente.cognome] --> cliente.email
+[cliente.cognome] --> cliente.indirizzo_id
+[cliente.cognome] --> cliente.indirizzo
+[cliente.cognome] --> cliente.città_id
+[cliente.cognome] --> cliente.codice_postale
+[cliente.cognome] --> cliente.telefono
+[cliente.cognome] --> cliente.nome
+[cliente.cognome] --> cliente.distretto
+[cliente.cognome] --> cliente.negozio_id
+[cliente.cognome] --> cliente.attivo
+[cliente.cognome] --> cliente.data_creazione
+[cliente.email] --> cliente.cliente_id
+[cliente.email] --> cliente.cognome
+[cliente.email] --> cliente.indirizzo_id
+[cliente.email] --> cliente.indirizzo
+[cliente.email] --> cliente.città_id
+[cliente.email] --> cliente.codice_postale
+[cliente.email] --> cliente.telefono
+[cliente.email] --> cliente.nome
+[cliente.email] --> cliente.distretto
+[cliente.email] --> cliente.negozio_id
+[cliente.email] --> cliente.attivo
+[cliente.email] --> cliente.data_creazione
+[cliente.indirizzo_id] --> cliente.cliente_id
+[cliente.indirizzo_id] --> cliente.cognome
+[cliente.indirizzo_id] --> cliente.email
+[cliente.indirizzo_id] --> cliente.indirizzo
+[cliente.indirizzo_id] --> cliente.città_id
+[cliente.indirizzo_id] --> cliente.codice_postale
+[cliente.indirizzo_id] --> cliente.telefono
+[cliente.indirizzo_id] --> cliente.nome
+[cliente.indirizzo_id] --> cliente.distretto
+[cliente.indirizzo_id] --> cliente.negozio_id
+[cliente.indirizzo_id] --> cliente.attivo
+[cliente.indirizzo_id] --> cliente.data_creazione
+[cliente.indirizzo] --> cliente.cliente_id
+[cliente.indirizzo] --> cliente.cognome
+[cliente.indirizzo] --> cliente.email
+[cliente.indirizzo] --> cliente.indirizzo_id
+[cliente.indirizzo] --> cliente.città_id
+[cliente.indirizzo] --> cliente.codice_postale
+[cliente.indirizzo] --> cliente.telefono
+[cliente.indirizzo] --> cliente.nome
+[cliente.indirizzo] --> cliente.distretto
+[cliente.indirizzo] --> cliente.negozio_id
+[cliente.indirizzo] --> cliente.attivo
+[cliente.indirizzo] --> cliente.data_creazione
+[cliente.città_id] --> cliente.cliente_id
+[cliente.città_id] --> cliente.cognome
+[cliente.città_id] --> cliente.email
+[cliente.città_id] --> cliente.indirizzo_id
+[cliente.città_id] --> cliente.indirizzo
+[cliente.città_id] --> cliente.codice_postale
+[cliente.città_id] --> cliente.telefono
+[cliente.città_id] --> cliente.nome
+[cliente.città_id] --> cliente.distretto
+[cliente.città_id] --> cliente.negozio_id
+[cliente.città_id] --> cliente.attivo
+[cliente.città_id] --> cliente.data_creazione
+[cliente.codice_postale] --> cliente.cliente_id
+[cliente.codice_postale] --> cliente.cognome
+[cliente.codice_postale] --> cliente.email
+[cliente.codice_postale] --> cliente.indirizzo_id
+[cliente.codice_postale] --> cliente.indirizzo
+[cliente.codice_postale] --> cliente.città_id
+[cliente.codice_postale] --> cliente.telefono
+[cliente.codice_postale] --> cliente.nome
+[cliente.codice_postale] --> cliente.distretto
+[cliente.codice_postale] --> cliente.negozio_id
+[cliente.codice_postale] --> cliente.attivo
+[cliente.codice_postale] --> cliente.data_creazione
+[cliente.telefono] --> cliente.cliente_id
+[cliente.telefono] --> cliente.cognome
+[cliente.telefono] --> cliente.email
+[cliente.telefono] --> cliente.indirizzo_id
+[cliente.telefono] --> cliente.indirizzo
+[cliente.telefono] --> cliente.città_id
+[cliente.telefono] --> cliente.codice_postale
+[cliente.telefono] --> cliente.nome
+[cliente.telefono] --> cliente.distretto
+[cliente.telefono] --> cliente.negozio_id
+[cliente.telefono] --> cliente.attivo
+[cliente.telefono] --> cliente.data_creazione
+[cliente.nome] --> cliente.attivo
+[cliente.distretto, cliente.nome] --> cliente.cliente_id
+[cliente.distretto, cliente.nome] --> cliente.cognome
+[cliente.distretto, cliente.nome] --> cliente.email
+[cliente.distretto, cliente.nome] --> cliente.indirizzo_id
+[cliente.distretto, cliente.nome] --> cliente.indirizzo
+[cliente.distretto, cliente.nome] --> cliente.città_id
+[cliente.distretto, cliente.nome] --> cliente.codice_postale
+[cliente.distretto, cliente.nome] --> cliente.telefono
+[cliente.distretto, cliente.nome] --> cliente.negozio_id
+[cliente.distretto, cliente.nome] --> cliente.data_creazione
+[cliente.negozio_id, cliente.nome] --> cliente.cliente_id
+[cliente.negozio_id, cliente.nome] --> cliente.cognome
+[cliente.negozio_id, cliente.nome] --> cliente.email
+[cliente.negozio_id, cliente.nome] --> cliente.indirizzo_id
+[cliente.negozio_id, cliente.nome] --> cliente.indirizzo
+[cliente.negozio_id, cliente.nome] --> cliente.città_id
+[cliente.negozio_id, cliente.nome] --> cliente.codice_postale
+[cliente.negozio_id, cliente.nome] --> cliente.telefono
+[cliente.negozio_id, cliente.nome] --> cliente.distretto
+[cliente.negozio_id, cliente.nome] --> cliente.data_creazione
+[cliente.data_creazione, cliente.nome] --> cliente.cliente_id
+[cliente.data_creazione, cliente.nome] --> cliente.cognome
+[cliente.data_creazione, cliente.nome] --> cliente.email
+[cliente.data_creazione, cliente.nome] --> cliente.indirizzo_id
+[cliente.data_creazione, cliente.nome] --> cliente.indirizzo
+[cliente.data_creazione, cliente.nome] --> cliente.città_id
+[cliente.data_creazione, cliente.nome] --> cliente.codice_postale
+[cliente.data_creazione, cliente.nome] --> cliente.telefono
+[cliente.data_creazione, cliente.nome] --> cliente.distretto
+[cliente.data_creazione, cliente.nome] --> cliente.negozio_id

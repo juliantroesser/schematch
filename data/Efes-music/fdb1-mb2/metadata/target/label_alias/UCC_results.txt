@@ -1,0 +1,3 @@
+[label_alias.id]
+[label_alias.name]
+[label_alias.sort_name]

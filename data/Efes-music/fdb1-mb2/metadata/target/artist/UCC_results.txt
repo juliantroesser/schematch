@@ -1,0 +1,4 @@
+[artist.id]
+[artist.gid]
+[artist.name]
+[artist.sort_name]

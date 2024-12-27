@@ -1,0 +1,2 @@
+[attore.attore_id] --> attore.nome
+[attore.attore_id] --> attore.cognome

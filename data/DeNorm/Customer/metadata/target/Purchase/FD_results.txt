@@ -1,0 +1,33 @@
+[Purchase.Price] --> Purchase.CID
+[Purchase.Price] --> Purchase.CName
+[Purchase.Price] --> Purchase.A
+[Purchase.Price] --> Purchase.PID
+[Purchase.Price] --> Purchase.ProductName
+[Purchase.Price] --> Purchase.M
+[Purchase.Price] --> Purchase.Category
+[Purchase.CID] --> Purchase.CName
+[Purchase.CID] --> Purchase.A
+[Purchase.CID, Purchase.PID] --> Purchase.Price
+[Purchase.CID, Purchase.PID] --> Purchase.M
+[Purchase.CID, Purchase.ProductName] --> Purchase.Price
+[Purchase.CID, Purchase.ProductName] --> Purchase.M
+[Purchase.CID, Purchase.Category] --> Purchase.M
+[Purchase.CName] --> Purchase.CID
+[Purchase.CName] --> Purchase.A
+[Purchase.CName, Purchase.PID] --> Purchase.Price
+[Purchase.CName, Purchase.PID] --> Purchase.M
+[Purchase.CName, Purchase.ProductName] --> Purchase.Price
+[Purchase.CName, Purchase.ProductName] --> Purchase.M
+[Purchase.CName, Purchase.Category] --> Purchase.M
+[Purchase.A] --> Purchase.CID
+[Purchase.A] --> Purchase.CName
+[Purchase.A, Purchase.PID] --> Purchase.Price
+[Purchase.A, Purchase.PID] --> Purchase.M
+[Purchase.A, Purchase.ProductName] --> Purchase.Price
+[Purchase.A, Purchase.ProductName] --> Purchase.M
+[Purchase.A, Purchase.Category] --> Purchase.M
+[Purchase.PID] --> Purchase.ProductName
+[Purchase.PID] --> Purchase.Category
+[Purchase.ProductName] --> Purchase.PID
+[Purchase.ProductName] --> Purchase.Category
+[Purchase.M] --> Purchase.Category

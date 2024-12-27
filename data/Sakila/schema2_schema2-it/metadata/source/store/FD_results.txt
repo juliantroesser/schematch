@@ -1,0 +1,6 @@
+[store.store_id] --> store.manager_staff_id
+[store.store_id] --> store.address_id
+[store.manager_staff_id] --> store.store_id
+[store.manager_staff_id] --> store.address_id
+[store.address_id] --> store.store_id
+[store.address_id] --> store.manager_staff_id

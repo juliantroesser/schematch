@@ -1,0 +1,3 @@
+[pagamento.pagamento_id]
+[pagamento.noleggio_id]
+[pagamento.ammontare, pagamento.cliente_id, pagamento.data_pagamento, pagamento.personale_id]

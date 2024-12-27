@@ -1,0 +1,7 @@
+[releases_formats.format_id] --> releases_formats.release_id
+[releases_formats.format_id] --> releases_formats.name
+[releases_formats.format_id] --> releases_formats.text
+[releases_formats.format_id] --> releases_formats.qty
+[releases_formats.release_id] --> releases_formats.name
+[releases_formats.release_id] --> releases_formats.text
+[releases_formats.release_id] --> releases_formats.qty

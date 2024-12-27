@@ -1,0 +1,3 @@
+[medium_format.id]
+[medium_format.name]
+[medium_format.child_order, medium_format.parent, medium_format.year]

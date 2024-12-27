@@ -1,0 +1,2 @@
+[unpubauthor.unpubid] --> unpubauthor.authorid
+[unpubauthor.authorid] --> unpubauthor.unpubid

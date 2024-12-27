@@ -1,0 +1,2 @@
+[release_packaging.id] --> release_packaging.name
+[release_packaging.name] --> release_packaging.id

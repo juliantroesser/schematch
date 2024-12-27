@@ -1,0 +1,3 @@
+[fodors_zagats_target.id]
+[fodors_zagats_target.name]
+[fodors_zagats_target.class]

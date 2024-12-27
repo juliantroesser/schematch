@@ -1,0 +1,6 @@
+[indirizzo.indirizzo_id]
+[indirizzo.indirizzo]
+[indirizzo.telefono]
+[indirizzo.città_id, indirizzo.codice_postale]
+[indirizzo.città_id, indirizzo.distretto]
+[indirizzo.codice_postale, indirizzo.distretto]

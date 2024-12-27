@@ -1,0 +1,2 @@
+[journal.jrnlnm] --> journal.jrnlid
+[journal.jrnlid] --> journal.jrnlnm

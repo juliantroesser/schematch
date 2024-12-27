@@ -1,0 +1,6 @@
+[fodors_zagats_source.id]
+[fodors_zagats_source.class]
+[fodors_zagats_source.name, fodors_zagats_source.phone]
+[fodors_zagats_source.addr, fodors_zagats_source.name]
+[fodors_zagats_source.city, fodors_zagats_source.name]
+[fodors_zagats_source.phone, fodors_zagats_source.type]

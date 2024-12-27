@@ -1,0 +1,5 @@
+[dblp_scholar_source.id] --> dblp_scholar_source.title
+[dblp_scholar_source.id] --> dblp_scholar_source.authors
+[dblp_scholar_source.id] --> dblp_scholar_source.year
+[dblp_scholar_source.id] --> dblp_scholar_source.venue
+[dblp_scholar_source.authors, dblp_scholar_source.title, dblp_scholar_source.year] --> dblp_scholar_source.venue

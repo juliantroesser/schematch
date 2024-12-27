@@ -1,0 +1,17 @@
+[] --> releases.status
+[releases.id] --> releases.title
+[releases.id] --> releases.master_id
+[releases.id] --> releases.released
+[releases.id] --> releases.notes
+[releases.id] --> releases.country
+[releases.id] --> releases.data_quality
+[releases.title] --> releases.id
+[releases.title] --> releases.master_id
+[releases.title] --> releases.released
+[releases.title] --> releases.notes
+[releases.title] --> releases.country
+[releases.title] --> releases.data_quality
+[releases.country, releases.master_id, releases.notes, releases.released] --> releases.id
+[releases.country, releases.master_id, releases.notes, releases.released] --> releases.title
+[releases.country, releases.master_id, releases.released] --> releases.data_quality
+[releases.country, releases.notes, releases.released] --> releases.data_quality

@@ -1,0 +1,27 @@
+[] --> film.release_year
+[] --> film.language
+[] --> film.original_language_id
+[film.film_id] --> film.title
+[film.film_id] --> film.description
+[film.film_id] --> film.length
+[film.film_id] --> film.replacement_cost
+[film.film_id] --> film.rental_duration
+[film.film_id] --> film.rating
+[film.film_id] --> film.rental_rate
+[film.title] --> film.film_id
+[film.title] --> film.description
+[film.title] --> film.length
+[film.title] --> film.replacement_cost
+[film.title] --> film.rental_duration
+[film.title] --> film.rating
+[film.title] --> film.rental_rate
+[film.description] --> film.film_id
+[film.description] --> film.title
+[film.description] --> film.length
+[film.description] --> film.replacement_cost
+[film.description] --> film.rental_duration
+[film.description] --> film.rating
+[film.description] --> film.rental_rate
+[film.length, film.rating, film.rental_duration, film.rental_rate, film.replacement_cost] --> film.film_id
+[film.length, film.rating, film.rental_duration, film.rental_rate, film.replacement_cost] --> film.title
+[film.length, film.rating, film.rental_duration, film.rental_rate, film.replacement_cost] --> film.description

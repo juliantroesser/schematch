@@ -1,0 +1,4 @@
+[release_group.id]
+[release_group.gid]
+[release_group.name]
+[release_group.artist_credit, release_group.last_updated]

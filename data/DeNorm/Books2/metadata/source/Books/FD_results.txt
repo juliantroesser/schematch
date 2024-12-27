@@ -1,0 +1,65 @@
+[Books.DueDate] --> Books.BookID
+[Books.DueDate] --> Books.Author
+[Books.DueDate] --> Books.ISBN
+[Books.DueDate] --> Books.Title
+[Books.DueDate] --> Books.Genre
+[Books.DueDate] --> Books.BorrowerID
+[Books.DueDate] --> Books.BorrowerName
+[Books.DueDate] --> Books.BranchID
+[Books.BookID] --> Books.Author
+[Books.BookID] --> Books.ISBN
+[Books.BookID] --> Books.Title
+[Books.BookID] --> Books.Genre
+[Books.BookID] --> Books.BorrowerID
+[Books.BookID] --> Books.BorrowerName
+[Books.BookID] --> Books.BranchID
+[Books.Author] --> Books.BookID
+[Books.Author] --> Books.ISBN
+[Books.Author] --> Books.Title
+[Books.Author] --> Books.Genre
+[Books.Author] --> Books.BorrowerID
+[Books.Author] --> Books.BorrowerName
+[Books.Author] --> Books.BranchID
+[Books.ISBN] --> Books.BookID
+[Books.ISBN] --> Books.Author
+[Books.ISBN] --> Books.Title
+[Books.ISBN] --> Books.Genre
+[Books.ISBN] --> Books.BorrowerID
+[Books.ISBN] --> Books.BorrowerName
+[Books.ISBN] --> Books.BranchID
+[Books.Title] --> Books.BorrowerID
+[Books.Title] --> Books.BorrowerName
+[Books.Genre, Books.Title] --> Books.BookID
+[Books.Genre, Books.Title] --> Books.Author
+[Books.Genre, Books.Title] --> Books.ISBN
+[Books.Genre, Books.Title] --> Books.BranchID
+[Books.BranchID, Books.Title] --> Books.BookID
+[Books.BranchID, Books.Title] --> Books.Author
+[Books.BranchID, Books.Title] --> Books.ISBN
+[Books.BranchID, Books.Title] --> Books.Genre
+[Books.BorrowerID, Books.Genre] --> Books.BookID
+[Books.BorrowerID, Books.Genre] --> Books.Author
+[Books.BorrowerID, Books.Genre] --> Books.ISBN
+[Books.BorrowerID, Books.Genre] --> Books.BranchID
+[Books.BorrowerName, Books.Genre] --> Books.BookID
+[Books.BorrowerName, Books.Genre] --> Books.Author
+[Books.BorrowerName, Books.Genre] --> Books.ISBN
+[Books.BorrowerName, Books.Genre] --> Books.BranchID
+[Books.BranchID, Books.Genre] --> Books.BookID
+[Books.BranchID, Books.Genre] --> Books.Author
+[Books.BranchID, Books.Genre] --> Books.ISBN
+[Books.BranchID, Books.Genre] --> Books.Title
+[Books.BranchID, Books.Genre] --> Books.BorrowerID
+[Books.BranchID, Books.Genre] --> Books.BorrowerName
+[Books.BorrowerID] --> Books.Title
+[Books.BorrowerID] --> Books.BorrowerName
+[Books.BorrowerID, Books.BranchID] --> Books.BookID
+[Books.BorrowerID, Books.BranchID] --> Books.Author
+[Books.BorrowerID, Books.BranchID] --> Books.ISBN
+[Books.BorrowerID, Books.BranchID] --> Books.Genre
+[Books.BorrowerName] --> Books.Title
+[Books.BorrowerName] --> Books.BorrowerID
+[Books.BorrowerName, Books.BranchID] --> Books.BookID
+[Books.BorrowerName, Books.BranchID] --> Books.Author
+[Books.BorrowerName, Books.BranchID] --> Books.ISBN
+[Books.BorrowerName, Books.BranchID] --> Books.Genre

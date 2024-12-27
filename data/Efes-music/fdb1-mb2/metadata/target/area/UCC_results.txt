@@ -1,0 +1,3 @@
+[area.id]
+[area.gid]
+[area.last_updated]

@@ -1,0 +1,3 @@
+[release_group_tag.release_group, release_group_tag.tag] --> release_group_tag.count
+[release_group_tag.release_group, release_group_tag.tag] --> release_group_tag.last_updated
+[release_group_tag.count, release_group_tag.tag] --> release_group_tag.last_updated
