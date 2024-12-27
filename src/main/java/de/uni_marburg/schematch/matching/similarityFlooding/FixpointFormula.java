@@ -18,7 +18,6 @@ public enum FixpointFormula {
 
             for (NodePair neighbor : neighborNodes) {
                 double neighborValue = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
 
                 double propagationCoefficient;
                 try{
@@ -27,30 +26,37 @@ public enum FixpointFormula {
                     propagationCoefficient = 0.0;
                 }
 
-                phi += neighborValue * propagationCoefficient; //Anstatt alles zu addieren gibt es phi_constraint und phi_else
+                phi += neighborValue * propagationCoefficient;
             }
 
             return sigma_i.get(node) + phi;
+        }
+    },
 
+    BASIC_Lambda {
+        @Override
+        public double evaluate(NodePair node, Set<NodePair> neighborNodes, Map<NodePair, Double> sigma_0, Map<NodePair, Double> sigma_i, Graph<NodePair, CoefficientEdge> propagationGraph) {
 
-//            double phi_constraint = 0;
-//            double phi_else = 0;
-//
-//            for (NodePair neighbor : neighborNodes) {
-//                double neighborValue = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
-//
-//                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
-//                    phi_constraint += propagationCoefficient * neighborValue;
-//                } else {
-//                    phi_else += propagationCoefficient * neighborValue;
-//                }
-//            }
-//
-//            return sigma_i.get(node) + 0.75 * phi_constraint + 0.25 * phi_else; //TODO: Was tun, falls keine/oder nur sehr wenig Dependency Information, weil dann phi_else nur mit 0.25 Gewichtet wird -> Nochmal gewichten, das heisst
-            //TODO: Anzahl der jeweiligen Nachbartypen zählen und damit gewichten
-            //TODO: Overall Score scheint besser zu werden!
+            double phi = 0;
 
+            for (NodePair neighbor : neighborNodes) {
+                double neighborValue = sigma_i.get(neighbor);
+                double propagationCoefficient;
+
+                try{
+                    propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
+                } catch(Exception e) {
+                    propagationCoefficient = 0.0;
+                }
+
+                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
+                    phi += LAMBDA_D * propagationCoefficient * neighborValue;
+                } else {
+                    phi += LAMBDA_E * propagationCoefficient * neighborValue;
+                }
+            }
+
+            return sigma_i.get(node) + phi;
         }
     },
 
@@ -62,7 +68,6 @@ public enum FixpointFormula {
 
             for (NodePair neighbor : neighborNodes) {
                 double neighborValue = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
                 double propagationCoefficient;
 
                 try{
@@ -75,23 +80,33 @@ public enum FixpointFormula {
             }
 
             return sigma_0.get(node) + phi;
+        }
+    },
 
-//            double phi_constraint = 0;
-//            double phi_else = 0;
-//
-//            for (NodePair neighbor : neighborNodes) {
-//                double neighborValue = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
-//
-//                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
-//                    phi_constraint += propagationCoefficient * neighborValue;
-//                } else {
-//                    phi_else += propagationCoefficient * neighborValue;
-//                }
-//            }
-//
-//            return sigma_0.get(node) + 0.75 * phi_constraint + 0.25 * phi_else;
+    FORMULA_A_Lambda {
+        @Override
+        public double evaluate(NodePair node, Set<NodePair> neighborNodes, Map<NodePair, Double> sigma_0, Map<NodePair, Double> sigma_i, Graph<NodePair, CoefficientEdge> propagationGraph) {
 
+            double phi = 0;
+
+            for (NodePair neighbor : neighborNodes) {
+                double neighborValue = sigma_i.get(neighbor);
+                double propagationCoefficient;
+
+                try{
+                    propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
+                } catch(Exception e) {
+                    propagationCoefficient = 0.0;
+                }
+
+                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
+                    phi += LAMBDA_D * propagationCoefficient * neighborValue;
+                } else {
+                    phi += LAMBDA_E * propagationCoefficient * neighborValue;
+                }
+            }
+
+            return sigma_0.get(node) + phi;
         }
     },
 
@@ -102,11 +117,8 @@ public enum FixpointFormula {
             double phi = 0;
 
             for (NodePair neighbor : neighborNodes) {
-
                 double neighborValue_0 = sigma_0.get(neighbor);
                 double neighborValue_i = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
-
                 double propagationCoefficient;
 
                 try{
@@ -119,24 +131,34 @@ public enum FixpointFormula {
             }
 
             return phi;
+        }
+    },
 
-//            double phi_constraint = 0;
-//            double phi_else = 0;
-//
-//            for (NodePair neighbor : neighborNodes) {
-//                double neighborValue_0 = sigma_0.get(neighbor);
-//                double neighborValue_i = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
-//
-//                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
-//                    phi_constraint += (neighborValue_0 + neighborValue_i) * propagationCoefficient;
-//                } else {
-//                    phi_else += (neighborValue_0 + neighborValue_i) * propagationCoefficient;
-//                }
-//            }
-//
-//            return 0.75 * phi_constraint + 0.25 * phi_else;
+    FORMULA_B_Lambda {
+        @Override
+        public double evaluate(NodePair node, Set<NodePair> neighborNodes, Map<NodePair, Double> sigma_0, Map<NodePair, Double> sigma_i, Graph<NodePair, CoefficientEdge> propagationGraph) {
 
+            double phi = 0;
+
+            for (NodePair neighbor : neighborNodes) {
+                double neighborValue_0 = sigma_0.get(neighbor);
+                double neighborValue_i = sigma_i.get(neighbor);
+                double propagationCoefficient;
+
+                try{
+                    propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
+                } catch(Exception e) {
+                    propagationCoefficient = 0.0;
+                }
+
+                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
+                    phi += LAMBDA_D * (neighborValue_0 + neighborValue_i) * propagationCoefficient;
+                } else {
+                    phi += LAMBDA_E * (neighborValue_0 + neighborValue_i) * propagationCoefficient;
+                }
+            }
+
+            return phi;
         }
     },
 
@@ -150,7 +172,6 @@ public enum FixpointFormula {
 
                 double neighborValue_0 = sigma_0.get(neighbor);
                 double neighborValue_i = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
 
                 double propagationCoefficient;
                 try {
@@ -163,25 +184,40 @@ public enum FixpointFormula {
             }
 
             return sigma_0.get(node) + sigma_i.get(node) + phi;
+        }
+    },
 
-//            double phi_constraint = 0;
-//            double phi_else = 0;
-//
-//            for (NodePair neighbor : neighborNodes) {
-//                double neighborValue_0 = sigma_0.get(neighbor);
-//                double neighborValue_i = sigma_i.get(neighbor);
-//                double propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
-//
-//                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
-//                    phi_constraint += (neighborValue_0 + neighborValue_i) * propagationCoefficient;
-//                } else {
-//                    phi_else += (neighborValue_0 + neighborValue_i) * propagationCoefficient;
-//                }
-//            }
-//
-//            return sigma_0.get(node) + sigma_i.get(node) + 0.75 * phi_constraint + 0.25 * phi_else;
+    FORMULA_C_Lambda {
+
+        @Override
+        public double evaluate(NodePair node, Set<NodePair> neighborNodes, Map<NodePair, Double> sigma_0, Map<NodePair, Double> sigma_i, Graph<NodePair, CoefficientEdge> propagationGraph) {
+
+            double phi = 0;
+
+            for (NodePair neighbor : neighborNodes) {
+                double neighborValue_0 = sigma_0.get(neighbor);
+                double neighborValue_i = sigma_i.get(neighbor);
+                double propagationCoefficient;
+
+                try {
+                    propagationCoefficient = propagationGraph.getEdge(neighbor, node).getCoefficient();
+                } catch (Exception e) {
+                    propagationCoefficient = 0.0;
+                }
+
+                if(neighbor.getFirstNode().getNodeType().equals(NodeType.CONSTRAINT) && neighbor.getSecondNode().getNodeType().equals(NodeType.CONSTRAINT)) {
+                    phi += LAMBDA_D * (neighborValue_0 + neighborValue_i) * propagationCoefficient;
+                } else {
+                    phi += LAMBDA_E * (neighborValue_0 + neighborValue_i) * propagationCoefficient;
+                }
+            }
+
+            return sigma_0.get(node) + sigma_i.get(node) + phi;
         }
     };
+
+    protected static final double LAMBDA_D = 0.0;
+    protected static final double LAMBDA_E = 1.0; //Keep at 1.0
 
     public double evaluate(NodePair node, Set<NodePair> neighborNodes, Map<NodePair, Double> sigma_0, Map<NodePair, Double> sigma_i, Graph<NodePair, CoefficientEdge> propagationGraph) throws NoSuchMethodException {
         throw new NoSuchMethodException("Not implemented");

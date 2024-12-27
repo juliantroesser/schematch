@@ -1,7 +1,5 @@
 package de.uni_marburg.schematch.matching.similarityFlooding;
 
-import java.util.Objects;
-
 public class NodePair {
 
     private final Node node1;
@@ -31,7 +29,11 @@ public class NodePair {
 
     @Override
     public int hashCode() {
-        return Objects.hash(node1, node2);
+        int prime = 31;
+        int result = 1;
+        result = prime * result + (node1 == null ? 0 : node1.hashCode());
+        result = prime * result + (node2 == null ? 0 : node2.hashCode());
+        return result;
     }
 
     @Override

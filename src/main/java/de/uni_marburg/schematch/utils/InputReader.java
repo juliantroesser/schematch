@@ -200,14 +200,16 @@ public class InputReader {
                 Path uccFilePath = metadataFolderPath.resolve(table.getName()).resolve("UCC_results.txt");
 
                 Collection<FunctionalDependency> datasetFDs = readFDFile(fdFilePath, table, fdMap);
-                if(datasetFDs.isEmpty())
+                if(datasetFDs.isEmpty()) {
                     datasetFDs = Metanome.executeFD(List.of(table));
+                }
                 for (FunctionalDependency fd : datasetFDs) {
                     fd.setPdepTuple(MetadataUtils.getPdep(fd));
                 }
                 Collection<UniqueColumnCombination> datasetUCCs = readUCCFile(uccFilePath, table, uccMap);
-                if(datasetUCCs.isEmpty())
+                if(datasetUCCs.isEmpty()) {
                     datasetUCCs = Metanome.executeUCC(List.of(table));
+                }
                 fds.addAll(datasetFDs);
                 uccs.addAll(datasetUCCs);
             }

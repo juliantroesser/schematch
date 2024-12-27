@@ -21,7 +21,7 @@ import java.util.*;
 
 public class Main {
     final static Logger log = LogManager.getLogger(Main.class);
-    public final static Date START_TIMESTAMP = new Date();
+    public static Date START_TIMESTAMP = new Date();
 
     public static void main(String[] args) throws Exception {
         log.info("Starting Schematch");
@@ -75,10 +75,16 @@ public class Main {
             evalWriter = new EvalWriter(matchSteps, metrics);
         }
 
+        START_TIMESTAMP = new Date(); //Start time measurement before SimilarityFlooding Algorithm runs
         // loop over datasets
         for (Configuration.DatasetConfiguration datasetConfiguration : config.getDatasetConfigurations()) {
             Dataset dataset = new Dataset(datasetConfiguration);
             log.info("Starting experiments for dataset " + dataset.getName() + " with " + dataset.getScenarioNames().size() + " scenarios");
+            //Print stats about Dataset
+
+            log.info("Dataset stats: ");
+            log.info(dataset.getStats());
+
             // loop over scenarios
             for (String scenarioName : dataset.getScenarioNames()) {
                 Scenario scenario = new Scenario(dataset.getPath() + File.separator + scenarioName);
@@ -103,9 +109,9 @@ public class Main {
             evalWriter.writeOverallPerformance(config.getDatasetConfigurations().size());
         }
 
+        Date END_TIMESTAMP = new Date(); //End time measurement after last SelectThreshold
         log.info("See results directory for more detailed performance and similarity matrices results.");
 
-        Date END_TIMESTAMP = new Date();
         long durationInMillis = END_TIMESTAMP.getTime() - START_TIMESTAMP.getTime();
         log.info("Total time: " + DurationFormatUtils.formatDuration(durationInMillis, "HH:mm:ss:SSS"));
 

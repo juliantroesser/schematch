@@ -2,28 +2,22 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  useWholeSchema: ["true"]
-  propagationCoefficientPolicy: ["INVERSE_AVERAGE"]
-  fixpointFormula: ["FORMULA_C"]
-  epsilon: ["0.0001"]
-  maxIterations: ["100"]
-  FDV1: ["false"]
+  wholeSchema: ["false"]
+  propCoeffPolicy: ["INV_PROD", "INV_AVG"]
+  fixpoint: ["BASIC", "A", "B", "C"]
+  eps: ["0.0001"]
+  maxIter: ["100"]
+  FDV1: ["true"]
   FDV2: ["false"]
-  UCCV1: ["false"]
+  UCCV1: ["true"]
   UCCV2: ["false"]
-  INDV1: ["false"]
+  INDV1: ["true"]
   INDV2: ["false"]
-#---
-#name: "SimilarityFlooding"
-#packageName: "matrix_boosting.similarity_flooding"
-#params:
-#  propagationCoefficientPolicy: ["INVERSE_AVERAGE", "INVERSE_PRODUCT"]
-#  fixpointFormula: ["BASIC", "FORMULA_A", "FORMULA_B", "FORMULA_C"]
-#  epsilon: ["0.001"]
-#  maxIterations: ["100"]
-#  FDV1: ["false"]
-#  FDV2: ["true"]
-#  UCCV1: ["false"]
-#  UCCV2: ["false"]
-#  INDV1: ["false"]
-#  INDV2: ["false"]
+  FDSim: ["0"]
+  UCCSim: ["0"]
+  INDSim: ["0"]
+
+
+
+
+
