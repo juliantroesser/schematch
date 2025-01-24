@@ -1,2 +1,0 @@
-[] --> area_annotation.area
-[] --> area_annotation.annotation

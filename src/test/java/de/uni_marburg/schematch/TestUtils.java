@@ -29,8 +29,8 @@ public class TestUtils {
 
     private static TestData loadData() {
         Configuration config = Configuration.getInstance();
-        Configuration.DatasetConfiguration dsConfig = new Configuration.DatasetConfiguration("Test",
-                config.getDefaultDatasetBasePath() + File.separator + "Test");
+        Configuration.DatasetConfiguration dsConfig = new Configuration.DatasetConfiguration("Efes-bib",
+                config.getDefaultDatasetBasePath() + File.separator + "Efes-bib");
         Dataset d = new Dataset(dsConfig);
         HashMap<String, Scenario> s = new HashMap<>();
         for (String sName : d.getScenarioNames()) {
@@ -38,4 +38,5 @@ public class TestUtils {
         }
         return new TestData(d, s);
     }
+
 }

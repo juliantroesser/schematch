@@ -1,2 +1,0 @@
-[recording_meta.id] --> recording_meta.rating
-[recording_meta.id] --> recording_meta.rating_count

@@ -1,3 +1,0 @@
-[release_group.id]
-[release_group.gid]
-[release_group.name]

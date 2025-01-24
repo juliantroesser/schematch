@@ -1,2 +1,0 @@
-[area_alias_type.id]
-[area_alias_type.name]

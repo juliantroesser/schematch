@@ -82,8 +82,8 @@ public class Main {
             log.info("Starting experiments for dataset " + dataset.getName() + " with " + dataset.getScenarioNames().size() + " scenarios");
             //Print stats about Dataset
 
-            log.info("Dataset stats: ");
-            log.info(dataset.getStats());
+//            log.info("Dataset stats: ");
+//            log.info(dataset.getStats());
 
             // loop over scenarios
             for (String scenarioName : dataset.getScenarioNames()) {

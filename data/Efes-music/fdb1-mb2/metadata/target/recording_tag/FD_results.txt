@@ -1,2 +1,0 @@
-[recording_tag.recording, recording_tag.tag] --> recording_tag.last_updated
-[recording_tag.recording, recording_tag.tag] --> recording_tag.count

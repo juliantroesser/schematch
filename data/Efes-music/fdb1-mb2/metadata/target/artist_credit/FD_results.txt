@@ -1,7 +1,0 @@
-[artist_credit.id] --> artist_credit.name
-[artist_credit.id] --> artist_credit.ref_count
-[artist_credit.id] --> artist_credit.created
-[artist_credit.id] --> artist_credit.artist_count
-[artist_credit.name] --> artist_credit.artist_count
-[artist_credit.name, artist_credit.ref_count] --> artist_credit.id
-[artist_credit.name, artist_credit.ref_count] --> artist_credit.created

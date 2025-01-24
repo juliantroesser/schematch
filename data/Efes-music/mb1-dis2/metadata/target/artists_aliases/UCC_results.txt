@@ -1,1 +1,0 @@
-[artists_aliases.artist_id, artists_aliases.name]

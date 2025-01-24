@@ -1,6 +1,0 @@
-[release.id]
-[release.gid]
-[release.name]
-[release.release_group]
-[release.artist_credit, release.last_updated]
-[release.artist_credit, release.barcode]

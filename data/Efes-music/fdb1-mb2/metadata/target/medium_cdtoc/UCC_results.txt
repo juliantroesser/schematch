@@ -1,2 +1,0 @@
-[medium_cdtoc.id]
-[medium_cdtoc.cdtoc, medium_cdtoc.medium]

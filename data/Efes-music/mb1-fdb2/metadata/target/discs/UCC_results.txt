@@ -1,5 +1,0 @@
-[discs.discid]
-[discs.dtitle]
-[discs.disc_length]
-[discs.dgenre, discs.submitted_via]
-[discs.dyear, discs.submitted_via]

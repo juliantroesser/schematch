@@ -1,4 +1,0 @@
-[tag.id] --> tag.name
-[tag.id] --> tag.ref_count
-[tag.name] --> tag.id
-[tag.name] --> tag.ref_count

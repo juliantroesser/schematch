@@ -27,11 +27,11 @@ import java.util.*;
 public class InputReader {
     private static final Logger log = LogManager.getLogger(InputReader.class);
 
-    public static List<Table> readDataDir(String inputPath) {
-        return readDataDir(inputPath, Configuration.getInstance().getDefaultSeparator());
+    public static List<Table> readDataDir(String inputPath, Database database) {
+        return readDataDir(inputPath, Configuration.getInstance().getDefaultSeparator(), database);
     }
 
-    public static List<Table> readDataDir(String inputPath, String separator) {
+    public static List<Table> readDataDir(String inputPath, String separator, Database database) {
         List<Table> tables = new ArrayList<>();
 
         File dir = new File(inputPath);
@@ -40,18 +40,18 @@ public class InputReader {
 
         for (File file : listOfFiles) {
             if (file.isFile()) {
-                Table table = readDataFile(file.getAbsolutePath(), separator);
+                Table table = readDataFile(file.getAbsolutePath(), separator, database);
                 tables.add(table);
             }
         }
         return tables;
     }
 
-    public static Table readDataFile(String inputPath) {
-        return readDataFile(inputPath, Configuration.getInstance().getDefaultSeparator());
+    public static Table readDataFile(String inputPath, Database database) {
+        return readDataFile(inputPath, Configuration.getInstance().getDefaultSeparator(), database);
     }
 
-    public static Table readDataFile(String inputPath, String separator) {
+    public static Table readDataFile(String inputPath, String separator, Database database) {
         CSVFormat csvFormat = CSVFormat.DEFAULT.builder()
                 .setHeader()
                 .setDelimiter(separator)
@@ -104,7 +104,7 @@ public class InputReader {
             throw new RuntimeException(e);
         }
 
-        return new Table(fileName, labels, columns, inputPath);
+        return new Table(fileName, labels, columns, inputPath, database);
     }
 
     public static List<String> fetchGroundTruthTablePairNames(String inputPath) {

@@ -1,5 +1,0 @@
-[track.id]
-[track.gid]
-[track.medium, track.recording]
-[track.medium, track.number]
-[track.medium, track.position]

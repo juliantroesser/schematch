@@ -1,3 +1,0 @@
-[isrc.id]
-[isrc.recording]
-[isrc.isrc]

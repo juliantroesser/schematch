@@ -9,17 +9,18 @@ import java.io.File;
 import java.util.List;
 
 @Data
-public class Database { //Entspricht meiner Schema Klasse
+public class Database {
     private final String name;
     private final String path;
-    private List<Table> tables; //Repräsentiert mehrere Tabellen
-    private DatabaseMetadata metadata; //Dependencies u.ä
+    private List<Table> tables;
+    private DatabaseMetadata metadata;
     private int numColumns;
 
     public Database(String path) {
         this.name = new File(path).getName();
         this.path = path;
-        this.tables = InputReader.readDataDir(this.path);
+        this.tables = InputReader.readDataDir(this.path, this);
+
         // TODO: read dependencies on demand
         if (Configuration.getInstance().isReadDependencies()) {
             this.metadata = InputReader.readDatabaseMetadata(this);

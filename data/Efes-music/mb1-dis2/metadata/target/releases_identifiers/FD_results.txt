@@ -1,4 +1,0 @@
-[releases_identifiers.description, releases_identifiers.value] --> releases_identifiers.type
-[releases_identifiers.release_id, releases_identifiers.value] --> releases_identifiers.description
-[releases_identifiers.release_id, releases_identifiers.value] --> releases_identifiers.type
-[releases_identifiers.type, releases_identifiers.value] --> releases_identifiers.description

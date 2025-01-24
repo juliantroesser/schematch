@@ -1,2 +1,0 @@
-[gender.id] --> gender.name
-[gender.name] --> gender.id

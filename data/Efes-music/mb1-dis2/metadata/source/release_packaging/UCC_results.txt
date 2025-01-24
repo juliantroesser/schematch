@@ -1,2 +1,0 @@
-[release_packaging.id]
-[release_packaging.name]

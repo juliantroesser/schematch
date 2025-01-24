@@ -1,3 +1,0 @@
-[release_label.id]
-[release_label.release]
-[release_label.label]

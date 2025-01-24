@@ -1,2 +1,0 @@
-[] --> release_group_annotation.release_group
-[] --> release_group_annotation.annotation

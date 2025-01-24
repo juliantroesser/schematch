@@ -1,3 +1,0 @@
-[annotation.id]
-[annotation.created]
-[annotation.changelog, annotation.editor, annotation.text]

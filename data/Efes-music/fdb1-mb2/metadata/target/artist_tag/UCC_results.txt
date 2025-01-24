@@ -1,1 +1,0 @@
-[artist_tag.artist, artist_tag.tag]

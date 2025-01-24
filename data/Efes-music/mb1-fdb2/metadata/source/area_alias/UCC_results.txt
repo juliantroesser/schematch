@@ -1,8 +1,0 @@
-[area_alias.id]
-[area_alias.last_updated, area_alias.name, area_alias.type]
-[area_alias.last_updated, area_alias.sort_name, area_alias.type]
-[area_alias.last_updated, area_alias.primary_for_locale]
-[area_alias.area, area_alias.locale, area_alias.name, area_alias.type]
-[area_alias.area, area_alias.locale, area_alias.name, area_alias.primary_for_locale]
-[area_alias.area, area_alias.locale, area_alias.sort_name, area_alias.type]
-[area_alias.area, area_alias.locale, area_alias.primary_for_locale, area_alias.sort_name]

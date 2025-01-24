@@ -1,2 +1,0 @@
-[area_type.id] --> area_type.name
-[area_type.name] --> area_type.id

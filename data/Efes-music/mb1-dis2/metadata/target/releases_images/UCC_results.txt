@@ -1,2 +1,0 @@
-[releases_images.uri]
-[releases_images.uri150]

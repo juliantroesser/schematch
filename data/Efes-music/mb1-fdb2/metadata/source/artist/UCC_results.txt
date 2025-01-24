@@ -1,7 +1,0 @@
-[artist.id]
-[artist.gid]
-[artist.name]
-[artist.sort_name]
-[artist.begin_date_year, artist.last_updated]
-[artist.begin_date_month, artist.end_date_year, artist.last_updated, artist.type]
-[artist.area, artist.end_date_year, artist.last_updated, artist.type]

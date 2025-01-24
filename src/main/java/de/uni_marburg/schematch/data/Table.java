@@ -1,6 +1,7 @@
 package de.uni_marburg.schematch.data;
 
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
@@ -11,8 +12,10 @@ public class Table {
     private List<Column> columns;
     private String path;
     private int offset;
+    @Getter
+    private Database database;
 
-    public Table(String name, List<String> labels, List<Column> columns, String path) {
+    public Table(String name, List<String> labels, List<Column> columns, String path, Database database) {
         this.name = name;
         this.labels = labels;
         this.columns = columns;
@@ -21,6 +24,8 @@ public class Table {
         for (Column column : this.columns) {
             column.setTable(this);
         }
+
+        this.database = database;
     }
 
     public int getNumColumns() {

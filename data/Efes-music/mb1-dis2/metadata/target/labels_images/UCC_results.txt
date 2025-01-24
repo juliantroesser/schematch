@@ -1,2 +1,0 @@
-[labels_images.uri]
-[labels_images.uri150]

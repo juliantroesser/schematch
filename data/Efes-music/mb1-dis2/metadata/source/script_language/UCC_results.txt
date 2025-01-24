@@ -1,2 +1,0 @@
-[script_language.id]
-[script_language.language, script_language.script]

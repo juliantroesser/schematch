@@ -1,1 +1,0 @@
-[release_annotation.annotation] --> release_annotation.release

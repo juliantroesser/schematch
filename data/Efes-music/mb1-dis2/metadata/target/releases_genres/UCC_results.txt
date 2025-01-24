@@ -1,1 +1,0 @@
-[releases_genres.genre, releases_genres.release_id]

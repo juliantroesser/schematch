@@ -1,1 +1,0 @@
-[release_group_tag.release_group, release_group_tag.tag]

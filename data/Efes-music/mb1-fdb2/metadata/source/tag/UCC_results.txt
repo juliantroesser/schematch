@@ -1,2 +1,0 @@
-[tag.id]
-[tag.name]

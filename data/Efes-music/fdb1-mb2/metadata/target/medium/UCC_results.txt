@@ -1,2 +1,0 @@
-[medium.id]
-[medium.position, medium.release]

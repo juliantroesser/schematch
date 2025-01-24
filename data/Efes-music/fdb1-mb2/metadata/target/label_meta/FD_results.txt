@@ -1,4 +1,0 @@
-[label_meta.id] --> label_meta.rating
-[label_meta.id] --> label_meta.rating_count
-[label_meta.rating] --> label_meta.rating_count
-[label_meta.rating_count] --> label_meta.rating

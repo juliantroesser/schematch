@@ -1,3 +1,0 @@
-[releases_tracklist_artists.id, releases_tracklist_artists.track_id]
-[releases_tracklist_artists.name, releases_tracklist_artists.track_id]
-[releases_tracklist_artists.join_, releases_tracklist_artists.track_id]

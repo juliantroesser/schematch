@@ -1,4 +1,0 @@
-[cover_art.id]
-[cover_art.edit]
-[cover_art.date_uploaded]
-[cover_art.ordering, cover_art.release]

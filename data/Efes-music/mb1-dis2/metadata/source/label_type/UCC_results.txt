@@ -1,2 +1,0 @@
-[label_type.id]
-[label_type.name]
