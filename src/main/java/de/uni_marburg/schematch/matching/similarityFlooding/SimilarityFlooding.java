@@ -33,7 +33,6 @@ public class SimilarityFlooding extends Matcher {
     private String wholeSchema;
     private String propCoeffPolicy;
     private String fixpoint;
-    private String eps;
     private String maxIter;
     private String FDV1;
     private String FDV2;
@@ -785,14 +784,15 @@ public class SimilarityFlooding extends Matcher {
             } else {
                 similarity = l.compare(node1.getValue(), node2.getValue());
             }
-            initialMapping.put(mappingPair, similarity);
+//            initialMapping.put(mappingPair, similarity);
+            initialMapping.put(mappingPair, 0.5);
         }
         return initialMapping;
     }
 
     public Map<NodePair, Double> similarityFlooding(Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
 
-        double EPSILON = Double.parseDouble(eps);
+        double EPSILON = 0.0001;
         int MAX_ITERATIONS = Integer.parseInt(maxIter);
         boolean convergence = false;
         int iterationCount = 0;
@@ -992,7 +992,14 @@ public class SimilarityFlooding extends Matcher {
         Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
 
         for (FunctionalDependency fd : functionalDependencies) {
-            if (fd.getPdepTuple().gpdep > 0.25) {
+
+//            System.out.println("Redundancy: "+ fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + ": " + fd.getRedundancyMeasure());
+
+//            if (fd.getPdepTuple().gpdep >= 0.25) {
+//                filteredFDs.add(fd);
+//            }
+
+            if(fd.getRedundancyMeasure() >= 0.0) {
                 filteredFDs.add(fd);
             }
         }

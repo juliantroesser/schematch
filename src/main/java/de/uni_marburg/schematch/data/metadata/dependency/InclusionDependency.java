@@ -188,5 +188,4 @@ public class InclusionDependency implements Dependency{
         return (double) foreignKey.getValues().size() / (double) primaryKey.getValues().size();
     } //The higher the better
 
-
 }
