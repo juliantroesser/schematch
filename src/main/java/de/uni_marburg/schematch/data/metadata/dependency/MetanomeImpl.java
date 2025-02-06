@@ -1,5 +1,8 @@
 package de.uni_marburg.schematch.data.metadata.dependency;
 
+import de.hpi.isg.pyro.algorithms.Pyro;
+import de.hpi.isg.pyro.model.PartialFD;
+import de.hpi.isg.pyro.model.PartialKey;
 import de.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.metanome.algorithm_integration.ColumnIdentifier;
@@ -41,7 +44,15 @@ public class MetanomeImpl{
         return executeBinder(tables);
     }
 
-    private static List<UniqueColumnCombination> executeHyUCC(List<Table> tables) {
+    public static List<PartialKey> executePartialUCC(List<Table> tables) {
+        return executePyroUCC(tables);
+    }
+
+    public static List<PartialFD> executePartialFD(List<Table> tables) {
+        return executePyroFD(tables);
+    }
+
+        private static List<UniqueColumnCombination> executeHyUCC(List<Table> tables) {
         List<UniqueColumnCombination> allResults = new ArrayList<>();
         try {
             for (Table table : tables) {
@@ -138,6 +149,62 @@ public class MetanomeImpl{
         return allResults;
     }
 
+    private static List<PartialKey> executePyroUCC(List<Table> tables) {
+        List<PartialKey> allResults = new ArrayList<>();
+        try {
+            for (Table table : tables) {
+                RelationalInputGenerator input = getInputGenerator(table.getPath());
+                List<PartialKey> partialUCCs = new ArrayList<>();
+
+                Pyro pyro = createPyro(input, partialUCCs, null);
+
+                suppressSysout(() -> {
+                    try {
+                        pyro.execute();
+                    } catch (AlgorithmExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                allResults.addAll(partialUCCs);
+                Collection<? extends UniqueColumnCombination> ucCs = getPartialUCCs(table, partialUCCs);
+                if(Metanome.SAVE) MetadataUtils.savePartialUCCs(MetadataUtils.getMetadataPathFromTable(Path.of(table.getPath())), ucCs);
+            }
+        }
+        catch (AlgorithmExecutionException e) {
+            e.printStackTrace();
+        }
+        return allResults;
+    }
+
+    private static List<PartialFD> executePyroFD(List<Table> tables) {
+        List<PartialFD> allResults = new ArrayList<>();
+        try {
+            for (Table table : tables) {
+                RelationalInputGenerator input = getInputGenerator(table.getPath());
+                List<PartialFD> partialFDs = new ArrayList<>();
+
+                Pyro pyro = createPyro(input, null, partialFDs);
+
+                suppressSysout(() -> {
+                    try {
+                        pyro.execute();
+                    } catch (AlgorithmExecutionException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                allResults.addAll(partialFDs);
+                Collection<? extends FunctionalDependency> fDs = getPartialFDs(table, partialFDs);
+                if(Metanome.SAVE) MetadataUtils.savePartialFDs(MetadataUtils.getMetadataPathFromTable(Path.of(table.getPath())), fDs);
+            }
+        }
+        catch (AlgorithmExecutionException e) {
+            e.printStackTrace();
+        }
+        return allResults;
+    }
+
     static class Parameters {
         private static final boolean NULL_EQUALS_NULL = true;
         private static final boolean VALIDATE_PARALLEL = true;
@@ -168,6 +235,22 @@ public class MetanomeImpl{
         hyFD.setIntegerConfigurationValue(HyFD.Identifier.MAX_DETERMINANT_SIZE.name(), Parameters.MAX_SEARCH_SPACE_LEVEL);
         hyFD.setResultReceiver(resultReceiver);
         return hyFD;
+    }
+
+    private static Pyro createPyro(RelationalInputGenerator input, List<PartialKey> partialUCCs, List<PartialFD> partialFDS) throws AlgorithmConfigurationException {
+        Pyro pyro = new Pyro();
+        pyro.setRelationalInputConfigurationValue("inputFile", input);
+        pyro.setBooleanConfigurationValue("isNullEqualNull", true);
+
+        if (partialFDS == null) {
+            pyro.setBooleanConfigurationValue("isFindFds", false);
+            pyro.setUccConsumer(partialUCCs::add);
+        } else {
+            pyro.setBooleanConfigurationValue("isFindKeys", false);
+            pyro.setFdConsumer(partialFDS::add);
+        }
+
+        return pyro;
     }
 
     private static RelationalInputGenerator getInputGenerator(String path) throws AlgorithmConfigurationException {
@@ -213,6 +296,18 @@ public class MetanomeImpl{
         return results.stream()
                 .map(result -> (de.metanome.algorithm_integration.results.InclusionDependency) result)
                 .map(resultCast -> createInclusionDependency(tables, resultCast))
+                .toList();
+    }
+
+    private static Collection<? extends UniqueColumnCombination> getPartialUCCs(Table table, List<PartialKey> results) {
+        return results.stream()
+                .map(resultCast -> createUniqueColumnCombination(table, resultCast.toMetanomeUniqueColumnCobination()))
+                .toList();
+    }
+
+    private static Collection<? extends FunctionalDependency> getPartialFDs(Table table, List<PartialFD> results) {
+        return results.stream()
+                .map(resultCast -> createFunctionalDependency(table, resultCast.toMetanomeFunctionalDependency()))
                 .toList();
     }
 

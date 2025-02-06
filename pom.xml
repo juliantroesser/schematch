@@ -50,6 +50,25 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/src/lib/BINDER-1.2-SNAPSHOT.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>de.hpi.isg.algorithms.pyro</groupId>
+            <artifactId>pyro</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/pyro-distro-1.0-SNAPSHOT-distro.jar</systemPath>
+        </dependency>
+
+        <!-- Metacrate for Pyro-->
+        <dependency>
+            <groupId>de.hpi.isg</groupId>
+            <artifactId>mdms-clients</artifactId>
+            <version>0.0.3-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.hpi.isg</groupId>
+            <artifactId>mdms-model</artifactId>
+            <version>0.0.3-SNAPSHOT</version>
+        </dependency>
 
         <!-- apache commons -->
         <dependency>

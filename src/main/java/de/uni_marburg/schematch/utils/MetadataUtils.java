@@ -165,4 +165,12 @@ public class MetadataUtils {
     public static void saveFDs(Path path, Collection<? extends FunctionalDependency> fDs) {
         saveDeps(path, fDs, "FD_results.txt");
     }
+
+    public static void savePartialUCCs(Path path, Collection<? extends UniqueColumnCombination> partialUCCs) {
+        saveDeps(path, partialUCCs, "Partial_UCC_results.txt");
+    }
+
+    public static void savePartialFDs(Path path, Collection<? extends FunctionalDependency> partialFDs) {
+        saveDeps(path, partialFDs, "Partial_FD_results.txt");
+    }
 }
