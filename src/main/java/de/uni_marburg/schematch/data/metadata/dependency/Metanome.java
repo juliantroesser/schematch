@@ -21,6 +21,14 @@ public class Metanome {
         return executeOperation(tables, MetanomeCache::executeIND, MetanomeImpl::executeIND, "IND");
     }
 
+    public static List<UniqueColumnCombination> executePartialUCC(List<Table> tables) {
+        return executeOperation(tables, MetanomeCache::executeUCC, MetanomeImpl::executePartialUCC, "UCC");
+    }
+
+    public static List<FunctionalDependency> executePartialFD(List<Table> tables) {
+        return executeOperation(tables, MetanomeCache::executeFD, MetanomeImpl::executePartialFD, "FD");
+    }
+
     private static <T extends Dependency> List<T> executeOperation(List<Table> tables, OperationExecutor<T> cacheExecutor, OperationExecutor<T> defaultExecutor, String dep) {
         if (MetadataUtils.metadataExists(tables.get(0).getPath(), dep)) {
             return cacheExecutor.execute(tables);

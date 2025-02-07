@@ -4,9 +4,9 @@
 #---
 #name: "Thesis-Examples"
 #path: "Thesis-Examples"
-#---
-#name: "DeNorm"
-#path: "DeNorm"
+---
+name: "DeNorm"
+path: "DeNorm"
 #---
 #name: "Efes-bib"
 #path: "Efes-bib"
@@ -28,9 +28,9 @@
 #---
 #name: "Valentine-ChEMBL_semantically-joinable"
 #path: "Valentine-ChEMBL_semantically-joinable"
----
-name: "Valentine-ChEMBL_unionable"
-path: "Valentine-ChEMBL_unionable"
+#---
+#name: "Valentine-ChEMBL_unionable"
+#path: "Valentine-ChEMBL_unionable"
 #---
 #name: "Valentine-ChEMBL_view-unionable"
 #path: "Valentine-ChEMBL_view-unionable"
