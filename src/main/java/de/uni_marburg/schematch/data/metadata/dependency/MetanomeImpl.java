@@ -44,11 +44,11 @@ public class MetanomeImpl{
         return executeBinder(tables);
     }
 
-    public static List<PartialKey> executePartialUCC(List<Table> tables) {
+    public static List<UniqueColumnCombination> executePartialUCC(List<Table> tables) {
         return executePyroUCC(tables);
     }
 
-    public static List<PartialFD> executePartialFD(List<Table> tables) {
+    public static List<FunctionalDependency> executePartialFD(List<Table> tables) {
         return executePyroFD(tables);
     }
 
@@ -120,7 +120,6 @@ public class MetanomeImpl{
         return null;
     }
 
-
     private static List<FunctionalDependency> executeHyFD(List<Table> tables) {
         List<FunctionalDependency> allResults = new ArrayList<>();
         try {
@@ -149,8 +148,8 @@ public class MetanomeImpl{
         return allResults;
     }
 
-    private static List<PartialKey> executePyroUCC(List<Table> tables) {
-        List<PartialKey> allResults = new ArrayList<>();
+    private static List<UniqueColumnCombination> executePyroUCC(List<Table> tables) {
+        List<UniqueColumnCombination> allResults = new ArrayList<>();
         try {
             for (Table table : tables) {
                 RelationalInputGenerator input = getInputGenerator(table.getPath());
@@ -166,9 +165,9 @@ public class MetanomeImpl{
                     }
                 });
 
-                allResults.addAll(partialUCCs);
                 Collection<? extends UniqueColumnCombination> ucCs = getPartialUCCs(table, partialUCCs);
-                if(Metanome.SAVE) MetadataUtils.savePartialUCCs(MetadataUtils.getMetadataPathFromTable(Path.of(table.getPath())), ucCs);
+                allResults.addAll(ucCs.stream().toList());
+                if(Metanome.SAVE) MetadataUtils.saveUCCs(MetadataUtils.getMetadataPathFromTable(Path.of(table.getPath())), ucCs);
             }
         }
         catch (AlgorithmExecutionException e) {
@@ -177,8 +176,8 @@ public class MetanomeImpl{
         return allResults;
     }
 
-    private static List<PartialFD> executePyroFD(List<Table> tables) {
-        List<PartialFD> allResults = new ArrayList<>();
+    private static List<FunctionalDependency> executePyroFD(List<Table> tables) {
+        List<FunctionalDependency> allResults = new ArrayList<>();
         try {
             for (Table table : tables) {
                 RelationalInputGenerator input = getInputGenerator(table.getPath());
@@ -194,9 +193,9 @@ public class MetanomeImpl{
                     }
                 });
 
-                allResults.addAll(partialFDs);
                 Collection<? extends FunctionalDependency> fDs = getPartialFDs(table, partialFDs);
-                if(Metanome.SAVE) MetadataUtils.savePartialFDs(MetadataUtils.getMetadataPathFromTable(Path.of(table.getPath())), fDs);
+                allResults.addAll(fDs.stream().toList());
+                if(Metanome.SAVE) MetadataUtils.saveFDs(MetadataUtils.getMetadataPathFromTable(Path.of(table.getPath())), fDs);
             }
         }
         catch (AlgorithmExecutionException e) {
@@ -245,9 +244,12 @@ public class MetanomeImpl{
         if (partialFDS == null) {
             pyro.setBooleanConfigurationValue("isFindFds", false);
             pyro.setUccConsumer(partialUCCs::add);
+
         } else {
             pyro.setBooleanConfigurationValue("isFindKeys", false);
             pyro.setFdConsumer(partialFDS::add);
+            // Wieso funktioniert das?!
+            pyro.setStringConfigurationValue("maxUccError", "0.8");
         }
 
         return pyro;
