@@ -29,6 +29,10 @@ public class Metanome {
         return executeOperation(tables, MetanomeCache::executeFD, MetanomeImpl::executePartialFD, "FD");
     }
 
+    public static List<InclusionDependency> executePartialIND(List<Table> tables) {
+        return executeOperation(tables, MetanomeCache::executeIND, MetanomeImpl::executePartialIND, "IND");
+    }
+
     private static <T extends Dependency> List<T> executeOperation(List<Table> tables, OperationExecutor<T> cacheExecutor, OperationExecutor<T> defaultExecutor, String dep) {
         if (MetadataUtils.metadataExists(tables.get(0).getPath(), dep)) {
             return cacheExecutor.execute(tables);

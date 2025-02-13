@@ -13,7 +13,11 @@ import de.metanome.algorithm_integration.input.RelationalInputGenerator;
 import de.metanome.algorithm_integration.results.Result;
 import de.metanome.algorithms.binder.BINDERFile;
 import de.metanome.algorithms.hyfd.HyFD;
+import de.metanome.algorithms.hyfd.Sampler;
 import de.metanome.algorithms.hyucc.HyUCC;
+import de.metanome.algorithms.sawfish.Sawfish;
+import de.metanome.algorithms.sawfish.SawfishInterface;
+import de.metanome.backend.algorithm_execution.TempFileGenerator;
 import de.metanome.backend.input.file.DefaultFileInputGenerator;
 import de.metanome.backend.result_receiver.ResultCache;
 import de.uni_marburg.schematch.data.Column;
@@ -24,6 +28,7 @@ import org.apache.commons.io.output.NullOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -51,8 +56,11 @@ public class MetanomeImpl{
     public static List<FunctionalDependency> executePartialFD(List<Table> tables) {
         return executePyroFD(tables);
     }
+    public static List<InclusionDependency> executePartialIND(List<Table> tables) {
+        return executeSawFishIND(tables);
+    }
 
-        private static List<UniqueColumnCombination> executeHyUCC(List<Table> tables) {
+    private static List<UniqueColumnCombination> executeHyUCC(List<Table> tables) {
         List<UniqueColumnCombination> allResults = new ArrayList<>();
         try {
             for (Table table : tables) {
@@ -202,6 +210,48 @@ public class MetanomeImpl{
             e.printStackTrace();
         }
         return allResults;
+    }
+
+    private static List<InclusionDependency> executeSawFishIND(List<Table> tables) {
+        try {
+            SawfishInterface sawfish = new SawfishInterface();
+
+            RelationalInputGenerator[] inputs = new RelationalInputGenerator[tables.size()];
+            List<ColumnIdentifier> columnIdentifiers = new ArrayList<>();
+            for (int i = 0; i < tables.size(); i++) {
+                inputs[i] =  getInputGenerator(tables.get(i).getPath());
+                columnIdentifiers.addAll(getAcceptedColumns(inputs[i]));
+            }
+
+            ResultCache resultReceiver = new ResultCache("MetanomeMock", columnIdentifiers);
+
+            sawfish.setRelationalInputConfigurationValue(SawfishInterface.Identifier.INPUT_FILES.name(), inputs);
+            sawfish.setStringConfigurationValue(SawfishInterface.Identifier.similarityThreshold.name(), "0.2");
+            sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.ignoreShortStrings.name(), false);
+            sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.measureTime.name(), false);
+            sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.ignoreNumericColumns.name(), false);
+            sawfish.setResultReceiver(resultReceiver);
+            sawfish.setTempFileGenerator(new TempFileGenerator());
+
+            suppressSysout(() -> {
+                try {
+                    sawfish.execute();
+                } catch (AlgorithmExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+
+            List<Result> results = resultReceiver.fetchNewResults();
+            ArrayList<InclusionDependency> inclusionDependencies = new ArrayList<>(getINDs(tables, results));
+            if(Metanome.SAVE) MetadataUtils.saveINDs(MetadataUtils.getMetadataRootPathFromTable(Path.of(tables.get(0).getPath())), inclusionDependencies);
+            return inclusionDependencies;
+        }
+        catch (AlgorithmExecutionException | FileNotFoundException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     static class Parameters {
