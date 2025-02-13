@@ -189,7 +189,9 @@ public class InputReader {
             Collection<InclusionDependency> inds = readINDFile(indFilePath, database, database, indMap);
             //Added that INDs are calculated
             if(inds.isEmpty()) {
-                inds = Metanome.executeIND(database.getTables()); //Find INDs
+                // inds = Metanome.executeIND(database.getTables()); //Find INDs
+
+                inds = Metanome.executePartialIND(database.getTables());
             }
 
             Collection<FunctionalDependency> fds = new ArrayList<>();
