@@ -226,7 +226,7 @@ public class MetanomeImpl{
             ResultCache resultReceiver = new ResultCache("MetanomeMock", columnIdentifiers);
 
             sawfish.setRelationalInputConfigurationValue(SawfishInterface.Identifier.INPUT_FILES.name(), inputs);
-            sawfish.setStringConfigurationValue(SawfishInterface.Identifier.similarityThreshold.name(), "0.2");
+            sawfish.setStringConfigurationValue(SawfishInterface.Identifier.similarityThreshold.name(), "0.8");
             sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.ignoreShortStrings.name(), false);
             sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.measureTime.name(), false);
             sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.ignoreNumericColumns.name(), false);
@@ -299,7 +299,8 @@ public class MetanomeImpl{
             pyro.setBooleanConfigurationValue("isFindKeys", false);
             pyro.setFdConsumer(partialFDS::add);
             // Wieso funktioniert das?!
-            pyro.setStringConfigurationValue("maxUccError", "0.8");
+            // [0.2, 0.25]
+            pyro.setStringConfigurationValue("maxUccError", "0.2");
         }
 
         return pyro;
