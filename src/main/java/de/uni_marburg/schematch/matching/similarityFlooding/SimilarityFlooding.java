@@ -999,9 +999,12 @@ public class SimilarityFlooding extends Matcher {
 //                filteredFDs.add(fd);
 //            }
 
+            /*
             if(fd.getRedundancyMeasure() >= 0.0) {
                 filteredFDs.add(fd);
             }
+
+             */
         }
 
         return filteredFDs;
