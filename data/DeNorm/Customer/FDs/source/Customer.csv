@@ -1,0 +1,6 @@
+Determinant,Dependent
+CustomerID,CustomerName
+CustomerID,Age
+(ProductID,Manufacturer),ProductName
+(ProductID,Manufacturer),Category
+(ProductID,Manufacturer,CustomerID),Price
