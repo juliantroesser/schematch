@@ -1,0 +1,14 @@
+Determinant,Dependent
+BorrowerID,BN
+BN,BorrowerID
+ISBN,BookID
+ISBN,T
+ISBN,Author
+ISBN,G
+BookID,ISBN
+BookID,T
+BookID,Author
+BookID,G
+(T;Author),ISBN
+(T;Author),BookID
+(T;Author),G
