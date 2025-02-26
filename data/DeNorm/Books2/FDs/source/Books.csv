@@ -9,6 +9,6 @@ BookID,ISBN
 BookID,Title
 BookID,Author
 BookID,Genre
-(Title,Author),ISBN
-(Title,Author),BookID
-(Title,Author),Genre
+(Title;Author),ISBN
+(Title;Author),BookID
+(Title;Author),Genre
