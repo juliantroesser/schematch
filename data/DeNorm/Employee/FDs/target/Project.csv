@@ -1,0 +1,8 @@
+Determinant,Dependent
+EmployeeID,EmployeeName
+EmployeeID,Department
+EmployeeID,ProjectID
+EmployeeID,Salary
+ProjectID,ProjectName
+ProjectID,ProjectManager
+ProjectManager,ManagerRoom
