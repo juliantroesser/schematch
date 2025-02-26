@@ -1,6 +1,6 @@
 Determinant,Dependent
 CID,CName
 CID,A
-(PID,M),ProductName
-(PID,M),Category
-(PID,M,CID),Price
+(PID;M),ProductName
+(PID;M),Category
+(PID;M;CID),Price
