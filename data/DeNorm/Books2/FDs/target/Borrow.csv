@@ -1,6 +1,5 @@
 Determinant,Dependent
 BorrowerID,BN
-BN,BorrowerID
 ISBN,BookID
 ISBN,T
 ISBN,Author
