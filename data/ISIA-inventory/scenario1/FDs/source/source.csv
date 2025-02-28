@@ -35,8 +35,6 @@ employee_id,postal_code
 employee_id,country
 employee_id,employee_phone
 employee_id,emp_address
-(last_name;first_name),employee_id
-(name),employee_id
 product_name,supplier_id
 product_name,category_name
 product_name,quantity_per_unit
