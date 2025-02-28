@@ -8,12 +8,3 @@ product_id,units_in_stock
 product_id,units_on_order
 product_id,reorder_level
 product_id,discontinued
-product_name,product_id
-product_name,supplier_id
-product_name,category_id
-product_name,quantity_per_unit
-product_name,unit_price
-product_name,units_in_stock
-product_name,units_on_order
-product_name,reorder_level
-product_name,discontinued
