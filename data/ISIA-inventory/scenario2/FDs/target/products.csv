@@ -1,0 +1,10 @@
+Determinant,Dependent
+product_id,product_name
+product_id,supplier_id
+product_id,category_id
+product_id,quantity_per_unit
+product_id,unit_price
+product_id,units_in_stock
+product_id,units_on_order
+product_id,reorder_level
+product_id,discontinued
