@@ -1,5 +1,4 @@
 id,title,authors,venue,year
-id,title,authors,venue,year
 0,semantic integration of environmental models for application to global information systems and decision-making,d. scott mackay,sigmod record,1999
 1,estimation of query-result distribution and its application in parallel-join load balancing,"viswanath poosala , yannis e. ioannidis",vldb,1996
 2,incremental maintenance for non-distributive aggregate functions,"themistoklis palpanas , richard sidle , hamid pirahesh , roberta cochrane",vldb,2002
