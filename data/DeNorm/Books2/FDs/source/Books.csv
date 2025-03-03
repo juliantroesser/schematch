@@ -1,13 +1,9 @@
 Determinant,Dependent
 BorrowerID,BorrowerName
 ISBN,BookID
-ISBN,Title
-ISBN,Author
-ISBN,Genre
 BookID,ISBN
 BookID,Title
 BookID,Author
 BookID,Genre
-(Title;Author),ISBN
-(Title;Author),BookID
-(Title;Author),Genre
+BookID,BranchID
+(BookID;BorrowerID),DueDate
