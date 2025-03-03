@@ -1,3 +1,4 @@
 Determinant,Dependent
 BookID,Title
 BorrowerID,BorrowerName
+(BookID;BorrowerID),DueDate
