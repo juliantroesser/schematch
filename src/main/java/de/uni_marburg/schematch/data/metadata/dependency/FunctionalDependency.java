@@ -2,7 +2,7 @@ package de.uni_marburg.schematch.data.metadata.dependency;
 
 import de.uni_marburg.schematch.data.Column;
 import de.uni_marburg.schematch.data.Table;
-import de.uni_marburg.schematch.data.metadata.PdepTuple;
+import de.uni_marburg.schematch.data.metadata.PdepTriple;
 import lombok.Data;
 
 import java.util.*;
@@ -11,7 +11,7 @@ import java.util.*;
 public class FunctionalDependency implements Dependency{
     Collection<Column> determinant;
     Column dependant;
-    PdepTuple pdepTuple;
+    PdepTriple pdepTriple;
 
     //{left1, left2,...} -> {right}
     public FunctionalDependency(Collection<Column> left, Column right){

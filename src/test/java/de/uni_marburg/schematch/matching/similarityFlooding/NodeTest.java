@@ -15,7 +15,7 @@ class NodeTest {
     @Test
     void isIDNode() {
         Column column = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
-        Table table = new Table("table", List.of("lastname"), List.of(column), null);
+        Table table = new Table("table", List.of("lastname"), List.of(column), null, null);
 
         Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
         Node node2 = new Node("NodeID1", NodeType.COLUMN, Datatype.STRING, true, node1, table);
@@ -27,7 +27,7 @@ class NodeTest {
     @Test
     void getNameNode() {
         Column column = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
-        Table table = new Table("table", List.of("lastname"), List.of(column), null);
+        Table table = new Table("table", List.of("lastname"), List.of(column), null, null);
 
         Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
         Node node2 = new Node("NodeID1", NodeType.COLUMN, Datatype.STRING, true, node1, table);
@@ -42,8 +42,8 @@ class NodeTest {
     void testEquals() {
         Column column1 = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
         Column column2 = new Column("surname", List.of("Patel, Kim, Garcia"));
-        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null);
-        Table table2 = new Table("table2", List.of("lastname, surname"), List.of(column1, column2), null);
+        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null, null);
+        Table table2 = new Table("table2", List.of("lastname, surname"), List.of(column1, column2), null, null);
 
         //Same Name, same table
         Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
@@ -85,7 +85,7 @@ class NodeTest {
         //Case 2: Table is not null
         Column column1 = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
         Column column2 = new Column("surname", List.of("Patel, Kim, Garcia"));
-        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null);
+        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null, null);
         Node node4 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
         Node node5 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, null, table1);
         Node node6 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
@@ -101,7 +101,7 @@ class NodeTest {
     void testToString() {
         Column column1 = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
         Column column2 = new Column("surname", List.of("Patel, Kim, Garcia"));
-        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null);
+        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null, null);
         Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
 
         Assertions.assertEquals("table1__lastname", node1.toString());

@@ -89,8 +89,8 @@ class SimilarityFloodingTest {
         initialMapping.put(new NodePair(a1, b), 1.0);
         initialMapping.put(new NodePair(a2, b2), 1.0);
 
-        similarityFlooding.setMaxIterations("5");
-        similarityFlooding.setEpsilon("0.0001");
+        similarityFlooding.setMaxIter("5");
+//        similarityFlooding("0.0001");
         Map<NodePair, Double> mappingAfterFiveIterations = similarityFlooding.similarityFlooding(propagationGraph, initialMapping, FixpointFormula.BASIC);
 
         Assertions.assertEquals(1.0, (double) Math.round(mappingAfterFiveIterations.get(new NodePair(a, b)) * 100) / 100);

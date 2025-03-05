@@ -28,11 +28,11 @@ public class DatabaseMetadata {
     }
 
     public Collection<FunctionalDependency> getGpdepFDs(double lowerBound){
-        return fds.stream().filter(fd -> fd.getPdepTuple().gpdep >= lowerBound).toList();
+        return fds.stream().filter(fd -> fd.getPdepTriple().gpdep >= lowerBound).toList();
     }
 
     public Collection<FunctionalDependency> getGpdepFDs(Column columnName, double lowerBound){
-        return fdMap.get(columnName).stream().filter(fd -> fd.getPdepTuple().gpdep >= lowerBound).toList();
+        return fdMap.get(columnName).stream().filter(fd -> fd.getPdepTriple().gpdep >= lowerBound).toList();
     }
 
     public Collection<UniqueColumnCombination> getUniqueColumnCombinations(Column columnName){
