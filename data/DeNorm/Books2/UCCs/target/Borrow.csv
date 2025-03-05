@@ -1,0 +1,5 @@
+Column1,Column2,Column3,Column4
+ID,BorrowerID,BranchID,DueDate
+ID,BorrowerID,DueDate,
+ISBN,BorrowerID,BranchID,DueDate
+ISBN,BorrowerID,DueDate,

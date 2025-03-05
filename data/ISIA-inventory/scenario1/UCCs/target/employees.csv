@@ -1,0 +1,5 @@
+Column1,Column2,Column3
+employee_id
+last_name,first_name,birth_date
+home_phone, extension
+address, city, postal_code
