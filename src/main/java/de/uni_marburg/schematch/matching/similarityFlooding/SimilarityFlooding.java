@@ -993,15 +993,15 @@ public class SimilarityFlooding extends Matcher {
 
         for (FunctionalDependency fd : functionalDependencies) {
 
-//            System.out.println("Redundancy: "+ fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + ": " + fd.getRedundancyMeasure());
+            System.out.println("Redundancy: "+ fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + ": " + fd.getPdepTriple().ngpdep);
 
-//            if (fd.getPdepTuple().gpdep >= 0.25) {
-//                filteredFDs.add(fd);
-//            }
-
-            if(fd.getRedundancyMeasure() >= 0.0) {
+            if (fd.getPdepTriple().ngpdep >= 0.25) {
                 filteredFDs.add(fd);
             }
+
+//            if(fd.getRedundancyMeasure() >= 0.0) {
+//                filteredFDs.add(fd);
+//            }
         }
 
         return filteredFDs;

@@ -204,7 +204,7 @@ public class InputReader {
                     datasetFDs = Metanome.executeFD(List.of(table));
                 }
                 for (FunctionalDependency fd : datasetFDs) {
-                    fd.setPdepTuple(MetadataUtils.getPdep(fd));
+                    fd.setPdepTriple(MetadataUtils.getPdep(fd));
                 }
                 Collection<UniqueColumnCombination> datasetUCCs = readUCCFile(uccFilePath, table, uccMap);
                 if(datasetUCCs.isEmpty()) {

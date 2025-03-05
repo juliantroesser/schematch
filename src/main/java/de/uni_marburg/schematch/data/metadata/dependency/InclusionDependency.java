@@ -51,6 +51,8 @@ public class InclusionDependency implements Dependency{
     //Check if IND could represent Foreign Key Constraint
     //IND(A,B)
 
+    //TODO: Features durchprobieren
+
     public Object[] calculateFeatureVectorFKC() {
 
         if(this.getDependant().size() == 1 && this.getReferenced().size() == 1) {

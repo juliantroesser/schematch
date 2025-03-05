@@ -1,7 +1,7 @@
 package de.uni_marburg.schematch.utils;
 
 import de.uni_marburg.schematch.data.Column;
-import de.uni_marburg.schematch.data.metadata.PdepTuple;
+import de.uni_marburg.schematch.data.metadata.PdepTriple;
 import de.uni_marburg.schematch.data.metadata.dependency.Dependency;
 import de.uni_marburg.schematch.data.metadata.dependency.FunctionalDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.InclusionDependency;
@@ -15,26 +15,33 @@ import java.util.*;
 
 public class MetadataUtils {
 
-    public static PdepTuple getPdep(FunctionalDependency fd){
-        Collection<Column> determinant = fd.getDeterminant();
-        Column dependant = fd.getDependant();
-        int N = dependant.getValues().size();
-        Map<String, Integer> frequencyMapDep = createFrequencyMap(dependant);
-        Map<String, Integer> frequencyMapDet = createFrequencyMap(determinant, N);
+//    public static PdepTriple getPdep(FunctionalDependency fd){
+//        Collection<Column> determinant = fd.getDeterminant();
+//        Column dependant = fd.getDependant();
+//        int N = dependant.getValues().size();
+//        Map<String, Integer> frequencyMapDep = createFrequencyMap(dependant);
+//        Map<String, Integer> frequencyMapDet = createFrequencyMap(determinant, N);
+//
+//        double pdep = 1.0;
+//        double gpdep = gpdep(frequencyMapDet, frequencyMapDep,N);
+//        return new PdepTriple(pdep, gpdep, -1);
+//    }
 
-        double pdep = 1.0;
-        double gpdep = gpdep(frequencyMapDet, frequencyMapDep,N);
-        return new PdepTuple(pdep, gpdep);
+    public static PdepTriple getPdep(FunctionalDependency fd){
+        double pdep = calculatePDEPScore(fd);
+        double gpdep = 0.0;
+        double ngpdep = calculateNGPDEPScore(fd);
+        return new PdepTriple(pdep, gpdep, ngpdep);
     }
 
 
-    public static double epdep(int dA, Map<String, Integer> valuesB, int N) {
+    public static double epdep(int dA, Map<String, Integer> valuesB, int N) { // Equals E[pdep(X->Y,R)]
         double pdepB = pdep(valuesB, N);
 
         return pdepB + (dA - 1.0) / (N - 1.0) * (1.0 - pdepB);
     }
 
-    private static double pdep(Map<String, Integer> valuesB, int N) {
+    private static double pdep(Map<String, Integer> valuesB, int N) { // Equals pdep(Y,R)
         double result = 0;
         for (Integer count : valuesB.values()) {
             result += (count*count);
@@ -42,14 +49,14 @@ public class MetadataUtils {
         return result / (N*N);
     }
 
-    public static double gpdep(Map<String, Integer> valuesA, Map<String, Integer> valuesB, int N) {
+    public static double gpdep(Map<String, Integer> valuesA, Map<String, Integer> valuesB, int N) { // Equals gpdep(X->Y,R) = pdep(X->Y,R) - E[pdep(X->Y,R)] (In case of strict FDs pdep(X->Y,R) becomes 1)
         double pdepAB = 1;
         double epdepAB = epdep(valuesA.size(), valuesB, N);
 
         return pdepAB - epdepAB;
     }
 
-    public static Map<String, Integer> createFrequencyMap(Column column) {
+    public static Map<String, Integer> createFrequencyMap(Column column) { //Frequency Map for Dependent (Y)
         Map<String, Integer> frequencyMap = new HashMap<>();
 
         for (String value : column.getValues()) {
@@ -59,7 +66,8 @@ public class MetadataUtils {
         return frequencyMap;
     }
 
-    public static Map<String, Integer> createFrequencyMap(Collection<Column> columns, int size) {
+    //size is for amount of tuples to consider, starting from first
+    public static Map<String, Integer> createFrequencyMap(Collection<Column> columns, int size) { //Frequency Map for Determinant (X)
         Map<String, Integer> frequencyMap = new HashMap<>();
 
         for (int i = 0; i < size; i++) {
@@ -72,6 +80,124 @@ public class MetadataUtils {
         }
 
         return frequencyMap;
+    }
+
+    public static double calculatePDEPScore(FunctionalDependency fd){
+
+        int N = fd.getDependant().getValues().size();
+        Collection<Column> X = fd.getDeterminant();
+        Column Y = fd.getDependant();
+
+        Set<String> distinctXValues = getDistinctValues(X, N);
+        Set<String> distinctYValues = getDistinctValues(List.of(Y), N);
+        Map<String, Integer> frequencyCountForX = getFrequencyCount(X, N);
+
+        double score = 0.0;
+
+        for(String xValue : distinctXValues){
+            for(String yValue : distinctYValues){
+
+                int jointCount = countNumberOfRecordsWithGivenXandY(xValue, yValue, fd.getDeterminant(), fd.getDependant(), N);
+                int frequency = frequencyCountForX.get(xValue);
+
+                score = score + ((jointCount * jointCount) / (double) frequency);
+            }
+        }
+
+        return score / (double) N;
+    }
+
+    public static double calculateSelfDependencyScore(Collection<Column> columnCombination) {
+
+        int N = columnCombination.iterator().next().getValues().size();
+        Set<String> distinctValues = getDistinctValues(columnCombination, N);
+        Map<String, Integer> frequencyCount = getFrequencyCount(columnCombination, N);
+
+        double score = 0.0;
+
+        for(String value : distinctValues){
+            int frequency = frequencyCount.get(value);
+            score = score + (double) (frequency * frequency);
+        }
+
+        return score / (double) (N * N);
+    }
+
+    public static double calculateNGPDEPScore(FunctionalDependency fd) {
+
+        Collection<Column> X = fd.getDeterminant();
+        Column Y = fd.getDependant();
+
+        double pdepXY = calculatePDEPScore(fd);
+        double pdepY = calculateSelfDependencyScore(List.of(Y));
+        int N = fd.getDependant().getValues().size();
+        int K = getDistinctValues(X, N).size();
+
+        double score = 1.0 - (((1.0 - pdepXY) / (1.0 - pdepY)) * ((N - 1.0) / (N - K)));
+
+        return Math.max(score, 0.0);
+    }
+
+    public static Set<String> getDistinctValues(Collection<Column> columnCombination, int N) {
+
+        Set<String> values = new HashSet<>();
+
+        for(int i = 0; i < N; i++){
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(Column column : columnCombination){
+                stringBuilder.append(column.getValues().get(i));
+                stringBuilder.append(",");
+            }
+
+            stringBuilder.setLength(stringBuilder.length() - 1); //remove last ","
+            values.add(stringBuilder.toString());
+        }
+
+        return values;
+    }
+
+    public static int countNumberOfRecordsWithGivenXandY(String x, String y, Collection<Column> columnCombinationForX, Column columnForY, int N) {
+
+        int count = 0;
+
+        for(int i = 0; i < N; i++){
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(Column column : columnCombinationForX){
+                stringBuilder.append(column.getValues().get(i));
+                stringBuilder.append(",");
+            }
+            stringBuilder.setLength(stringBuilder.length() - 1);
+
+            if(stringBuilder.toString().equals(x) && columnForY.getValues().get(i).equals(y)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public static Map<String, Integer> getFrequencyCount(Collection<Column> columnCombination, int N) {
+
+        Map<String, Integer> frequencyCount = new HashMap<>();
+
+        for(int i = 0; i < N; i++) {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(Column column : columnCombination) {
+                stringBuilder.append(column.getValues().get(i));
+                stringBuilder.append(",");
+            }
+
+            stringBuilder.setLength(stringBuilder.length() - 1);
+            String valuesForX = stringBuilder.toString();
+
+            frequencyCount.put(valuesForX, frequencyCount.getOrDefault(valuesForX, 0) + 1);
+        }
+
+        return frequencyCount;
     }
 
     public static boolean metadataExists(String filePath, String dep) {
@@ -103,6 +229,7 @@ public class MetadataUtils {
 
         return false;
     }
+
     private static boolean fileContainsContent(Path filePath) {
         try {
             BufferedReader reader = Files.newBufferedReader(filePath);
