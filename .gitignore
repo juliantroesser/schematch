@@ -11,6 +11,7 @@ dependency-reduced-pom.xml
 
 # IntelliJ
 /.idea
+*.iml
 
 # Compiled class file
 *.class

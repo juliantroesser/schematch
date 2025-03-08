@@ -1,5 +1,4 @@
 id,title,authors,venue,year
-id,title,authors,venue,year
 0,towards a cooperative transaction model - the cooperative activity model,"m rusinkiewicz , w klas , t tesch , j wфsch , p muth",vldb,1995
 1,sql/xml is making good progress,"a eisenberg , j melton",sigmod record,2002
 2,using formal methods to reason about semantics-based decompositions of transactions,"p ammann , s jajodia , i ray",vldb,1995

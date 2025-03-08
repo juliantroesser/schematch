@@ -1,0 +1,8 @@
+[Books.BorrowerID] --> Books.BorrowerName
+[Books.ISBN] --> Books.BookID
+[Books.BookID] --> Books.ISBN
+[Books.BookID] --> Books.Title
+[Books.BookID] --> Books.Author
+[Books.BookID] --> Books.Genre
+[Books.BookID] --> Books.BranchID
+[Books.BookID, Books.BorrowerID] --> Books.DueDate

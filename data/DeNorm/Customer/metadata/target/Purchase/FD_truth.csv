@@ -1,0 +1,5 @@
+[Purchase.CID] --> Purchase.CName
+[Purchase.CID] --> Purchase.A
+[Purchase.PID, Purchase.M] --> Purchase.ProductName
+[Purchase.PID, Purchase.M] --> Purchase.Category
+[Purchase.PID, Purchase.M, Purchase.CID] --> Purchase.Price

@@ -1,0 +1,4 @@
+[dblp_acm_target.id] --> dblp_acm_target.title
+[dblp_acm_target.id] --> dblp_acm_target.authors
+[dblp_acm_target.id] --> dblp_acm_target.venue
+[dblp_acm_target.id] --> dblp_acm_target.year

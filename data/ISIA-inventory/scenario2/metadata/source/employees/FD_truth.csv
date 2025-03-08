@@ -1,0 +1,16 @@
+[employees.employee_id] --> employees.name
+[employees.employee_id] --> employees.last_name
+[employees.employee_id] --> employees.first_name
+[employees.employee_id] --> employees.birth_day
+[employees.employee_id] --> employees.birth_month
+[employees.employee_id] --> employees.birth_year
+[employees.employee_id] --> employees.hire_day
+[employees.employee_id] --> employees.hire_month
+[employees.employee_id] --> employees.hire_year
+[employees.employee_id] --> employees.address
+[employees.employee_id] --> employees.city
+[employees.employee_id] --> employees.region
+[employees.employee_id] --> employees.postal_code
+[employees.employee_id] --> employees.country
+[employees.employee_id] --> employees.employee_area_code
+[employees.employee_id] --> employees.employee_phone_number

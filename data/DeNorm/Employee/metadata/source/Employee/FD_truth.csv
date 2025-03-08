@@ -1,0 +1,7 @@
+[Employee.EmployeeID] --> Employee.EmployeeName
+[Employee.EmployeeID] --> Employee.Department
+[Employee.EmployeeID] --> Employee.ProjectID
+[Employee.EmployeeID] --> Employee.Salary
+[Employee.ProjectID] --> Employee.ProjectName
+[Employee.ProjectID] --> Employee.ProjectManager
+[Employee.ProjectManager] --> Employee.ManagerRoom

@@ -1,0 +1,13 @@
+[orders.order_id] --> orders.customer_id
+[orders.order_id] --> orders.employee_id
+[orders.order_id] --> orders.order_date
+[orders.order_id] --> orders.required_date
+[orders.order_id] --> orders.shipped_date
+[orders.order_id] --> orders.ship_via
+[orders.order_id] --> orders.freight
+[orders.order_id] --> orders.ship_name
+[orders.order_id] --> orders.ship_address
+[orders.order_id] --> orders.ship_city
+[orders.order_id] --> orders.ship_region
+[orders.order_id] --> orders.ship_postal_code
+[orders.order_id] --> orders.ship_country
