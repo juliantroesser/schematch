@@ -43,10 +43,10 @@ def main():
     colorama.init(autoreset=True)
     parser = argparse.ArgumentParser(description="Check FDs in a dataset and find transitive dependencies.")
     parser.add_argument("--data",
-                        default="/Volumes/qStivi/jetbrains/IdeaProjects/schematch/data/Valentine-Wikidata/Musicians_joinable/source/musicians_joinable_source.csv",
+                        default="/Volumes/qStivi/jetbrains/IdeaProjects/schematch/data/Valentine-Wikidata/Musicians_viewunion/target/musicians_viewunion_target.csv",
                         required=False, help="Path to the dataset CSV file.")
     parser.add_argument("--fd",
-                        default="/Volumes/qStivi/jetbrains/IdeaProjects/schematch/data/Valentine-Wikidata/Musicians_joinable/metadata/source/musicians_joinable_source/FD_truth.txt",
+                        default="/Volumes/qStivi/jetbrains/IdeaProjects/schematch/data/Valentine-Wikidata/Musicians_viewunion/metadata/target/musicians_viewunion_target/FD_truth.txt",
                         required=False, help="Path to the FD table CSV file.")
     args = parser.parse_args()
 
