@@ -36,4 +36,8 @@ public class Table {
         return this.columns.get(n);
     }
 
+    public int getColumnIndex(Column column) {
+        return this.columns.indexOf(column);
+    }
+
 }

@@ -16,32 +16,36 @@ public class ProbabilisticDependencyTest {
     Table table = new Table("Test", List.of("X", "Y"), List.of(X, Y), null, null);
 
     @Test
+    void selfDependencyScoreTest() {
+        Assertions.assertEquals(0.36, FunctionalDependency.getSelfDependencyScore(List.of(X)), 0.001);
+        Assertions.assertEquals(0.52, FunctionalDependency.getSelfDependencyScore(List.of(Y)), 0.001);
+    }
+
+    @Test
     void pdepTest() {
         FunctionalDependency X_Y = new FunctionalDependency(List.of(X), Y);
         FunctionalDependency Y_X = new FunctionalDependency(List.of(Y), X);
 
-        X_Y.setPdepTriple(MetadataUtils.getPdep(X_Y));
-        Y_X.setPdepTriple(MetadataUtils.getPdep(Y_X));
-
-        Assertions.assertEquals(0.8, X_Y.getPdepTriple().pdep, 0.001);
-        Assertions.assertEquals(0.533, Y_X.getPdepTriple().pdep, 0.001);
+        Assertions.assertEquals(0.8, X_Y.getPDEPScore(), 0.001);
+        Assertions.assertEquals(0.533, Y_X.getPDEPScore(), 0.001);
     }
 
     @Test
-    void selfDependencyScoreTest() {
-        Assertions.assertEquals(0.36, MetadataUtils.calculateSelfDependencyScore(List.of(X)), 0.001);
-        Assertions.assertEquals(0.52, MetadataUtils.calculateSelfDependencyScore(List.of(Y)), 0.001);
+    void gpdepTest() {
+        FunctionalDependency X_Y = new FunctionalDependency(List.of(X), Y);
+        FunctionalDependency Y_X = new FunctionalDependency(List.of(Y), X);
+
+        Assertions.assertEquals(0.04, X_Y.getGPDEPScore(), 0.001);
+        Assertions.assertEquals(0.013, Y_X.getGPDEPScore(), 0.001);
     }
 
+    @Test
     void ngpdepTest() {
         FunctionalDependency X_Y = new FunctionalDependency(List.of(X), Y);
         FunctionalDependency Y_X = new FunctionalDependency(List.of(Y), X);
 
-        X_Y.setPdepTriple(MetadataUtils.getPdep(X_Y));
-        Y_X.setPdepTriple(MetadataUtils.getPdep(Y_X));
-
-        Assertions.assertEquals(0.8, X_Y.getPdepTriple().ngpdep, 0.001);
-        Assertions.assertEquals(0.533, Y_X.getPdepTriple().ngpdep, 0.001);
+        Assertions.assertEquals(0.1666, X_Y.getNGPDEPScore(), 0.001);
+        Assertions.assertEquals(0.0277, Y_X.getNGPDEPScore(), 0.001);
     }
 
 

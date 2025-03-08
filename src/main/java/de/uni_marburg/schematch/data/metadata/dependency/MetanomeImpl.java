@@ -13,9 +13,7 @@ import de.metanome.algorithm_integration.input.RelationalInputGenerator;
 import de.metanome.algorithm_integration.results.Result;
 import de.metanome.algorithms.binder.BINDERFile;
 import de.metanome.algorithms.hyfd.HyFD;
-import de.metanome.algorithms.hyfd.Sampler;
 import de.metanome.algorithms.hyucc.HyUCC;
-import de.metanome.algorithms.sawfish.Sawfish;
 import de.metanome.algorithms.sawfish.SawfishInterface;
 import de.metanome.backend.algorithm_execution.TempFileGenerator;
 import de.metanome.backend.input.file.DefaultFileInputGenerator;
@@ -56,6 +54,7 @@ public class MetanomeImpl{
     public static List<FunctionalDependency> executePartialFD(List<Table> tables) {
         return executePyroFD(tables);
     }
+
     public static List<InclusionDependency> executePartialIND(List<Table> tables) {
         return executeSawFishIND(tables);
     }
@@ -209,6 +208,7 @@ public class MetanomeImpl{
         catch (AlgorithmExecutionException e) {
             e.printStackTrace();
         }
+
         return allResults;
     }
 
@@ -289,18 +289,24 @@ public class MetanomeImpl{
     private static Pyro createPyro(RelationalInputGenerator input, List<PartialKey> partialUCCs, List<PartialFD> partialFDS) throws AlgorithmConfigurationException {
         Pyro pyro = new Pyro();
         pyro.setRelationalInputConfigurationValue("inputFile", input);
-        pyro.setBooleanConfigurationValue("isNullEqualNull", true);
+        pyro.setBooleanConfigurationValue("isNullEqualNull", true); //Null = Null semantics
 
+        //Profiling AUCCs with Pyro:
         if (partialFDS == null) {
             pyro.setBooleanConfigurationValue("isFindFds", false);
+            //pyro.setStringConfigurationValue("maxFdError", "0.0"); //TODO: Test what maxFdError does //No difference for maxFdError for 0.0 and 1.0
+            //TODO: Profile approximate UCCs
             pyro.setUccConsumer(partialUCCs::add);
 
+        //Profiling AFDs with Pyro
         } else {
+            //pyro.setBooleanConfigurationValue("parallelism", true);
             pyro.setBooleanConfigurationValue("isFindKeys", false);
             pyro.setFdConsumer(partialFDS::add);
             // Wieso funktioniert das?!
-            // [0.2, 0.25]
-            pyro.setStringConfigurationValue("maxUccError", "0.2");
+            //TODO: Find good range for profiling (0,1)
+            pyro.setStringConfigurationValue("maxUccError", "0.15"); //Range [0.0, 1.0]; 0.0 = all FDs; 1.0 = All FDs: [] -> col_1 ,... [] -> col_n (Meaning each column has the same value in each tuple)
+            //pyro.setStringConfigurationValue("maxArity",  "1");
         }
 
         return pyro;
