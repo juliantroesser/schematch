@@ -1,0 +1,8 @@
+[Borrow.BorrowerID] --> Borrow.BN
+[Borrow.ISBN] --> Borrow.ID
+[Borrow.ID] --> Borrow.ISBN
+[Borrow.ID] --> Borrow.T
+[Borrow.ID] --> Borrow.Author
+[Borrow.ID] --> Borrow.G
+[Borrow.ID] --> Borrow.BranchID
+[Borrow.ID, Borrow.BorrowerID] --> Borrow.DueDate

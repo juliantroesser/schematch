@@ -1,0 +1,5 @@
+[Customer.CustomerID] --> Customer.CustomerName
+[Customer.CustomerID] --> Customer.Age
+[Customer.ProductID, Customer.Manufacturer] --> Customer.ProductName
+[Customer.ProductID, Customer.Manufacturer] --> Customer.Category
+[Customer.ProductID, Customer.Manufacturer, Customer.CustomerID] --> Customer.Price

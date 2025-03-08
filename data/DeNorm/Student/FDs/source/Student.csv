@@ -1,7 +1,0 @@
-Determinant,Dependent
-(StudentID;StudentName),Major
-CourseID,CourseName
-CourseID,ProfessorID
-ProfessorID,ProfessorName
-ProfessorID,Department
-(StudentID;StudentName;CourseID),Grade

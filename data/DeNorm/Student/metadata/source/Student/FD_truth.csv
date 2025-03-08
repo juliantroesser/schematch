@@ -1,0 +1,6 @@
+[Student.StudentID, Student.StudentName] --> Student.Major
+[Student.CourseID] --> Student.CourseName
+[Student.CourseID] --> Student.ProfessorID
+[Student.ProfessorID] --> Student.ProfessorName
+[Student.ProfessorID] --> Student.Department
+[Student.StudentID, Student.StudentName, Student.CourseID] --> Student.Grade

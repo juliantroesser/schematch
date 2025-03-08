@@ -1,7 +1,0 @@
-Determinant,Dependent
-(ID;Name),Major
-CID,CourseName
-CID,PID
-PID,PName
-PID,Department
-(ID;Name;CID),G

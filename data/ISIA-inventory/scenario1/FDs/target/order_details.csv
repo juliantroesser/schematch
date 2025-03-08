@@ -1,4 +1,0 @@
-Determinant,Dependent
-(order_id;product_id),unit_price
-(order_id;product_id),quantity
-(order_id;product_id),discount

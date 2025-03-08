@@ -1,9 +1,0 @@
-Determinant,Dependent
-BorrowerID,BorrowerName
-ISBN,BookID
-BookID,ISBN
-BookID,Title
-BookID,Author
-BookID,Genre
-BookID,BranchID
-(BookID;BorrowerID),DueDate

@@ -1,0 +1,6 @@
+[Course.ID, Course.Name] --> Course.Major
+[Course.CID] --> Course.CourseName
+[Course.CID] --> Course.PID
+[Course.PID] --> Course.PName
+[Course.PID] --> Course.Department
+[Course.ID, Course.Name, Course.CID] --> Course.G

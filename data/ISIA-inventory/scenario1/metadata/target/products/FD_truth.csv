@@ -1,0 +1,9 @@
+[products.product_id] --> products.product_name
+[products.product_id] --> products.supplier_id
+[products.product_id] --> products.category_id
+[products.product_id] --> products.quantity_per_unit
+[products.product_id] --> products.unit_price
+[products.product_id] --> products.units_in_stock
+[products.product_id] --> products.units_on_order
+[products.product_id] --> products.reorder_level
+[products.product_id] --> products.discontinued
