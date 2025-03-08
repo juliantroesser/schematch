@@ -82,6 +82,9 @@ public class InclusionDependency implements Dependency{
         }
     }
 
+    //TODO: Should be score between 0 and 1 -> Normalize
+    //TODO: Ignore null values (null != null semantics)
+
     private int distinctDependentValues(Set<String> distinctForeignKeyValues) {
         return distinctForeignKeyValues.size();
     } //The higher the better

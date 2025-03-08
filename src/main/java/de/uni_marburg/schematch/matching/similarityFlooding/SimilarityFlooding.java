@@ -33,16 +33,15 @@ public class SimilarityFlooding extends Matcher {
     private String wholeSchema;
     private String propCoeffPolicy;
     private String fixpoint;
-    private String maxIter;
     private String FDV1;
     private String FDV2;
     private String UCCV1;
     private String UCCV2;
     private String INDV1;
     private String INDV2;
-    private String FDSim;
-    private String UCCSim;
-    private String INDSim;
+    private String fdFilter;
+    private String fdFilterThreshold;
+    private String approxPerc;
 
     @Override
     public float[][] match(MatchTask matchTask, MatchingStep matchStep) {
@@ -750,9 +749,9 @@ public class SimilarityFlooding extends Matcher {
 
     public Map<NodePair, Double> calculateInitialMapping(Graph<NodePair, CoefficientEdge> propagationGraph) {
 
-        double initial_fd_sim = Double.parseDouble(FDSim);
-        double initial_ucc_sim = Double.parseDouble(UCCSim);
-        double initial_ind_sim = Double.parseDouble(INDSim);
+//        double initial_fd_sim = Double.parseDouble(FDSim);
+//        double initial_ucc_sim = Double.parseDouble(UCCSim);
+//        double initial_ind_sim = Double.parseDouble(INDSim);
 
         Map<NodePair, Double> initialMapping = new HashMap<>();
 
@@ -771,21 +770,23 @@ public class SimilarityFlooding extends Matcher {
                 similarity = 1.0 / (1.0 + Math.abs(size1 - size2));
             } else if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) {
 
-                similarity = initial_fd_sim;
+//                similarity = initial_fd_sim;
+                similarity = 0.0;
             } else if (node1.getValue().startsWith("UCC") && node2.getValue().startsWith("UCC")) {
 
-                similarity = initial_ucc_sim;
+//                similarity = initial_ucc_sim;
+                similarity = 0.0;
             } else if (node1.getValue().startsWith("IND") && node2.getValue().startsWith("IND")) {
 
-                similarity = initial_ind_sim;
+//                similarity = initial_ind_sim;
+                similarity = 0.0;
             } else if (node1.isIDNode() || node2.isIDNode()) {
                 similarity = 0.0;
-
             } else {
                 similarity = l.compare(node1.getValue(), node2.getValue());
             }
-//            initialMapping.put(mappingPair, similarity);
-            initialMapping.put(mappingPair, 0.5);
+            initialMapping.put(mappingPair, similarity);
+//            initialMapping.put(mappingPair, 0.5);
         }
         return initialMapping;
     }
@@ -793,7 +794,7 @@ public class SimilarityFlooding extends Matcher {
     public Map<NodePair, Double> similarityFlooding(Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
 
         double EPSILON = 0.0001;
-        int MAX_ITERATIONS = Integer.parseInt(maxIter);
+        int MAX_ITERATIONS = 200;
         boolean convergence = false;
         int iterationCount = 0;
 
@@ -990,27 +991,46 @@ public class SimilarityFlooding extends Matcher {
     private Collection<FunctionalDependency> filterFunctionalDependencies(Collection<FunctionalDependency> functionalDependencies) {
 
         Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
+        double threshold = Double.parseDouble(fdFilterThreshold);
+        //TODO: If both UCC and FD use only meaningful FDs
 
         for (FunctionalDependency fd : functionalDependencies) {
 
-//            System.out.println("Redundancy: "+ fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + ": " + fd.getRedundancyMeasure());
+            if(fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
 
-//            if (fd.getPdepTuple().gpdep >= 0.25) {
-//                filteredFDs.add(fd);
-//            }
+                double score;
 
-            /*
-            if(fd.getRedundancyMeasure() >= 0.0) {
-                filteredFDs.add(fd);
+                switch (fdFilter) {
+                    case "all" -> score = 1.0;
+                    case "pdep" -> score = fd.getPDEPScore();
+                    case "gpdep" -> score = fd.getGPDEPScore();
+                    case "ngpdep" -> score = fd.getNGPDEPScore();
+                    case "alt_ngpdep_sum" -> score = fd.getAltNGPDEPSumScore();
+                    case "alt_ngpdep_max" -> score = fd.getAltNGPDEPMaxScore();
+                    default -> throw new IllegalArgumentException("FD Filter does not exist");
+                }
+
+                if(score >= threshold) {
+                    filteredFDs.add(fd);
+                }
             }
 
-             */
+//            System.out.println(fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + " - PDEP-Score: " + pdepScore + "; GPDEP-Score: " + gpdepScore+ "; NGPDEP-Score: " + ngpdepScore + "; Alternative-NGPDEP-Score: " + alternativeNgpdepScore);
         }
+
+
 
         return filteredFDs;
     }
 
     private Collection<UniqueColumnCombination> filterUniqueColumnCombinations(Collection<UniqueColumnCombination> uniqueColumnCombinations) {
+
+        Collection<UniqueColumnCombination> filteredUCCs = new HashSet<>();
+
+        for(UniqueColumnCombination ucc : uniqueColumnCombinations) {
+            System.out.println(Arrays.toString(ucc.calculateFeatureVectorPrimaryKey()));
+        }
+
         return uniqueColumnCombinations;
     }
 
