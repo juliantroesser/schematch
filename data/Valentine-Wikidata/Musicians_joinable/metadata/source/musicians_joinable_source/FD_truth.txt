@@ -1,0 +1,12 @@
+[musicians_joinable_source.musician] --> musicians_joinable_source.birthDate
+[musicians_joinable_source.musician] --> musicians_joinable_source.websiteLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.familyNameLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.geniusNameLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.twitterNameLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.givenNameLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.recordLabelLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.residenceLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.activityStart
+[musicians_joinable_source.musician] --> musicians_joinable_source.ethnicityLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.religionLabel
+[musicians_joinable_source.musician] --> musicians_joinable_source.numberOfChildren

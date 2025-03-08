@@ -1,0 +1,8 @@
+[itunes_amazon_target.id] --> itunes_amazon_target.Song_Name
+[itunes_amazon_target.id] --> itunes_amazon_target.Artist_Name
+[itunes_amazon_target.id] --> itunes_amazon_target.Album_Name
+[itunes_amazon_target.id] --> itunes_amazon_target.Genre
+[itunes_amazon_target.id] --> itunes_amazon_target.Price
+[itunes_amazon_target.id] --> itunes_amazon_target.CopyRight
+[itunes_amazon_target.id] --> itunes_amazon_target.Time
+[itunes_amazon_target.id] --> itunes_amazon_target.Released

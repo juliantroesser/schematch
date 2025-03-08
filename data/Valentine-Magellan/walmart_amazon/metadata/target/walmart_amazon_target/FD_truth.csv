@@ -1,0 +1,5 @@
+[walmart_amazon_target.id] --> walmart_amazon_target.title
+[walmart_amazon_target.id] --> walmart_amazon_target.category
+[walmart_amazon_target.id] --> walmart_amazon_target.brand
+[walmart_amazon_target.id] --> walmart_amazon_target.modelno
+[walmart_amazon_target.id] --> walmart_amazon_target.price
