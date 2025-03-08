@@ -8,12 +8,15 @@ from colorama import Fore, Style
 def parse_determinant(det_str):
     """Parse a determinant string into a list of attributes."""
     det_str = det_str.strip()
-    return [attr.strip() for attr in det_str[1:-1].split(";")] if det_str.startswith("(") and det_str.endswith(")") else [det_str]
+    if det_str.startswith("[") and det_str.endswith("]"):
+        return [attr.strip().split('.')[-1] for attr in det_str[1:-1].split(",")]
+    return [det_str.split('.')[-1]]
 
 
 def check_fd(df, determinant, dependent):
     """Check if the functional dependency holds in the dataset."""
-    violations = [(key, group[dependent].unique()) for key, group in df.groupby(determinant) if len(group[dependent].unique()) > 1]
+    violations = [(key, group[dependent].unique()) for key, group in df.groupby(determinant) if
+                  len(group[dependent].unique()) > 1]
     return violations
 
 
@@ -27,7 +30,8 @@ def compute_closure(attributes, fd_set):
 
 def find_transitive_fds(fd_list):
     """Identify transitively derivable (redundant) functional dependencies."""
-    return [(det, dep) for i, (det, dep) in enumerate(fd_list) if dep in compute_closure(det, fd_list[:i] + fd_list[i + 1:])]
+    return [(det, dep) for i, (det, dep) in enumerate(fd_list) if
+            dep in compute_closure(det, fd_list[:i] + fd_list[i + 1:])]
 
 
 def fd_to_str(det, dep):
@@ -38,13 +42,19 @@ def fd_to_str(det, dep):
 def main():
     colorama.init(autoreset=True)
     parser = argparse.ArgumentParser(description="Check FDs in a dataset and find transitive dependencies.")
-    parser.add_argument("--data", required=True, help="Path to the dataset CSV file.")
-    parser.add_argument("--fd", required=True, help="Path to the FD table CSV file.")
+    parser.add_argument("--data",
+                        default="/Volumes/qStivi/jetbrains/IdeaProjects/schematch/data/Valentine-Wikidata/Musicians_joinable/source/musicians_joinable_source.csv",
+                        required=False, help="Path to the dataset CSV file.")
+    parser.add_argument("--fd",
+                        default="/Volumes/qStivi/jetbrains/IdeaProjects/schematch/data/Valentine-Wikidata/Musicians_joinable/metadata/source/musicians_joinable_source/FD_truth.txt",
+                        required=False, help="Path to the FD table CSV file.")
     args = parser.parse_args()
 
     df = pd.read_csv(args.data, dtype=str)
-    fd_table = pd.read_csv(args.fd, dtype=str)
-    fds = [(frozenset(parse_determinant(row["Determinant"])), row["Dependent"].strip()) for _, row in fd_table.iterrows()]
+    with open(args.fd, 'r') as fd_file:
+        fd_lines = fd_file.readlines()
+    fds = [(frozenset(parse_determinant(line.split(" --> ")[0])), line.split(" --> ")[1].strip().split('.')[-1]) for
+           line in fd_lines]
 
     print(f"{Fore.CYAN}{Style.BRIGHT}=== Checking Functional Dependencies ===\n{Style.RESET_ALL}")
     failing_fds = [(det, dep, check_fd(df, list(det), dep)) for det, dep in fds if check_fd(df, list(det), dep)]
@@ -55,11 +65,13 @@ def main():
         for key, values in violations:
             print(f"  When {det_str} = {key}, {dep} has values: {list(values)}")
 
-    print(f"\n{Fore.BLUE}{Style.BRIGHT}Summary: {len(fds) - len(failing_fds)} out of {len(fds)} FDs hold true.{Style.RESET_ALL}")
+    print(
+        f"\n{Fore.BLUE}{Style.BRIGHT}Summary: {len(fds) - len(failing_fds)} out of {len(fds)} FDs hold true.{Style.RESET_ALL}")
 
     print(f"\n{Fore.CYAN}{Style.BRIGHT}=== Finding Transitive Dependencies ===\n{Style.RESET_ALL}")
     transitive_fds = find_transitive_fds(fds)
-    print(f"{Fore.MAGENTA if transitive_fds else Fore.GREEN}{'No' if not transitive_fds else 'The following'} transitive FDs found:{Style.RESET_ALL}")
+    print(
+        f"{Fore.MAGENTA if transitive_fds else Fore.GREEN}{'No' if not transitive_fds else 'The following'} transitive FDs found:{Style.RESET_ALL}")
     for det, dep in transitive_fds:
         print(f"  {fd_to_str(det, dep)}")
 
