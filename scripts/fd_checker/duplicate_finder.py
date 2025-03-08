@@ -6,7 +6,7 @@ def find_duplicates(file_path):
     return duplicates
 
 if __name__ == "__main__":
-    file_path = 'data/Valentine-Wikidata/Musicians_joinable/source/musicians_joinable_source.csv'
+    file_path = '/Volumes/qStivi/jetbrains/IdeaProjects/schematch/data/Valentine-Wikidata/Musicians_joinable/source/musicians_joinable_source.csv'
     duplicates = find_duplicates(file_path)
     if not duplicates.empty:
         print("Duplicates found:")
