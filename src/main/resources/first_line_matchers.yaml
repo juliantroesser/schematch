@@ -2,10 +2,16 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  propCoeffPolicy: ["INV_PROD", "INV_AVG"]
-  fixpoint: ["BASIC", "A", "B", "C"]
-  labelScoreWeight: ["0", "0.05", "0.1"]
-  selectThresholdWeight: ["0", "0.05", "0.1"]
+  wholeSchema: ["true"]
+  propCoeffPolicy: ["INV_PROD"]
+  fixpoint: ["BASIC"]
+  UCCQuick: ["true"]
+  UCCComplete: ["false"]
+  lengthScoreWeight: ["0.1"]
+  valueScoreWeight: ["0.1"]
+  postionScoreWeight: ["0.1"]
+  nameSuffixScoreWeight: ["0.1"]
+  uccFilterThreshold: ["0.0"]
 
 #---
 #name: "SimilarityFlooding"
@@ -14,12 +20,14 @@ params:
 #  wholeSchema: ["true"]
 #  propCoeffPolicy: ["INV_PROD", "INV_AVG"]
 #  fixpoint: ["BASIC", "A", "B", "C"]
-#  FDV1: ["false"]
-#  FDV2: ["false"]
-#  UCCV1: ["true"]
-#  UCCV2: ["false"]
-#  INDV1: ["false"]
-#  INDV2: ["false"]
+#  UCCQuick: ["true"]
+#  UCCComplete: ["false"]
+#  lengthScoreWeight: ["0.1", "0.2", "0.3"]
+#  valueScoreWeight: ["0.1", "0.2", "0.3"]
+#  postionScoreWeight: ["0.1", "0.2", "0.3"]
+#  nameSuffixScoreWeight: ["0.1", "0.2", "0.3"]
+#  uccFilterThreshold: ["0.0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.3"]
+
 
 
 
