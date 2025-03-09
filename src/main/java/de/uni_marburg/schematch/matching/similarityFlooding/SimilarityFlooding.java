@@ -16,7 +16,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
-
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -33,15 +32,13 @@ public class SimilarityFlooding extends Matcher {
     private String wholeSchema;
     private String propCoeffPolicy;
     private String fixpoint;
-    private String FDV1;
-    private String FDV2;
-    private String UCCV1;
-    private String UCCV2;
-    private String INDV1;
-    private String INDV2;
-    private String fdFilter;
-    private String fdFilterThreshold;
-    private String approxPerc;
+    private String UCCQuick;
+    private String UCCComplete;
+    private String lengthScoreWeight;
+    private String valueScoreWeight;
+    private String postionScoreWeight;
+    private String nameSuffixScoreWeight;
+    private String uccFilterThreshold;
 
     @Override
     public float[][] match(MatchTask matchTask, MatchingStep matchStep) {
@@ -69,12 +66,12 @@ public class SimilarityFlooding extends Matcher {
         };
 
         boolean useWholeSchema = Boolean.parseBoolean(wholeSchema);
-        boolean fdv1 = Boolean.parseBoolean(FDV1);
-        boolean fdv2 = Boolean.parseBoolean(FDV2);
-        boolean uccv1 = Boolean.parseBoolean(UCCV1);
-        boolean uccv2 = Boolean.parseBoolean(UCCV2);
-        boolean indv1 = Boolean.parseBoolean(INDV1);
-        boolean indv2 = Boolean.parseBoolean(INDV2);
+        boolean fdv1 = false;
+        boolean fdv2 = false;
+        boolean uccv1 = Boolean.parseBoolean(UCCQuick);
+        boolean uccv2 = Boolean.parseBoolean(UCCComplete);
+        boolean indv1 = false;
+        boolean indv2 = false;
 
         float[][] simMatrix = matchTask.getEmptySimMatrix();
 
@@ -224,7 +221,7 @@ public class SimilarityFlooding extends Matcher {
             Collection<FunctionalDependency> functionalDependencies;
 
             //If FD and UCC Info then only meaningful fds
-            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+            if (uccv1 || uccv2) {
                 functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
             } else {
                 functionalDependencies = db.getMetadata().getFds();
@@ -256,7 +253,7 @@ public class SimilarityFlooding extends Matcher {
             Collection<FunctionalDependency> functionalDependencies;
 
             //If FD and UCC Info then only meaningful fds
-            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+            if (uccv1 || uccv2) {
                 functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
             } else {
                 functionalDependencies = db.getMetadata().getFds();
@@ -903,7 +900,9 @@ public class SimilarityFlooding extends Matcher {
 
         Set<FunctionalDependency> FDs = new HashSet<>();
 
-        if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+        //TODO: Change to if UCCQuick or UCCComplete are used then if
+
+        if (true) {
 
             Set<FunctionalDependency> meaningfulFDs = new HashSet<>();
 
@@ -991,34 +990,32 @@ public class SimilarityFlooding extends Matcher {
     private Collection<FunctionalDependency> filterFunctionalDependencies(Collection<FunctionalDependency> functionalDependencies) {
 
         Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
-        double threshold = Double.parseDouble(fdFilterThreshold);
+//        double threshold = Double.parseDouble(fdFilterThreshold);
         //TODO: If both UCC and FD use only meaningful FDs
 
-        for (FunctionalDependency fd : functionalDependencies) {
-
-            if(fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
-
-                double score;
-
-                switch (fdFilter) {
-                    case "all" -> score = 1.0;
-                    case "pdep" -> score = fd.getPDEPScore();
-                    case "gpdep" -> score = fd.getGPDEPScore();
-                    case "ngpdep" -> score = fd.getNGPDEPScore();
-                    case "alt_ngpdep_sum" -> score = fd.getAltNGPDEPSumScore();
-                    case "alt_ngpdep_max" -> score = fd.getAltNGPDEPMaxScore();
-                    default -> throw new IllegalArgumentException("FD Filter does not exist");
-                }
-
-                if(score >= threshold) {
-                    filteredFDs.add(fd);
-                }
-            }
-
-//            System.out.println(fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + " - PDEP-Score: " + pdepScore + "; GPDEP-Score: " + gpdepScore+ "; NGPDEP-Score: " + ngpdepScore + "; Alternative-NGPDEP-Score: " + alternativeNgpdepScore);
-        }
-
-
+//        for (FunctionalDependency fd : functionalDependencies) {
+//
+//            if(fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
+//
+//                double score;
+//
+//                switch (fdFilter) {
+//                    case "all" -> score = 1.0;
+//                    case "pdep" -> score = fd.getPDEPScore();
+//                    case "gpdep" -> score = fd.getGPDEPScore();
+//                    case "ngpdep" -> score = fd.getNGPDEPScore();
+//                    case "alt_ngpdep_sum" -> score = fd.getAltNGPDEPSumScore();
+//                    case "alt_ngpdep_max" -> score = fd.getAltNGPDEPMaxScore();
+//                    default -> throw new IllegalArgumentException("FD Filter does not exist");
+//                }
+//
+//                if(score >= threshold) {
+//                    filteredFDs.add(fd);
+//                }
+//            }
+//
+////            System.out.println(fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + " - PDEP-Score: " + pdepScore + "; GPDEP-Score: " + gpdepScore+ "; NGPDEP-Score: " + ngpdepScore + "; Alternative-NGPDEP-Score: " + alternativeNgpdepScore);
+//        }
 
         return filteredFDs;
     }
@@ -1027,11 +1024,23 @@ public class SimilarityFlooding extends Matcher {
 
         Collection<UniqueColumnCombination> filteredUCCs = new HashSet<>();
 
+        double lengthScoreWeight = Double.parseDouble(this.lengthScoreWeight);
+        double valueScoreWeight = Double.parseDouble(this.valueScoreWeight);
+        double postionScoreWeight = Double.parseDouble(this.postionScoreWeight);
+        double nameSuffixScoreWeight = Double.parseDouble(this.nameSuffixScoreWeight);
+        double threshold = Double.parseDouble(this.uccFilterThreshold);
+
         for(UniqueColumnCombination ucc : uniqueColumnCombinations) {
-            System.out.println(Arrays.toString(ucc.calculateFeatureVectorPrimaryKey()));
+            double score = ucc.getPrimaryKeyScore(lengthScoreWeight, valueScoreWeight, postionScoreWeight, nameSuffixScoreWeight);
+
+            if(score >= threshold) {
+                filteredUCCs.add(ucc);
+            }
         }
 
-        return uniqueColumnCombinations;
+        System.out.println("Reduced AUCCs: " + uniqueColumnCombinations.size() + " -> " + filteredUCCs.size());
+
+        return filteredUCCs;
     }
 
     private Collection<InclusionDependency> filterInclusionDependencies(Collection<InclusionDependency> inclusionDependencies) {

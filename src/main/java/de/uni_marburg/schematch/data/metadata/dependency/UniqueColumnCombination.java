@@ -14,13 +14,13 @@ import java.util.*;
 public class UniqueColumnCombination implements Dependency{
     Collection<Column> columnCombination; //Unique Column Combination //FD is most minimal
 
-    public Object[] calculateFeatureVectorPrimaryKey() {
+    public double getPrimaryKeyScore(double lengthScoreWeight, double valueScoreWeight, double postionScoreWeight, double nameSuffixScoreWeight) {
         double lengthScore = this.cardinalityScore();
         double valueScore = this.valueLengthScore();
         double positionScore = this.positionScore();
         double nameSuffixScore = this.nameSuffixScore();
 
-        return new Object[]{lengthScore, valueScore, positionScore, nameSuffixScore};
+        return lengthScoreWeight * lengthScore + valueScoreWeight * valueScore + postionScoreWeight * positionScore + nameSuffixScoreWeight * nameSuffixScore;
     }
 
     public double cardinalityScore() { //range (0,1]: 1 is best because most keys have few attributes, 0 is worst
