@@ -33,15 +33,10 @@ public class SimilarityFlooding extends Matcher {
     private String wholeSchema;
     private String propCoeffPolicy;
     private String fixpoint;
-    private String FDV1;
-    private String FDV2;
-    private String UCCV1;
-    private String UCCV2;
-    private String INDV1;
-    private String INDV2;
+    private String FDQuick;
+    private String FDComplete;
     private String fdFilter;
     private String fdFilterThreshold;
-    private String approxPerc;
 
     @Override
     public float[][] match(MatchTask matchTask, MatchingStep matchStep) {
@@ -69,12 +64,12 @@ public class SimilarityFlooding extends Matcher {
         };
 
         boolean useWholeSchema = Boolean.parseBoolean(wholeSchema);
-        boolean fdv1 = Boolean.parseBoolean(FDV1);
-        boolean fdv2 = Boolean.parseBoolean(FDV2);
-        boolean uccv1 = Boolean.parseBoolean(UCCV1);
-        boolean uccv2 = Boolean.parseBoolean(UCCV2);
-        boolean indv1 = Boolean.parseBoolean(INDV1);
-        boolean indv2 = Boolean.parseBoolean(INDV2);
+        boolean fdv1 = Boolean.parseBoolean(FDQuick);
+        boolean fdv2 = Boolean.parseBoolean(FDComplete);
+        boolean uccv1 = false;
+        boolean uccv2 = false;
+        boolean indv1 = false;
+        boolean indv2 = false;
 
         float[][] simMatrix = matchTask.getEmptySimMatrix();
 
@@ -224,11 +219,13 @@ public class SimilarityFlooding extends Matcher {
             Collection<FunctionalDependency> functionalDependencies;
 
             //If FD and UCC Info then only meaningful fds
-            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
-                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
-            } else {
-                functionalDependencies = db.getMetadata().getFds();
-            }
+//            if ((Boolean.parseBoolean(FDQuick) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+//                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+//            } else {
+//                functionalDependencies = db.getMetadata().getFds();
+//            }
+
+            functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
 
             for (FunctionalDependency functionalDependency : filterFunctionalDependencies(functionalDependencies)) {
 
@@ -256,11 +253,13 @@ public class SimilarityFlooding extends Matcher {
             Collection<FunctionalDependency> functionalDependencies;
 
             //If FD and UCC Info then only meaningful fds
-            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
-                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
-            } else {
-                functionalDependencies = db.getMetadata().getFds();
-            }
+//            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+//                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+//            } else {
+//                functionalDependencies = db.getMetadata().getFds();
+//            }
+
+            functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
 
             int fdID = 1;
 
@@ -903,37 +902,47 @@ public class SimilarityFlooding extends Matcher {
 
         Set<FunctionalDependency> FDs = new HashSet<>();
 
-        if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+        for (Column column : table.getColumns()) {
+            Collection<FunctionalDependency> FDsOfColumn = db.getMetadata().getFunctionalDependencies(column);
 
-            Set<FunctionalDependency> meaningfulFDs = new HashSet<>();
-
-            for (FunctionalDependency meaningfulFD : db.getMetadata().getMeaningfulFunctionalDependencies()) {
-
-                if (!table.getColumns().contains(meaningfulFD.getDependant())) {
-                    break;
-                }
-
-                for (Column determinant : meaningfulFD.getDeterminant()) {
-                    if (!table.getColumns().contains(determinant)) {
-                        break;
-                    }
-                }
-                meaningfulFDs.add(meaningfulFD);
-            }
-
-            FDs.addAll(meaningfulFDs);
-
-        } else {
-            for (Column column : table.getColumns()) {
-                Collection<FunctionalDependency> FDsOfColumn = db.getMetadata().getFunctionalDependencies(column);
-
-                for (FunctionalDependency fd : FDsOfColumn) {
-                    if (fd != null) {
-                        FDs.add(fd);
-                    }
+            for (FunctionalDependency fd : FDsOfColumn) {
+                if (fd != null) {
+                    FDs.add(fd);
                 }
             }
         }
+
+//        if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+//
+//            Set<FunctionalDependency> meaningfulFDs = new HashSet<>();
+//
+//            for (FunctionalDependency meaningfulFD : db.getMetadata().getMeaningfulFunctionalDependencies()) {
+//
+//                if (!table.getColumns().contains(meaningfulFD.getDependant())) {
+//                    break;
+//                }
+//
+//                for (Column determinant : meaningfulFD.getDeterminant()) {
+//                    if (!table.getColumns().contains(determinant)) {
+//                        break;
+//                    }
+//                }
+//                meaningfulFDs.add(meaningfulFD);
+//            }
+//
+//            FDs.addAll(meaningfulFDs);
+//
+//        } else {
+//            for (Column column : table.getColumns()) {
+//                Collection<FunctionalDependency> FDsOfColumn = db.getMetadata().getFunctionalDependencies(column);
+//
+//                for (FunctionalDependency fd : FDsOfColumn) {
+//                    if (fd != null) {
+//                        FDs.add(fd);
+//                    }
+//                }
+//            }
+//        }
 
         return FDs;
     }
@@ -992,7 +1001,6 @@ public class SimilarityFlooding extends Matcher {
 
         Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
         double threshold = Double.parseDouble(fdFilterThreshold);
-        //TODO: If both UCC and FD use only meaningful FDs
 
         for (FunctionalDependency fd : functionalDependencies) {
 
@@ -1014,11 +1022,9 @@ public class SimilarityFlooding extends Matcher {
                     filteredFDs.add(fd);
                 }
             }
-
-//            System.out.println(fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + " - PDEP-Score: " + pdepScore + "; GPDEP-Score: " + gpdepScore+ "; NGPDEP-Score: " + ngpdepScore + "; Alternative-NGPDEP-Score: " + alternativeNgpdepScore);
         }
 
-
+        System.out.println("Filtered FDs: " + functionalDependencies.size() + "->" + filteredFDs.size());
 
         return filteredFDs;
     }
