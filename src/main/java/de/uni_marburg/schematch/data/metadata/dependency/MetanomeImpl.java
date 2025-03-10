@@ -294,13 +294,13 @@ public class MetanomeImpl{
         //Profiling AUCCs with Pyro:
         if (partialFDS == null) {
             pyro.setBooleanConfigurationValue("isFindFds", false);
-            pyro.setStringConfigurationValue("maxUccError", "0.10");
+            pyro.setStringConfigurationValue("maxUccError", "0.1");
             pyro.setUccConsumer(partialUCCs::add);
 
         //Profiling AFDs with Pyro
         } else {
             pyro.setBooleanConfigurationValue("isFindKeys", false);
-            pyro.setStringConfigurationValue("maxUccError", "0.10"); //Range [0.0, 1.0]; 0.0 = all FDs; 1.0 = All FDs: [] -> col_1 ,... [] -> col_n (Meaning each column has the same value in each tuple)
+            pyro.setStringConfigurationValue("maxUccError", "0.1"); //Range [0.0, 1.0]; 0.0 = all FDs; 1.0 = All FDs: [] -> col_1 ,... [] -> col_n (Meaning each column has the same value in each tuple)
             pyro.setFdConsumer(partialFDS::add);
         }
 
