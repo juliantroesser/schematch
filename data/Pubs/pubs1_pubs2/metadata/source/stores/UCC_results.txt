@@ -1,5 +1,0 @@
-[stores.stor_id]
-[stores.stor_name]
-[stores.stor_address]
-[stores.city]
-[stores.zip]

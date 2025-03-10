@@ -1,2 +1,0 @@
-[stato.stato_id] --> stato.stato
-[stato.stato] --> stato.stato_id

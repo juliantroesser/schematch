@@ -1,2 +1,0 @@
-[authors.aid] --> authors.name
-[authors.name] --> authors.aid

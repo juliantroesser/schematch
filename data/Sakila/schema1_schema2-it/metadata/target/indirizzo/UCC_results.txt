@@ -1,7 +1,0 @@
-[indirizzo.indirizzo_id]
-[indirizzo.indirizzo]
-[indirizzo.città_id, indirizzo.telefono]
-[indirizzo.città, indirizzo.telefono]
-[indirizzo.distretto, indirizzo.telefono]
-[indirizzo.stato_id, indirizzo.telefono]
-[indirizzo.stato, indirizzo.telefono]

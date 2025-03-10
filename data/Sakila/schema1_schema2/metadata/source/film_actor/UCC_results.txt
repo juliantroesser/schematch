@@ -1,1 +1,0 @@
-[film_actor.actor_id, film_actor.film_id]

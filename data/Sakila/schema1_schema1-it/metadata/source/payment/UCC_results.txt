@@ -1,5 +1,0 @@
-[payment.payment_id]
-[payment.payment_date, payment.rental_id]
-[payment.customer_id, payment.rental_id]
-[payment.amount, payment.rental_id, payment.staff_id]
-[payment.amount, payment.customer_id, payment.payment_date, payment.staff_id]

@@ -1,5 +1,0 @@
-[incollection.collid]
-[incollection.title]
-[incollection.bktitle, incollection.loc]
-[incollection.loc, incollection.year]
-[incollection.class, incollection.loc]

@@ -1,6 +1,0 @@
-[authors.authorid] --> authors.full_name
-[authors.authorid] --> authors.dob
-[authors.full_name] --> authors.authorid
-[authors.full_name] --> authors.dob
-[authors.dob] --> authors.authorid
-[authors.dob] --> authors.full_name

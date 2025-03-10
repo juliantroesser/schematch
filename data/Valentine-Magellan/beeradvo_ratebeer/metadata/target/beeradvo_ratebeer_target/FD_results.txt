@@ -1,8 +1,0 @@
-[beeradvo_ratebeer_target.id] --> beeradvo_ratebeer_target.Beer_Name
-[beeradvo_ratebeer_target.id] --> beeradvo_ratebeer_target.Brew_Factory_Name
-[beeradvo_ratebeer_target.id] --> beeradvo_ratebeer_target.ABV
-[beeradvo_ratebeer_target.id] --> beeradvo_ratebeer_target.Style
-[beeradvo_ratebeer_target.Beer_Name] --> beeradvo_ratebeer_target.id
-[beeradvo_ratebeer_target.Beer_Name] --> beeradvo_ratebeer_target.Brew_Factory_Name
-[beeradvo_ratebeer_target.Beer_Name] --> beeradvo_ratebeer_target.ABV
-[beeradvo_ratebeer_target.Beer_Name] --> beeradvo_ratebeer_target.Style

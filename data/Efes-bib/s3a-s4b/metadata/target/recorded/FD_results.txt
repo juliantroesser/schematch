@@ -1,4 +1,0 @@
-[recorded.pid] --> recorded.rid
-[recorded.pid] --> recorded.recordtype
-[recorded.rid] --> recorded.pid
-[recorded.rid] --> recorded.recordtype

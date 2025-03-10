@@ -1,2 +1,0 @@
-[città.città_id]
-[città.città]

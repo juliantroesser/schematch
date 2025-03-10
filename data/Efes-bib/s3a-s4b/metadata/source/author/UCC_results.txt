@@ -1,2 +1,0 @@
-[author.authorid]
-[author.name]

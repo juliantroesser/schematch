@@ -1,2 +1,0 @@
-[] --> schools.citkey
-[] --> schools.schoolnm
