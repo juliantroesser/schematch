@@ -116,5 +116,8 @@ public class Main {
         log.info("Total time: " + DurationFormatUtils.formatDuration(durationInMillis, "HH:mm:ss:SSS"));
 
         log.info("Ending Schematch");
+
+        // Workaround for {@link de.hpi.isg.pyro.util.MemoryWatchdog} not stopping the JVM
+        System.exit(0);
     }
 }
