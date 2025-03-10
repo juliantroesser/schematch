@@ -294,19 +294,14 @@ public class MetanomeImpl{
         //Profiling AUCCs with Pyro:
         if (partialFDS == null) {
             pyro.setBooleanConfigurationValue("isFindFds", false);
-            //pyro.setStringConfigurationValue("maxFdError", "0.0"); //TODO: Test what maxFdError does //No difference for maxFdError for 0.0 and 1.0
-            //TODO: Profile approximate UCCs
+            pyro.setStringConfigurationValue("maxUccError", "0.1");
             pyro.setUccConsumer(partialUCCs::add);
 
         //Profiling AFDs with Pyro
         } else {
-            //pyro.setBooleanConfigurationValue("parallelism", true);
             pyro.setBooleanConfigurationValue("isFindKeys", false);
+            pyro.setStringConfigurationValue("maxUccError", "0.1"); //Range [0.0, 1.0]; 0.0 = all FDs; 1.0 = All FDs: [] -> col_1 ,... [] -> col_n (Meaning each column has the same value in each tuple)
             pyro.setFdConsumer(partialFDS::add);
-            // Wieso funktioniert das?!
-            //TODO: Find good range for profiling (0,1)
-            pyro.setStringConfigurationValue("maxUccError", "0.15"); //Range [0.0, 1.0]; 0.0 = all FDs; 1.0 = All FDs: [] -> col_1 ,... [] -> col_n (Meaning each column has the same value in each tuple)
-            //pyro.setStringConfigurationValue("maxArity",  "1");
         }
 
         return pyro;
