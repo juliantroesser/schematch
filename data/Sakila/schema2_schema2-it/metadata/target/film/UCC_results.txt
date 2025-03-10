@@ -1,4 +1,0 @@
-[film.film_id]
-[film.titolo]
-[film.descrizione]
-[film.costo_sostituzione, film.durata, film.durata_noleggio, film.tariffa_noleggio, film.voto]

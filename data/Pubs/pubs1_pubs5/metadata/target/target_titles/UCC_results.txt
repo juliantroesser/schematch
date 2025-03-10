@@ -1,7 +1,0 @@
-[target_titles.title_id]
-[target_titles.title]
-[target_titles.notes]
-[target_titles.pubdate, target_titles.type, target_titles.ytd_sales]
-[target_titles.price, target_titles.pubdate, target_titles.type]
-[target_titles.price, target_titles.pub_id, target_titles.pubdate]
-[target_titles.advance, target_titles.pubdate, target_titles.type]

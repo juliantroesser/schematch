@@ -1,6 +1,0 @@
-[rental.rental_id]
-[rental.inventory_id, rental.return_date]
-[rental.customer_id, rental.film_id, rental.return_date]
-[rental.inventory_id, rental.rental_date]
-[rental.customer_id, rental.film_id, rental.rental_date]
-[rental.customer_id, rental.inventory_id]

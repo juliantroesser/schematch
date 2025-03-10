@@ -1,2 +1,0 @@
-[authors.au_id]
-[authors.au_fname]

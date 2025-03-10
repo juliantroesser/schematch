@@ -1,4 +1,0 @@
-[noleggio.noleggio_id]
-[noleggio.data_restituzione, noleggio.inventario_id]
-[noleggio.data_noleggio, noleggio.inventario_id]
-[noleggio.cliente_id, noleggio.inventario_id]

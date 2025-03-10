@@ -1,4 +1,0 @@
-[System.E] [= [System.B]
-[System.E] [= [System.D]
-[System.D] [= [System.B]
-[System.F] [= [System.C]

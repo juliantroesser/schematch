@@ -1,8 +1,0 @@
-[personale.personale_id]
-[personale.nome]
-[personale.cognome]
-[personale.indirizzo_id]
-[personale.email]
-[personale.negozio_id]
-[personale.nomeutente]
-[personale.password]
