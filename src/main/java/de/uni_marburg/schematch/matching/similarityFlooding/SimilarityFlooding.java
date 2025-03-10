@@ -1004,7 +1004,8 @@ public class SimilarityFlooding extends Matcher {
 
         for (FunctionalDependency fd : functionalDependencies) {
 
-            if(fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
+            //Determinant should have at least one attribute
+            if(!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
 
                 double score;
 
