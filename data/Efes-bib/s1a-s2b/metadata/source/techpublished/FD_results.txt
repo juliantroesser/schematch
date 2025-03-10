@@ -1,2 +1,0 @@
-[] --> techpublished.techid
-[] --> techpublished.authid

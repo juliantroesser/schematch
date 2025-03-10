@@ -1,3 +1,0 @@
-[città.città_id] --> città.città
-[città.città_id] --> città.stato_id
-[città.città, città.stato_id] --> città.città_id

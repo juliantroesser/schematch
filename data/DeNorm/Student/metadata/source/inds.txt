@@ -1,2 +1,0 @@
-[Student.Department] [= [Student.Major]
-[Student.Major] [= [Student.Department]

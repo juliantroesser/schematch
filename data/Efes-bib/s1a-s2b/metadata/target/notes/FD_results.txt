@@ -1,2 +1,0 @@
-[notes.citkey] --> notes.note
-[notes.note] --> notes.citkey

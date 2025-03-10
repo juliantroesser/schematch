@@ -1,2 +1,0 @@
-[buecher.titel] --> buecher.numPages
-[buecher.numPages] --> buecher.titel

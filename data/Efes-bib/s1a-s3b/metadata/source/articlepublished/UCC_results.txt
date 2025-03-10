@@ -1,1 +1,0 @@
-[articlepublished.articleid, articlepublished.authid]

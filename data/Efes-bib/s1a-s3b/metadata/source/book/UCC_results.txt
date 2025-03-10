@@ -1,5 +1,0 @@
-[book.bookid]
-[book.title]
-[book.publisher]
-[book.class]
-[book.annote, book.year]

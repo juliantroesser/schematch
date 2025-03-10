@@ -1,2 +1,0 @@
-[lingua.lingua_id] --> lingua.nome
-[lingua.nome] --> lingua.lingua_id

@@ -1,2 +1,0 @@
-[target_pub_info.pub_id] --> target_pub_info.pr_info
-[target_pub_info.pr_info] --> target_pub_info.pub_id

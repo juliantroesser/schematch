@@ -1,2 +1,0 @@
-[author.authid] --> author.name
-[author.name] --> author.authid

@@ -1,2 +1,0 @@
-[bookpublished.bookid] --> bookpublished.authid
-[bookpublished.authid] --> bookpublished.bookid

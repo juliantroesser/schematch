@@ -1,7 +1,0 @@
-[Customer.Price]
-[Customer.CustomerID, Customer.ProductID]
-[Customer.CustomerID, Customer.ProductName]
-[Customer.CustomerName, Customer.ProductID]
-[Customer.CustomerName, Customer.ProductName]
-[Customer.Age, Customer.ProductID]
-[Customer.Age, Customer.ProductName]

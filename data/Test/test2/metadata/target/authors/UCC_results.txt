@@ -1,3 +1,0 @@
-[authors.authorid]
-[authors.full_name]
-[authors.dob]

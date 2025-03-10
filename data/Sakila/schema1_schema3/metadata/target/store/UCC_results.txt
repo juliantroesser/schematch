@@ -1,6 +1,0 @@
-[store.store_id]
-[store.manager_staff_id]
-[store.address_id]
-[store.address]
-[store.district]
-[store.city_id]

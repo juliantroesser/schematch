@@ -1,6 +1,0 @@
-[jobs.job_id] --> jobs.job_desc
-[jobs.job_id] --> jobs.min_lvl
-[jobs.job_id] --> jobs.max_lvl
-[jobs.job_desc] --> jobs.job_id
-[jobs.job_desc] --> jobs.min_lvl
-[jobs.job_desc] --> jobs.max_lvl

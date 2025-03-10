@@ -1,6 +1,0 @@
-[negozio.negozio_id] --> negozio.capo_personale_id
-[negozio.negozio_id] --> negozio.indirizzo_id
-[negozio.capo_personale_id] --> negozio.negozio_id
-[negozio.capo_personale_id] --> negozio.indirizzo_id
-[negozio.indirizzo_id] --> negozio.negozio_id
-[negozio.indirizzo_id] --> negozio.capo_personale_id

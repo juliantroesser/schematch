@@ -1,2 +1,0 @@
-[inventory.inventory_id] --> inventory.film_id
-[inventory.inventory_id] --> inventory.store_id

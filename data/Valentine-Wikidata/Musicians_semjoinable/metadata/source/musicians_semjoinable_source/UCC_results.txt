@@ -1,2 +1,0 @@
-[musicians_semjoinable_source.musician]
-[musicians_semjoinable_source.musicianLabel]
