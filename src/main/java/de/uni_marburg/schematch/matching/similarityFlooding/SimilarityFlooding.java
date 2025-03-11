@@ -33,15 +33,13 @@ public class SimilarityFlooding extends Matcher {
     private String wholeSchema;
     private String propCoeffPolicy;
     private String fixpoint;
-    private String FDV1;
-    private String FDV2;
-    private String UCCV1;
-    private String UCCV2;
-    private String INDV1;
-    private String INDV2;
-    private String fdFilter;
-    private String fdFilterThreshold;
-    private String approxPerc;
+    private String INDQuick;
+    private String INDComplete;
+    private String coverage;
+    private String columnNameSimilarity;
+    private String valueLengthDifference;
+    private String outOfRange;
+    private String indFilterThreshold;
 
     @Override
     public float[][] match(MatchTask matchTask, MatchingStep matchStep) {
@@ -69,12 +67,12 @@ public class SimilarityFlooding extends Matcher {
         };
 
         boolean useWholeSchema = Boolean.parseBoolean(wholeSchema);
-        boolean fdv1 = Boolean.parseBoolean(FDV1);
-        boolean fdv2 = Boolean.parseBoolean(FDV2);
-        boolean uccv1 = Boolean.parseBoolean(UCCV1);
-        boolean uccv2 = Boolean.parseBoolean(UCCV2);
-        boolean indv1 = Boolean.parseBoolean(INDV1);
-        boolean indv2 = Boolean.parseBoolean(INDV2);
+        boolean fdv1 = false;
+        boolean fdv2 = false;
+        boolean uccv1 = false;
+        boolean uccv2 = false;
+        boolean indv1 = Boolean.parseBoolean(INDQuick);
+        boolean indv2 = Boolean.parseBoolean(INDComplete);
 
         float[][] simMatrix = matchTask.getEmptySimMatrix();
 
@@ -224,11 +222,13 @@ public class SimilarityFlooding extends Matcher {
             Collection<FunctionalDependency> functionalDependencies;
 
             //If FD and UCC Info then only meaningful fds
-            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
-                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
-            } else {
-                functionalDependencies = db.getMetadata().getFds();
-            }
+//            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+//                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+//            } else {
+//                functionalDependencies = db.getMetadata().getFds();
+//            }
+
+            functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
 
             for (FunctionalDependency functionalDependency : filterFunctionalDependencies(functionalDependencies)) {
 
@@ -256,11 +256,13 @@ public class SimilarityFlooding extends Matcher {
             Collection<FunctionalDependency> functionalDependencies;
 
             //If FD and UCC Info then only meaningful fds
-            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
-                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
-            } else {
-                functionalDependencies = db.getMetadata().getFds();
-            }
+//            if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+//                functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+//            } else {
+//                functionalDependencies = db.getMetadata().getFds();
+//            }
+
+            functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
 
             int fdID = 1;
 
@@ -903,37 +905,37 @@ public class SimilarityFlooding extends Matcher {
 
         Set<FunctionalDependency> FDs = new HashSet<>();
 
-        if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
-
-            Set<FunctionalDependency> meaningfulFDs = new HashSet<>();
-
-            for (FunctionalDependency meaningfulFD : db.getMetadata().getMeaningfulFunctionalDependencies()) {
-
-                if (!table.getColumns().contains(meaningfulFD.getDependant())) {
-                    break;
-                }
-
-                for (Column determinant : meaningfulFD.getDeterminant()) {
-                    if (!table.getColumns().contains(determinant)) {
-                        break;
-                    }
-                }
-                meaningfulFDs.add(meaningfulFD);
-            }
-
-            FDs.addAll(meaningfulFDs);
-
-        } else {
-            for (Column column : table.getColumns()) {
-                Collection<FunctionalDependency> FDsOfColumn = db.getMetadata().getFunctionalDependencies(column);
-
-                for (FunctionalDependency fd : FDsOfColumn) {
-                    if (fd != null) {
-                        FDs.add(fd);
-                    }
-                }
-            }
-        }
+//        if ((Boolean.parseBoolean(FDV1) && Boolean.parseBoolean(UCCV1)) || (Boolean.parseBoolean(FDV2) && Boolean.parseBoolean(UCCV2))) {
+//
+//            Set<FunctionalDependency> meaningfulFDs = new HashSet<>();
+//
+//            for (FunctionalDependency meaningfulFD : db.getMetadata().getMeaningfulFunctionalDependencies()) {
+//
+//                if (!table.getColumns().contains(meaningfulFD.getDependant())) {
+//                    break;
+//                }
+//
+//                for (Column determinant : meaningfulFD.getDeterminant()) {
+//                    if (!table.getColumns().contains(determinant)) {
+//                        break;
+//                    }
+//                }
+//                meaningfulFDs.add(meaningfulFD);
+//            }
+//
+//            FDs.addAll(meaningfulFDs);
+//
+//        } else {
+//            for (Column column : table.getColumns()) {
+//                Collection<FunctionalDependency> FDsOfColumn = db.getMetadata().getFunctionalDependencies(column);
+//
+//                for (FunctionalDependency fd : FDsOfColumn) {
+//                    if (fd != null) {
+//                        FDs.add(fd);
+//                    }
+//                }
+//            }
+//        }
 
         return FDs;
     }
@@ -990,46 +992,44 @@ public class SimilarityFlooding extends Matcher {
 
     private Collection<FunctionalDependency> filterFunctionalDependencies(Collection<FunctionalDependency> functionalDependencies) {
 
-        Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
-        double threshold = Double.parseDouble(fdFilterThreshold);
-        //TODO: If both UCC and FD use only meaningful FDs
+//        Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
+//        double threshold = Double.parseDouble(fdFilterThreshold);
+//        //TODO: If both UCC and FD use only meaningful FDs
+//
+//        for (FunctionalDependency fd : functionalDependencies) {
+//
+//            if(fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
+//
+//                double score;
+//
+//                switch (fdFilter) {
+//                    case "all" -> score = 1.0;
+//                    case "pdep" -> score = fd.getPDEPScore();
+//                    case "gpdep" -> score = fd.getGPDEPScore();
+//                    case "ngpdep" -> score = fd.getNGPDEPScore();
+//                    case "alt_ngpdep_sum" -> score = fd.getAltNGPDEPSumScore();
+//                    case "alt_ngpdep_max" -> score = fd.getAltNGPDEPMaxScore();
+//                    default -> throw new IllegalArgumentException("FD Filter does not exist");
+//                }
+//
+//                if(score >= threshold) {
+//                    filteredFDs.add(fd);
+//                }
+//            }
+//
+////            System.out.println(fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + " - PDEP-Score: " + pdepScore + "; GPDEP-Score: " + gpdepScore+ "; NGPDEP-Score: " + ngpdepScore + "; Alternative-NGPDEP-Score: " + alternativeNgpdepScore);
+//        }
 
-        for (FunctionalDependency fd : functionalDependencies) {
-
-            if(fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
-
-                double score;
-
-                switch (fdFilter) {
-                    case "all" -> score = 1.0;
-                    case "pdep" -> score = fd.getPDEPScore();
-                    case "gpdep" -> score = fd.getGPDEPScore();
-                    case "ngpdep" -> score = fd.getNGPDEPScore();
-                    case "alt_ngpdep_sum" -> score = fd.getAltNGPDEPSumScore();
-                    case "alt_ngpdep_max" -> score = fd.getAltNGPDEPMaxScore();
-                    default -> throw new IllegalArgumentException("FD Filter does not exist");
-                }
-
-                if(score >= threshold) {
-                    filteredFDs.add(fd);
-                }
-            }
-
-//            System.out.println(fd.getDeterminant().toString() + " -> " + fd.getDependant().toString() + " - PDEP-Score: " + pdepScore + "; GPDEP-Score: " + gpdepScore+ "; NGPDEP-Score: " + ngpdepScore + "; Alternative-NGPDEP-Score: " + alternativeNgpdepScore);
-        }
-
-
-
-        return filteredFDs;
+        return functionalDependencies;
     }
 
     private Collection<UniqueColumnCombination> filterUniqueColumnCombinations(Collection<UniqueColumnCombination> uniqueColumnCombinations) {
 
-        Collection<UniqueColumnCombination> filteredUCCs = new HashSet<>();
-
-        for(UniqueColumnCombination ucc : uniqueColumnCombinations) {
-            System.out.println(Arrays.toString(ucc.calculateFeatureVectorPrimaryKey()));
-        }
+//        Collection<UniqueColumnCombination> filteredUCCs = new HashSet<>();
+//
+//        for(UniqueColumnCombination ucc : uniqueColumnCombinations) {
+//            System.out.println(Arrays.toString(ucc.calculateFeatureVectorPrimaryKey()));
+//        }
 
         return uniqueColumnCombinations;
     }
@@ -1038,21 +1038,23 @@ public class SimilarityFlooding extends Matcher {
 
         Collection<InclusionDependency> filteredINDs = new HashSet<>();
 
+        double coverageScoreWeight = Double.parseDouble(this.coverage);
+        double columnNameSimilarityScoreWeight = Double.parseDouble(this.columnNameSimilarity);
+        double valueLengthDifferenceScoreWeight = Double.parseDouble(this.valueLengthDifference);
+        double outOfRangeScoreWeight = Double.parseDouble(this.outOfRange);
+        double threshold = Double.parseDouble(this.indFilterThreshold);
+
         for (InclusionDependency ind : inclusionDependencies) {
-            Object[] featureVector = ind.calculateFeatureVectorFKC();
 
-            if(featureVector.length > 1) { //Dann alle Features berechnet
+            double score = ind.getForeignKeyScore(coverageScoreWeight, columnNameSimilarityScoreWeight, valueLengthDifferenceScoreWeight, outOfRangeScoreWeight);
 
-                double outOfRange = (double) featureVector[7]; //Zuerst nur F8 ausprobieren
-
-                if(outOfRange < 0.05) { //The lower the better //TODO: Verschiedene Heuristiken ausprobieren
-                    filteredINDs.add(ind);
-                }
+            if(score >= threshold) {
+                filteredINDs.add(ind);
             }
         }
 
         System.out.println("INDs: " + inclusionDependencies.size() + " -> " + filteredINDs.size());
-//        return filteredINDs;
-        return inclusionDependencies;
+
+        return filteredINDs;
     }
 }
