@@ -64,6 +64,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/src/lib/sawfish-1.1-SNAPSHOT.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>de.hpi.isg.algorithms.faida</groupId>
+            <artifactId>FAIDA</artifactId>
+            <version>1.2-SNAPSHOT</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/lib/FAIDA-1.2-SNAPSHOT.jar</systemPath>
+        </dependency>
 
         <!-- Metacrate for Pyro-->
         <dependency>
@@ -157,6 +164,15 @@
             <artifactId>jgrapht-core</artifactId>
             <version>1.5.2</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.5.17</version>
+            <scope>compile</scope>
+        </dependency>
+
     </dependencies>
 
     <properties>

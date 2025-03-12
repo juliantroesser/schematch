@@ -3,11 +3,11 @@ name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
   wholeSchema: ["true"]
-  propCoeffPolicy: ["INV_PROD", "INV_AVG"]
-  fixpoint: ["BASIC", "A", "B", "C"]
+  propCoeffPolicy: ["INV_PROD"]
+  fixpoint: ["C"]
   FDV1: ["false"]
   FDV2: ["false"]
-  UCCV1: ["true"]
+  UCCV1: ["false"]
   UCCV2: ["false"]
   INDV1: ["false"]
   INDV2: ["false"]
