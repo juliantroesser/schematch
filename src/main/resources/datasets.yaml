@@ -19,9 +19,9 @@
 #---
 #name: "ISIA-real_estate2"
 #path: "ISIA-real_estate2"
----
-name: "Sakila"
-path: "Sakila"
+#---
+#name: "Sakila"
+#path: "Sakila"
 #---
 #name: "Valentine-ChEMBL_joinable"
 #path: "Valentine-ChEMBL_joinable"
