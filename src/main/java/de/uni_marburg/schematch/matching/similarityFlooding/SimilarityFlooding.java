@@ -996,4 +996,41 @@ public class SimilarityFlooding extends Matcher {
     private Collection<InclusionDependency> filterInclusionDependencies(Collection<InclusionDependency> inclusionDependencies) {
         return inclusionDependencies;
     }
+
+    public HashMap<String, String> getParameters() {
+        HashMap<String, String> parameters = new HashMap<>();
+//        parameters.put("propCoeffPolicy", propCoeffPolicy);
+        parameters.put("fixpoint", fixpoint);
+        parameters.put("FDV1", FDV1);
+        parameters.put("FDV2", FDV2);
+        parameters.put("UCCV1", UCCV1);
+        parameters.put("UCCV2", UCCV2);
+        parameters.put("INDV1", INDV1);
+        parameters.put("INDV2", INDV2);
+        return parameters;
+    }
+
+    public HashMap<String, Collection<String>> getPossibleValues() {
+        HashMap<String, Collection<String>> possibleValues = new HashMap<>();
+//        possibleValues.put("propCoeffPolicy", List.of("INV_AVG","INV_PROD", "CONSTANT_ONE"));
+        possibleValues.put("fixpoint", List.of("A", "B", "C"));
+        possibleValues.put("FDV1", List.of("true", "false"));
+        possibleValues.put("FDV2", List.of("true", "false"));
+        possibleValues.put("UCCV1", List.of("true", "false"));
+        possibleValues.put("UCCV2", List.of("true", "false"));
+        possibleValues.put("INDV1", List.of("true", "false"));
+        possibleValues.put("INDV2", List.of("true", "false"));
+        return possibleValues;
+    }
+
+    public void setParameters(HashMap<String, String> currentParams) {
+//        propCoeffPolicy = currentParams.get("propCoeffPolicy");
+        fixpoint = currentParams.get("fixpoint");
+        FDV1 = currentParams.get("FDV1");
+        FDV2 = currentParams.get("FDV2");
+        UCCV1 = currentParams.get("UCCV1");
+        UCCV2 = currentParams.get("UCCV2");
+        INDV1 = currentParams.get("INDV1");
+        INDV2 = currentParams.get("INDV2");
+    }
 }
