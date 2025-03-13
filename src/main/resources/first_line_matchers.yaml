@@ -11,8 +11,6 @@ params:
   UCCV2: ["false"]
   INDV1: ["false"]
   INDV2: ["false"]
-  fdFilter: ["all"]
-  fdFilterThreshold: ["0.0"]
 
 #---
 #name: "SimilarityFlooding"
@@ -27,8 +25,6 @@ params:
 #  UCCV2: ["false"]
 #  INDV1: ["false"]
 #  INDV2: ["false"]
-#  fdFilter: ["all","ngpdep","alt_ngpdep_sum", "alt_ngpdep_max"]
-#  fdFilterThreshold: ["0.0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.3"]
 
 
 
