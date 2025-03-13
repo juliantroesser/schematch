@@ -17,7 +17,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -189,8 +188,6 @@ public class InputReader {
             Collection<InclusionDependency> inds = readINDFile(indFilePath, database, database, indMap);
             //Added that INDs are calculated
             if(inds.isEmpty()) {
-                // inds = Metanome.executeIND(database.getTables()); //Find INDs
-
                 inds = Metanome.executePartialIND(database.getTables());
             }
 
