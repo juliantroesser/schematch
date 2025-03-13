@@ -31,7 +31,7 @@ public class Main {
         // FIXME: make sim matrix boosting configurable via .yaml files
         // Configure similarity matrix boosting here for now
 
-        SimMatrixBoosting firstLineSimMatrixBoosting = new ThresholdSelectionBoosting(1.0);
+        SimMatrixBoosting firstLineSimMatrixBoosting = new ThresholdSelectionBoosting(0.95); //So if more than one matches are almost equally likely, we consider them all as true
         SimMatrixBoosting secondLineSimMatrixBoosting = new IdentitySimMatrixBoosting();
 
         log.info("Setting up matching steps as specified in config");
