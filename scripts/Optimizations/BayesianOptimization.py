@@ -1,156 +1,125 @@
 import json
 import random
-
 import socket
 import time
 
 HOST = "localhost"
-LISTEN_PORT = 5004
+LISTEN_PORT = 5003
 SEND_PORT = 5005
 
-# 1. When starting, will listen to initial JSON data from Java
-# 2. We parse initial JSON data and save possible values
-# 3. We start the optimization process to find the next parameters
-# 4. We send the new parameters back to Java via the objective function
-# 5. We listen to the new score from Java in the objective function
-# 6. We return the new score to the optimization process
-# 7. We repeat the process until the score is below a certain threshold
-# We use a different connection for sending and receiving data
-
-def optimization(score, current_params, possible_values):
+def setup_receiving_connection():
     """
-    double
-    Score needs to be maximized
-    To do this we need to minimize the negative score
-
-    current_params:
-    {
-        "fixpoint": "C",
-        "INDV2": "false",
-        "INDV1": "false",
-        "FDV1": "false",
-        "FDV2": "false",
-       "UCCV2": "false",
-       "UCCV1": "false"
-    }
-
-    possible_values:
-    {
-        "fixpoint": ["A", "B", "C"],
-        "INDV2": ["true", "false"],
-        "INDV1": ["true", "false"],
-        "FDV1": ["true", "false"],
-        "FDV2": ["true", "false"],
-        "UCCV2": ["true", "false"],
-        "UCCV1": ["true", "false"]
-    }
+    Set up a server socket on LISTEN_PORT and accept one connection.
+    Returns the server socket (to be closed after accepting)
+    and the accepted connection (used for all receives).
     """
-    print("Optimizing...")
-    # result = gp_minimize(objective_function, list(possible_values.values()), n_calls=30, random_state=42)
-    # best_params = {key: val for key, val in zip(possible_values.keys(), result.x)}
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((HOST, LISTEN_PORT))
+    server_socket.listen(1)
+    print(f"Listening on {HOST}:{LISTEN_PORT} for incoming connection...")
+    conn, addr = server_socket.accept()
+    print("Accepted connection from", addr)
+    return server_socket, conn
 
-    while score > -.8:
-        print("Score: ", score)
-        # Random placeholder for categorical values
-        # for every categorical value, we choose a random value from the possible values
-        print("Possible values: ", possible_values)
-        new_params = {key: random.choice(possible_values[key]) for key in possible_values}
-        print("new params: ", new_params)
+def setup_sending_connection():
+    """
+    Create a persistent connection to SEND_PORT for sending data.
+    Wrap the socket with a file-like object for easier flushing.
+    """
+    send_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    send_sock.connect((HOST, SEND_PORT))
+    send_file = send_sock.makefile("w")  # Create a writable file-like object
+    print(f"Connected to {HOST}:{SEND_PORT} for sending data.")
+    return send_sock, send_file
 
-        print("Evaluated new params")
-        score = objective_function(new_params)
+def receive_json_from_connection(conn):
+    """
+    Block until valid JSON data is received from the provided connection.
+    """
+    while True:
+        data = conn.recv(1024)
+        if not data:
+            print("No data received, waiting...")
+            time.sleep(0.5)
+            continue
+        try:
+            message = json.loads(data.decode('utf-8'))
+            print("Received JSON:", message)
+            return message
+        except json.JSONDecodeError:
+            print("Error decoding JSON, waiting for complete data...")
+            time.sleep(0.5)
 
-    return new_params
+def send_json_over_connection(send_file, data):
+    """
+    Encode the given data as JSON, write it to the provided file-like object,
+    and flush to ensure the data is sent immediately.
+    """
+    payload = json.dumps(data) + "\n"
+    send_file.write(payload)
+    send_file.flush()  # Flush to send data immediately
+    print("Data sent over persistent connection.")
 
+def objective_function(send_file, receiving_conn, params):
+    """
+    Send new parameters over the persistent sending connection and wait for a valid new score.
+    """
+    print("Sending new parameters to Java...")
+    send_json_over_connection(send_file, params)
 
-def objective_function(params):
-    # Send new parameters to Java
-    print("Sending new params to Java...")
-    print("Starting connection...")
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        print("Connecting to port", SEND_PORT)
-        s.connect((HOST, SEND_PORT))
-        print("Connected")
-        print("Sending data...")
-        s.sendall(json.dumps(params).encode('utf-8') + b'\n')
-        print("Data sent")
-        print("Closing connection...")
-        s.close()
-    print("Connection closed")
-
-    # Receive new score from Java
-    print("Receiving new score from Java...")
-    print("Starting connection...")
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        print("Binding to port", LISTEN_PORT)
-        server_socket.bind((HOST, LISTEN_PORT))
-        print("Listening...")
-        server_socket.listen()
-        print("Waiting for connection...")
-        conn, addr = server_socket.accept()
-        with conn:
-            print("Connected by", addr)
-
-            # Receive data
-            data = conn.recv(1024)
-            if not data:
-                print("No data received")
-            print("Received data:", data)
-
-            # Decode JSON data
-            try:
-                received_json = json.loads(data.decode('utf-8'))
-                print("Received JSON:", received_json)
-            except json.JSONDecodeError:
-                print("Invalid JSON received")
-
-            # Extract values
-            score = received_json.get("score", 1.0)  # Default to 1 if missing
-            print("Score:", score)
-        print("Closing connection...")
-        conn.close()
-    print("Closing server socket...")
-    server_socket.close()
-
+    print("Waiting for new score from Java...")
+    result = receive_json_from_connection(receiving_conn)
+    score = result.get("score")
+    while score is None:
+        print("Score not found in received data; waiting for valid response...")
+        result = receive_json_from_connection(receiving_conn)
+        score = result.get("score")
+    print(f"Received new score: {score}")
     return score
 
-if __name__ == "__main__":
-    print("Starting optimization...")
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        print("Binding to port", LISTEN_PORT)
-        server_socket.bind((HOST, LISTEN_PORT))
-        print("Listening...")
-        server_socket.listen()
-        print("Waiting for connection...")
-        conn, addr = server_socket.accept()
-        with conn:
-            print("Connected by", addr)
+def optimization(send_file, receiving_conn, initial_score, possible_values):
+    """
+    Loop to adjust parameters until the score falls below -0.8.
+    Chooses a random value for each parameter from the provided possible values.
+    """
+    score = initial_score
+    while score > -0.8:
+        print(f"Current score: {score}")
+        new_params = {key: random.choice(values) for key, values in possible_values.items()}
+        print("Evaluating parameters:", new_params)
+        score = objective_function(send_file, receiving_conn, new_params)
+    return new_params
 
-            # Receive data
-            data = conn.recv(1024)
-            if not data:
-                print("No data received")
-            print("Received data:", data)
+def main():
+    # Set up the receiving connection and wait for the initial data.
+    print("Setting up receiving connection...")
+    server_socket, receiving_conn = setup_receiving_connection()
+    print("Waiting for initial data from Java...")
+    initial_data = receive_json_from_connection(receiving_conn)
+    while initial_data.get("score") is None:
+        print("Initial data did not include a score. Waiting for valid data...")
+        initial_data = receive_json_from_connection(receiving_conn)
+    score = initial_data.get("score")
+    possible_values = initial_data.get("possible_values", {})
 
-            # Decode JSON data
-            try:
-                received_json = json.loads(data.decode('utf-8'))
-                print("Received JSON:", received_json)
-            except json.JSONDecodeError:
-                print("Invalid JSON received")
+    print("Initial data received:")
+    print(" Score:", score)
+    print(" Possible values:", possible_values)
 
-            # Extract values
-            score = received_json.get("score", 1.0)  # Default to 1 if missing
-            print("Score:", score)
-            current_params = received_json.get("current_params", {})
-            print("Current params:", current_params)
-            possible_values = received_json.get("possible_values", {})
-            print("Possible values:", possible_values)
-        print("Closing connection...")
-        conn.close()
-    print("Closing server socket...")
+    # We can close the server socket now since the connection is accepted.
     server_socket.close()
 
-    # Start optimization
-    print("Starting optimization...")
-    optimization(score, current_params, possible_values)
+    # Connect to Java for sending only after receiving the initial data.
+    send_sock, send_file = setup_sending_connection()
+
+    best_params = optimization(send_file, receiving_conn, score, possible_values)
+    print("Optimization complete. Best parameters found:")
+    print(best_params)
+
+    # Clean up persistent connections.
+    send_file.close()
+    send_sock.close()
+    receiving_conn.close()
+
+if __name__ == "__main__":
+    main()
