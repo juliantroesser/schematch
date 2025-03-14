@@ -19,23 +19,23 @@ def optimization(score, current_params, possible_values):
     current_params:
     {
         "fixpoint": "C",
-        "INDV2": false,
-        "INDV1": false,
-        "FDV1": false,
-        "FDV2": false,
-       "UCCV2": false,
-       "UCCV1": false
+        "INDV2": "false",
+        "INDV1": "false",
+        "FDV1": "false",
+        "FDV2": "false",
+       "UCCV2": "false",
+       "UCCV1": "false"
     }
 
     possible_values:
     {
         "fixpoint": ["A", "B", "C"],
-        "INDV2": [true, false],
-        "INDV1": [true, false],
-        "FDV1": [true, false],
-        "FDV2": [true, false],
-        "UCCV2": [true, false],
-        "UCCV1": [true, false]
+        "INDV2": ["true", "false"],
+        "INDV1": ["true", "false"],
+        "FDV1": ["true", "false"],
+        "FDV2": ["true", "false"],
+        "UCCV2": ["true", "false"],
+        "UCCV1": ["true", "false"]
     }
     """
     print("Optimizing...")
