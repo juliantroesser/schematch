@@ -1,71 +1,113 @@
 import json
+import random
 import re
+
+import socket
 import sys
-import sklearn
+import time
+
+HOST = "localhost"
+PORT = 5003
 
 
-def bayesian_optimization(score, current_params, possible_values):
+def optimization(score, current_params, possible_values):
     """
-    Placeholder function for Bayesian Optimization.
-    Currently returns the same parameters as input.
+    double
+    Score needs to be maximized
+    To do this we need to minimize the negative score
+
+    current_params:
+    {
+        "fixpoint": "C",
+        "INDV2": false,
+        "INDV1": false,
+        "FDV1": false,
+        "FDV2": false,
+       "UCCV2": false,
+       "UCCV1": false
+    }
+
+    possible_values:
+    {
+        "fixpoint": ["A", "B", "C"],
+        "INDV2": [true, false],
+        "INDV1": [true, false],
+        "FDV1": [true, false],
+        "FDV2": [true, false],
+        "UCCV2": [true, false],
+        "UCCV1": [true, false]
+    }
     """
+    print("Optimizing...")
+    # result = gp_minimize(objective_function, list(possible_values.values()), n_calls=30, random_state=42)
+    # best_params = {key: val for key, val in zip(possible_values.keys(), result.x)}
 
-    result = gp_minimize(objective_function, search_space, n_calls=30, random_state=42)
+    while score > -.8:
 
-    # Best found parameters (maximizing f(x, y))
-    best_x, best_y = result.x
-    best_value = -result.fun  # Convert back from negative
+        # Random placeholder for categorical values
+        # for every categorical value, we choose a random value from the possible values
+        new_params = {key: random.choice(possible_values[key]) for key in possible_values}
+        print("new params: ", new_params)
 
-    print(f"Optimal x: {best_x:.4f}, Optimal y: {best_y:.4f}")
-    print(f"Maximum f(x, y): {best_value:.4f}")
+        score = objective_function(new_params)
 
-    return current_params
+    return new_params
+
 
 # Define the function to maximize
 def objective_function(params):
-    x, y = params
-    return - (np.sin(x) + np.cos(y))  # Minimize the negative
+    """
+    Send parameters to Java and get the score.
+    """
+    print("Calling objective function")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
+        print("Connecting to Java server")
+        client.connect((HOST, PORT))
+        print("Connected to Java server")
+        param_str = json.dumps(params)
+        # Wait for one second to avoid connection issues
+        time.sleep(1)
+
+        print("Sending params: ", param_str)
+        client.sendall((param_str + "\n").encode())
+        print("Sent params: ", param_str)
+        print("Waiting for response...")
+        data = client.recv(1024).decode()
+        print("Received data: ", data)
+        parts = data.split(" ", 1)
+        score = float(parts[0])
+        print(f"Score: {score}")
+    return -score  # We minimize in Bayesian Optimization, so negate it
 
 
-def transform_to_json_compatible(input_str):
-    """
-    Converts an input string to a JSON-compatible format.
-    """
-    input_str = input_str.replace("=", ":")
-    input_str = re.sub(r'(\w+):', r'"\1":', input_str)
-    input_str = re.sub(r':(\w+)', r':"\1"', input_str)
-    input_str = input_str.replace(':"true"', ':true').replace(':"false"', ':false')
-    input_str = re.sub(r'\[([^\[\]]+)]',
-                       lambda m: '[' + ', '.join(f'"{x.strip()}"' for x in m.group(1).split(',')) + ']', input_str)
-    return input_str
+def main():
+    print("Python Optimizer started")
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+        print("Server started")
+        server.bind((HOST, PORT))
+        server.listen()
+
+        # Listen to initial connection and receive data
+        print("Listening on {}:{}".format(HOST, PORT))
+        print("Waiting for connection...")
+        conn, addr = server.accept()
+        with conn:
+            print("Connected by", addr)
+            data = conn.recv(1024).decode()
+            while not data:
+                data = conn.recv(1024).decode()
+            print("Received data: ", data)
+            parts = data.split("|")
+            score = float(parts[0])
+            params = json.loads(parts[1])
+            possible_values = json.loads(parts[2])
+            print("Score: ", score)
+            print("Params: ", params)
+            print("Possible values: ", possible_values)
+
+            # Start optimization with initial parameters
+            optimization(score, params, possible_values)
 
 
 if __name__ == "__main__":
-    # Example input for testing
-    sys.argv = ['scripts/Optimizations/BayesianOptimization.py', '0.7827264368534088',
-        '{fixpoint=C, INDV2=false, INDV1=false, FDV1=false, FDV2=false, UCCV2=false, UCCV1=false}',
-        '{fixpoint=[A, B, C], INDV2=[true, false], INDV1=[true, false], FDV1=[true, false], FDV2=[true, false], UCCV2=[true, false], UCCV1=[true, false]}']
-
-    if len(sys.argv) != 4:
-        print("Usage: python3 BayesianOptimization.py <score> <current_params> <possible_values>")
-        sys.exit(1)
-
-    score = float(sys.argv[1])
-
-    current_params = json.loads(transform_to_json_compatible(sys.argv[2]))
-    current_params = {k: (str(v).lower() if isinstance(v, bool) else v) for k, v in current_params.items()}
-
-    possible_values = json.loads(transform_to_json_compatible(sys.argv[3]))
-
-    # Define the search space for x and y
-    search_space = [
-        Real(-np.pi, np.pi, name='x'),  # Search space for x
-        Real(-np.pi, np.pi, name='y')   # Search space for y
-    ]
-
-    # Perform Bayesian optimization to find the next best set of parameters
-    next_params = bayesian_optimization(score, current_params, possible_values)
-
-    # Output the recommended next set of parameters
-    for key, value in next_params.items():
-        print(f"{key}={value}")
+    main()
