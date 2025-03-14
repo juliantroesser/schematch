@@ -1,13 +1,11 @@
 import json
 import random
-import re
 
 import socket
-import sys
 import time
 
 HOST = "localhost"
-PORT = 5003
+PORT = 5004
 
 
 def optimization(score, current_params, possible_values):
@@ -43,7 +41,6 @@ def optimization(score, current_params, possible_values):
     # best_params = {key: val for key, val in zip(possible_values.keys(), result.x)}
 
     while score > -.8:
-
         # Random placeholder for categorical values
         # for every categorical value, we choose a random value from the possible values
         new_params = {key: random.choice(possible_values[key]) for key in possible_values}
@@ -66,10 +63,12 @@ def objective_function(params):
         print("Connected to Java server")
         param_str = json.dumps(params)
         # Wait for one second to avoid connection issues
-        time.sleep(1)
+        time.sleep(5)
 
         print("Sending params: ", param_str)
-        client.sendall((param_str + "\n").encode())
+        client.setblocking(True)
+        client.sendall(param_str.encode())
+        client.close()
         print("Sent params: ", param_str)
         print("Waiting for response...")
         data = client.recv(1024).decode()

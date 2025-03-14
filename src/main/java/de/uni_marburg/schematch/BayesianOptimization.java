@@ -24,7 +24,7 @@ import java.util.*;
 public class BayesianOptimization {
     private static final Logger log = LogManager.getLogger(BayesianOptimization.class);
     private static final String HOST = "localhost";
-    private static final int PORT = 5003;
+    private static final int PORT = 5004;
     private static Process pythonProcess;
 
 
@@ -112,10 +112,11 @@ public class BayesianOptimization {
                 log.info("Aktuelle Parameter: {}, Score: {}", currentParams, avgPerformance);
                 writer.println(avgPerformance + "|" + jsonString + "|" + jsonString2);
 
-                var response = reader.lines();
-                // log all responses
-                response.forEach(log::info);
-
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                while ((inputLine = reader.readLine()) != null) {
+                    response.append(inputLine);
+                }
 
                 log.info("Response: {}", response);
                 if (response.equals("DONE")) {
@@ -135,57 +136,6 @@ public class BayesianOptimization {
         } catch (IOException e) {
             log.error("Exception during optimization: ", e);
         }
-
-        /*
-        import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
-import org.json.JSONObject;
-
-public class JavaServer {
-    public static void main(String[] args) {
-        int port = 5003;
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Server started and listening on port " + port);
-            while (true) {
-                try (Socket clientSocket = serverSocket.accept();
-                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true)) {
-
-                    System.out.println("Client connected");
-
-                    // Read the input from the client
-                    String inputLine;
-                    StringBuilder data = new StringBuilder();
-                    while ((inputLine = in.readLine()) != null) {
-                        data.append(inputLine);
-                    }
-
-                    // Parse the JSON data
-                    JSONObject json = new JSONObject(data.toString());
-                    System.out.println("Received JSON: " + json.toString());
-
-                    // Process the JSON data as needed
-                    // For example, extract parameters
-                    String fixpoint = json.getString("fixpoint");
-                    boolean indv2 = json.getBoolean("INDV2");
-                    // ... extract other parameters
-
-                    // Send a response back to the client
-                    out.println("Response from Java server");
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-}
-         */
     }
 
     private static String convertToJsonString2(Map<String, Collection<String>> possibleParams) {
