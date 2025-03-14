@@ -1,3 +1,4 @@
+import itertools
 import json
 import logging
 import random
@@ -161,21 +162,33 @@ class Optimizer:
 
     def optimize(self, initial_score: float) -> dict:
         """
-        Run the optimization loop by randomly selecting parameters until the score
-        falls below -0.8.
+        Evaluate all possible parameter combinations and return the best parameters
+        without sending them again.
+
         Args:
-            initial_score (float): The starting score.
+            initial_score (float): The starting score to compare against.
+
         Returns:
-            dict: The parameters that resulted in the final (optimized) score.
+            dict: The parameters that resulted in the best (lowest) score.
         """
-        score = initial_score
+        best_score = initial_score
         best_params = {}
-        while score > -0.8:
-            logging.info("Current score: %f", score)
-            new_params = {key: random.choice(values) for key, values in self.possible_values.items()}
-            logging.info("Evaluating parameters: %s", new_params)
-            score = self.objective_function(new_params)
-            best_params = new_params
+        # Generate all possible combinations of parameter values.
+        keys = list(self.possible_values.keys())
+        all_combinations = itertools.product(*(self.possible_values[key] for key in keys))
+
+        for combination in all_combinations:
+            params = dict(zip(keys, combination))
+            logging.info("Evaluating parameters: %s", params)
+            score = self.objective_function(params)
+            logging.info("Score for %s: %f", params, score)
+            # Assuming a higher score is better.
+            if score > best_score:
+                best_score = score
+                best_params = params
+
+        logging.info("Best parameters found: %s with score %f", best_params, best_score)
+        # Return the best parameters without sending them again.
         return best_params
 
 

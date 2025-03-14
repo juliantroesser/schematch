@@ -999,7 +999,7 @@ public class SimilarityFlooding extends Matcher {
 
     public Map<String, String> getParameters() {
         Map<String, String> parameters = new HashMap<>();
-//        parameters.put("propCoeffPolicy", propCoeffPolicy);
+        parameters.put("propCoeffPolicy", propCoeffPolicy);
         parameters.put("fixpoint", fixpoint);
         parameters.put("FDV1", FDV1);
         parameters.put("FDV2", FDV2);
@@ -1012,7 +1012,7 @@ public class SimilarityFlooding extends Matcher {
 
     public Map<String, Collection<String>> getPossibleValues() {
         Map<String, Collection<String>> possibleValues = new HashMap<>();
-//        possibleValues.put("propCoeffPolicy", List.of("INV_AVG","INV_PROD", "CONSTANT_ONE"));
+        possibleValues.put("propCoeffPolicy", List.of("INV_AVG","INV_PROD", "CONSTANT_ONE"));
         possibleValues.put("fixpoint", List.of("A", "B", "C"));
         possibleValues.put("FDV1", List.of("true", "false"));
         possibleValues.put("FDV2", List.of("true", "false"));
@@ -1024,7 +1024,7 @@ public class SimilarityFlooding extends Matcher {
     }
 
     public void setParameters(Map<String, String> currentParams) {
-//        propCoeffPolicy = currentParams.get("propCoeffPolicy");
+        propCoeffPolicy = currentParams.get("propCoeffPolicy");
         fixpoint = currentParams.get("fixpoint");
         FDV1 = currentParams.get("FDV1");
         FDV2 = currentParams.get("FDV2");
