@@ -11,7 +11,10 @@ import de.uni_marburg.schematch.matchtask.MatchTask;
 import de.uni_marburg.schematch.matchtask.matchstep.MatchingStep;
 import de.uni_marburg.schematch.matchtask.tablepair.TablePair;
 import de.uni_marburg.schematch.similarity.string.Levenshtein;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
@@ -20,7 +23,8 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import java.lang.reflect.Field;
 import java.util.*;
 
-import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.*;
+import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.hasConverged;
+import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.populateSimMatrix;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -787,7 +791,7 @@ public class SimilarityFlooding extends Matcher {
                 Column column2 = node2.getRepresentedColumn();
                 double labelSimilarity = l.compare(node1.getValue(), node2.getValue());
 
-                if(column1 == null || column2 == null) {
+                if (column1 == null || column2 == null) {
                     similarity = labelSimilarity;
 
                 } else {
@@ -1019,7 +1023,7 @@ public class SimilarityFlooding extends Matcher {
         for (FunctionalDependency fd : functionalDependencies) {
 
             //Determinant should have at least one attribute
-            if(!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
+            if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance (see PRISMA for reasoning))
 
                 double score;
 
@@ -1033,7 +1037,7 @@ public class SimilarityFlooding extends Matcher {
                     default -> throw new IllegalArgumentException("FD Filter does not exist");
                 }
 
-                if(score >= threshold) {
+                if (score >= threshold) {
                     filteredFDs.add(fd);
                 }
             }
@@ -1056,27 +1060,39 @@ public class SimilarityFlooding extends Matcher {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("propCoeffPolicy", propCoeffPolicy);
         parameters.put("fixpoint", fixpoint);
+        parameters.put("FDQuick", FDQuick);
+        parameters.put("FDComplete", FDComplete);
+        parameters.put("fdFilter", fdFilter);
+        parameters.put("fdFilterThreshold", fdFilterThreshold);
         parameters.put("labelScoreWeight", labelScoreWeight);
         parameters.put("selectThresholdWeight", selectThresholdWeight);
 
         return parameters;
     }
 
+    public void setParameters(Map<String, String> currentParams) {
+        propCoeffPolicy = currentParams.get("propCoeffPolicy");
+        fixpoint = currentParams.get("fixpoint");
+        FDQuick = currentParams.get("FDQuick");
+        FDComplete = currentParams.get("FDComplete");
+        fdFilter = currentParams.get("fdFilter");
+        fdFilterThreshold = currentParams.get("fdFilterThreshold");
+        labelScoreWeight = currentParams.get("labelScoreWeight");
+        selectThresholdWeight = currentParams.get("selectThresholdWeight");
+    }
+
     public Map<String, Collection<String>> getPossibleValues() {
         Map<String, Collection<String>> possibleValues = new HashMap<>();
-        possibleValues.put("propCoeffPolicy", List.of("INV_AVG","INV_PROD"));
+        possibleValues.put("propCoeffPolicy", List.of("INV_AVG", "INV_PROD"));
         possibleValues.put("fixpoint", List.of("BASIC", "A", "B", "C"));
+        possibleValues.put("FDQuick", List.of("true", "false"));
+        possibleValues.put("FDComplete", List.of("true", "false"));
+        possibleValues.put("fdFilter", List.of("gpdep", "ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max"));
+        possibleValues.put("fdFilterThreshold", List.of("-1"));
         possibleValues.put("labelScoreWeight", List.of("-1")); //TODO: Parse -1 to range [0,1] in Python
         possibleValues.put("selectThresholdWeight", List.of("-1"));
 
         return possibleValues;
-    }
-
-    public void setParameters(Map<String, String> currentParams) {
-        propCoeffPolicy = currentParams.get("propCoeffPolicy");
-        fixpoint = currentParams.get("fixpoint");
-        labelScoreWeight = currentParams.get("labelScoreWeight");
-        selectThresholdWeight = currentParams.get("selectThresholdWeight");
     }
 
     public double getValueSimilarityBetweenColumns(Column column1, Column column2) {
@@ -1094,8 +1110,8 @@ public class SimilarityFlooding extends Matcher {
         Map<String, Integer> countMap = new HashMap<>();
         int total = 0;
 
-        for(String value : column.getValues()) {
-            if(!value.equalsIgnoreCase("null")) { //Ignore null values
+        for (String value : column.getValues()) {
+            if (!value.equalsIgnoreCase("null")) { //Ignore null values
                 countMap.put(value, countMap.getOrDefault(value, 0) + 1);
                 total++;
             }
@@ -1103,7 +1119,7 @@ public class SimilarityFlooding extends Matcher {
 
         Map<String, Double> probabilityMap = new HashMap<>();
 
-        for(Map.Entry<String, Integer> entry : countMap.entrySet()) {
+        for (Map.Entry<String, Integer> entry : countMap.entrySet()) {
             probabilityMap.put(entry.getKey(), entry.getValue() / (double) total);
         }
 
@@ -1117,7 +1133,7 @@ public class SimilarityFlooding extends Matcher {
         Set<String> possibleValues = new HashSet<>(map1.keySet());
         possibleValues.addAll(map2.keySet());
 
-        for(String value : possibleValues) {
+        for (String value : possibleValues) {
             Double probability1 = map1.getOrDefault(value, 0.0);
             Double probability2 = map2.getOrDefault(value, 0.0);
 
