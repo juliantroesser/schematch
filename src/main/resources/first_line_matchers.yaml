@@ -2,15 +2,10 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  wholeSchema: ["true"]
-  propCoeffPolicy: ["INV_PROD"]
-  fixpoint: ["C"]
-  FDV1: ["false"]
-  FDV2: ["false"]
-  UCCV1: ["false"]
-  UCCV2: ["false"]
-  INDV1: ["false"]
-  INDV2: ["false"]
+  propCoeffPolicy: ["INV_PROD", "INV_AVG"]
+  fixpoint: ["BASIC", "A", "B", "C"]
+  labelScoreWeight: ["0", "0.05", "0.1"]
+  selectThresholdWeight: ["0", "0.05", "0.1"]
 
 #---
 #name: "SimilarityFlooding"
