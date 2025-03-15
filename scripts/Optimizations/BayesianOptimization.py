@@ -1,7 +1,7 @@
 import itertools
 import json
 import logging
-import random
+import math
 import socket
 import time
 
@@ -16,6 +16,16 @@ LISTEN_PORT = 5003
 SEND_PORT = 5005
 
 
+def format_time(seconds: float) -> str:
+    """
+    Format a time duration in seconds into hours, minutes, and seconds.
+    """
+    hours = int(seconds // 3600)
+    minutes = int((seconds % 3600) // 60)
+    secs = seconds % 60
+    return f"{hours}h {minutes}m {secs:.2f}s"
+
+
 class Receiver:
     """
     A class to handle incoming connections and JSON message reception.
@@ -24,9 +34,6 @@ class Receiver:
     """
 
     def __init__(self, host: str, port: int, buffer_size: int = 1024):
-        """
-        Initialize the receiver with host, port, and optional buffer size.
-        """
         self.host = host
         self.port = port
         self.buffer_size = buffer_size
@@ -45,7 +52,6 @@ class Receiver:
         logging.info("Listening on %s:%d for incoming connection...", self.host, self.port)
         self.connection, addr = self.server_socket.accept()
         logging.info("Accepted connection from %s", addr)
-        # Wrap the socket in a file-like object for easier reading (line-by-line).
         self.reader = self.connection.makefile("r")
 
     def receive_json(self) -> dict:
@@ -86,9 +92,6 @@ class Sender:
     """
 
     def __init__(self, host: str, port: int):
-        """
-        Initialize the sender with host and port.
-        """
         self.host = host
         self.port = port
         self.socket = None
@@ -133,9 +136,6 @@ class Optimizer:
     """
 
     def __init__(self, sender: Sender, receiver: Receiver, possible_values: dict):
-        """
-        Initialize the optimizer with a Sender, a Receiver, and a dictionary of possible parameter values.
-        """
         self.sender = sender
         self.receiver = receiver
         self.possible_values = possible_values
@@ -160,35 +160,57 @@ class Optimizer:
         logging.info("Received new score: %f", score)
         return score
 
+    def log_progress(self, iteration_count: int, total_iterations: int, start_time: float):
+        """
+        Calculate and log progress information.
+        """
+        elapsed_time = time.time() - start_time
+        avg_time = elapsed_time / iteration_count
+        remaining_iterations = total_iterations - iteration_count
+        est_remaining_time = avg_time * remaining_iterations
+        percentage = (iteration_count / total_iterations) * 100
+
+        formatted_elapsed = format_time(elapsed_time)
+        formatted_remaining = format_time(est_remaining_time)
+
+        logging.info(
+            "Progress: %d/%d (%.2f%%) - Elapsed: %s - Estimated remaining: %s",
+            iteration_count,
+            total_iterations,
+            percentage,
+            formatted_elapsed,
+            formatted_remaining,
+        )
+
     def optimize(self, initial_score: float) -> dict:
         """
-        Evaluate all possible parameter combinations and return the best parameters
-        without sending them again.
-
+        Evaluate all possible parameter combinations and return the best parameters.
         Args:
             initial_score (float): The starting score to compare against.
-
         Returns:
             dict: The parameters that resulted in the best (lowest) score.
         """
         best_score = initial_score
         best_params = {}
-        # Generate all possible combinations of parameter values.
         keys = list(self.possible_values.keys())
+        total_iterations = math.prod(len(self.possible_values[key]) for key in keys)
         all_combinations = itertools.product(*(self.possible_values[key] for key in keys))
+        start_time = time.time()
+        iteration_count = 0
 
         for combination in all_combinations:
+            iteration_count += 1
             params = dict(zip(keys, combination))
             logging.info("Evaluating parameters: %s", params)
             score = self.objective_function(params)
             logging.info("Score for %s: %f", params, score)
-            # Assuming a higher score is better.
             if score > best_score:
                 best_score = score
                 best_params = params
 
+            self.log_progress(iteration_count, total_iterations, start_time)
+
         logging.info("Best parameters found: %s with score %f", best_params, best_score)
-        # Return the best parameters without sending them again.
         return best_params
 
 
@@ -199,7 +221,6 @@ def main():
     """
     receiver = Receiver(HOST, LISTEN_PORT)
     try:
-        # Set up the receiving connection and wait for initial JSON data.
         logging.info("Setting up receiving connection...")
         receiver.start_server()
         logging.info("Waiting for initial data from Java...")
@@ -216,13 +237,11 @@ def main():
         receiver.cleanup()
         return
 
-    # Clean up the server socket; keep the connection for further reading.
     if receiver.server_socket:
         receiver.server_socket.close()
 
     sender = Sender(HOST, SEND_PORT)
     try:
-        # Connect to the sending port after receiving the initial data.
         sender.connect()
     except Exception as e:
         logging.error("Error connecting for sending: %s", e)
@@ -233,7 +252,6 @@ def main():
     best_params = optimizer.optimize(initial_score)
     logging.info("Optimization complete. Best parameters found: %s", best_params)
 
-    # Clean up persistent connections.
     sender.cleanup()
     receiver.cleanup()
 
