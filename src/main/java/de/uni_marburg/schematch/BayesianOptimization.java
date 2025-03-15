@@ -297,12 +297,12 @@ class PerformanceEvaluator {
                 // Initialize a new MatchTask with an empty list of match steps.
                 MatchTask matchTask = new MatchTask(dataset, scenario, new ArrayList<MatchStep>(), metrics);
                 List<TablePair> tablePairs = tablePairsGenerator.generateCandidates(scenario);
+                matchTask.setTablePairs(tablePairs);
+                matchTask.readGroundTruth();
 
                 // Run Similarity Flooding and boosting.
                 float[][] results = similarityFlooding.match(matchTask, null);
                 results = thresholdBoosting.run(matchTask, null, results);
-                matchTask.setTablePairs(tablePairs);
-                matchTask.readGroundTruth();
 
                 // Evaluate performance using the first metric (F1Score).
                 Evaluator evaluator = new Evaluator(metrics, scenario, matchTask.getGroundTruthMatrix());
