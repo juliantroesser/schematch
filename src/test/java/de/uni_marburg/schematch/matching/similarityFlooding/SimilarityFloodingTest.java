@@ -51,9 +51,9 @@ class SimilarityFloodingTest {
 
         //Build Graph Model A
         Graph<Node, LabelEdge> modelA = new DefaultDirectedGraph<>(LabelEdge.class);
-        Node a = new Node("a", null, null, false, null, null);
-        Node a1 = new Node("a1", null, null, false, null, null);
-        Node a2 = new Node("a2", null, null, false, null, null);
+        Node a = new Node("a", null, null, false, null, null, null);
+        Node a1 = new Node("a1", null, null, false, null, null, null);
+        Node a2 = new Node("a2", null, null, false, null, null, null);
 
         modelA.addVertex(a);
         modelA.addVertex(a1);
@@ -65,9 +65,9 @@ class SimilarityFloodingTest {
 
         //Build Graph Model B
         Graph<Node, LabelEdge> modelB = new DefaultDirectedGraph<>(LabelEdge.class);
-        Node b = new Node("b", null, null, false, null, null);
-        Node b1 = new Node("b1", null, null, false, null, null);
-        Node b2 = new Node("b2", null, null, false, null, null);
+        Node b = new Node("b", null, null, false, null, null, null);
+        Node b1 = new Node("b1", null, null, false, null, null, null);
+        Node b2 = new Node("b2", null, null, false, null, null, null);
 
         modelB.addVertex(b);
         modelB.addVertex(b1);
