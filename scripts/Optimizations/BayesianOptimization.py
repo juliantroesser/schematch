@@ -4,6 +4,8 @@ import logging
 import math
 import socket
 import time
+from skopt import gp_minimize
+from skopt.space import Categorical, Real
 
 # Configure logging for detailed debug output.
 logging.basicConfig(
@@ -182,35 +184,37 @@ class Optimizer:
             formatted_remaining,
         )
 
-    def optimize(self, initial_score: float) -> dict:
-        """
-        Evaluate all possible parameter combinations and return the best parameters.
-        Args:
-            initial_score (float): The starting score to compare against.
-        Returns:
-            dict: The parameters that resulted in the best (lowest) score.
-        """
-        best_score = initial_score
-        best_params = {}
-        keys = list(self.possible_values.keys())
-        total_iterations = math.prod(len(self.possible_values[key]) for key in keys)
-        all_combinations = itertools.product(*(self.possible_values[key] for key in keys))
+    def optimize(self) -> dict:
+        space = []
+
+        for key, value in self.possible_values.items():
+            if 'normalizedValue' in value:
+                space.append(Real(0, 1, name=key))
+            else:
+                space.append(Categorical(value, name=key))
+
+        def objective(params):
+            param_dict = {dim.name: str(val) for dim, val in zip(space, params)}
+            logging.info("Evaluating parameters: %s", param_dict)
+            score = self.objective_function(param_dict)
+            logging.info("Score for %s: %f", param_dict, score)
+            return -score
+
         start_time = time.time()
-        iteration_count = 0
 
-        for combination in all_combinations:
-            iteration_count += 1
-            params = dict(zip(keys, combination))
-            logging.info("Evaluating parameters: %s", params)
-            score = self.objective_function(params)
-            logging.info("Score for %s: %f", params, score)
-            if score > best_score:
-                best_score = score
-                best_params = params
+        res = gp_minimize(
+            objective,
+            space,
+            n_calls=150,
+            random_state=42
+        )
 
-            self.log_progress(iteration_count, total_iterations, start_time)
+        best_params = {dim.name: res.x[i] for i, dim in enumerate(space)}
+        best_score = -res.fun
 
         logging.info("Best parameters found: %s with score %f", best_params, best_score)
+        logging.info("Optimization finished in %.2f seconds", time.time() - start_time)
+
         return best_params
 
 
@@ -249,7 +253,7 @@ def main():
         return
 
     optimizer = Optimizer(sender, receiver, possible_values)
-    best_params = optimizer.optimize(initial_score)
+    best_params = optimizer.optimize()
     logging.info("Optimization complete. Best parameters found: %s", best_params)
 
     sender.cleanup()
