@@ -10,8 +10,8 @@ class NodePairTest {
 
     @Test
     void getFirstNode() {
-         Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-         Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null);
+         Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+         Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
 
          NodePair pair = new NodePair(node1, node2);
 
@@ -20,8 +20,8 @@ class NodePairTest {
 
     @Test
     void getSecondNode() {
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
 
         NodePair pair = new NodePair(node1, node2);
 
@@ -31,16 +31,16 @@ class NodePairTest {
 
     @Test
     void testEquals() {
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
         NodePair pair1 = new NodePair(node1, node2);
 
-        Node node3 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node4 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null);
+        Node node3 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+        Node node4 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
         NodePair pair2 = new NodePair(node3, node4);
 
-        Node node5 = new Node("age_month", NodeType.COLUMN, Datatype.INTEGER, false, null, null);
-        Node node6 = new Node("age_years", NodeType.COLUMN, Datatype.INTEGER, false, null, null);
+        Node node5 = new Node("age_month", NodeType.COLUMN, Datatype.INTEGER, false, null, null, null);
+        Node node6 = new Node("age_years", NodeType.COLUMN, Datatype.INTEGER, false, null, null, null);
         NodePair pair3 = new NodePair(node5, node6);
 
         Assertions.assertEquals(pair1, pair2);
@@ -51,16 +51,16 @@ class NodePairTest {
 
     @Test
     void testHashCode() {
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
         NodePair pair1 = new NodePair(node1, node2);
 
-        Node node3 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node4 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null);
+        Node node3 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+        Node node4 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
         NodePair pair2 = new NodePair(node3, node4);
 
-        Node node5 = new Node("age_month", NodeType.COLUMN, Datatype.INTEGER, false, null, null);
-        Node node6 = new Node("age_years", NodeType.COLUMN, Datatype.INTEGER, false, null, null);
+        Node node5 = new Node("age_month", NodeType.COLUMN, Datatype.INTEGER, false, null, null, null);
+        Node node6 = new Node("age_years", NodeType.COLUMN, Datatype.INTEGER, false, null, null, null);
         NodePair pair3 = new NodePair(node5, node6);
 
         //Consistency
@@ -76,8 +76,8 @@ class NodePairTest {
 
     @Test
     void testToString() {
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
         NodePair pair = new NodePair(node1, node2);
 
         Assertions.assertEquals(("(lastname, surname)"), pair.toString());

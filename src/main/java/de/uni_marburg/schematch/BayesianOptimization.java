@@ -88,15 +88,10 @@ public class BayesianOptimization {
      */
     private void configureSimilarityFlooding() {
         log.info("Configuring Similarity Flooding parameters");
-        similarityFlooding.setWholeSchema("true");
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
-        similarityFlooding.setFDV1("false");
-        similarityFlooding.setFDV2("false");
-        similarityFlooding.setUCCV1("false");
-        similarityFlooding.setUCCV2("false");
-        similarityFlooding.setINDV1("false");
-        similarityFlooding.setINDV2("false");
+        similarityFlooding.setLabelScoreWeight("0.5");
+        similarityFlooding.setSelectThresholdWeight("1.0");
     }
 
     /**
@@ -126,13 +121,10 @@ public class BayesianOptimization {
         log.info("Handling incoming message: {}", message);
         try {
             // Update Similarity Flooding parameters from the received JSON.
+            similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
-            similarityFlooding.setFDV1(message.getString("FDV1"));
-            similarityFlooding.setFDV2(message.getString("FDV2"));
-            similarityFlooding.setINDV1(message.getString("INDV1"));
-            similarityFlooding.setINDV2(message.getString("INDV2"));
-            similarityFlooding.setUCCV1(message.getString("UCCV1"));
-            similarityFlooding.setUCCV2(message.getString("UCCV2"));
+            similarityFlooding.setLabelScoreWeight(message.getString("labelScoreWeight"));
+            similarityFlooding.setSelectThresholdWeight(message.getString("selectThresholdWeight"));
         } catch (Exception e) {
             log.error("Error updating parameters from incoming message: ", e);
         }
@@ -292,7 +284,7 @@ class PerformanceEvaluator {
      */
     public double evaluateAveragePerformance() {
         List<Double> datasetPerformances = new ArrayList<>();
-        ThresholdSelectionBoosting thresholdBoosting = new ThresholdSelectionBoosting(0.95);
+        ThresholdSelectionBoosting thresholdBoosting = new ThresholdSelectionBoosting(Double.parseDouble(this.similarityFlooding.getSelectThresholdWeight()));
 
         // Iterate over each dataset configuration.
         for (Configuration.DatasetConfiguration datasetConfig : config.getDatasetConfigurations()) {
