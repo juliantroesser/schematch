@@ -1031,8 +1031,9 @@ public class SimilarityFlooding extends Matcher {
         Map<String, Collection<String>> possibleValues = new HashMap<>();
         possibleValues.put("propCoeffPolicy", List.of("INV_AVG","INV_PROD"));
         possibleValues.put("fixpoint", List.of("BASIC", "A", "B", "C"));
-        possibleValues.put("labelScoreWeight", List.of("-1")); //TODO: Parse -1 to range [0,1] in Python
-        possibleValues.put("selectThresholdWeight", List.of("-1"));
+        // normalizedValue describes a value in [0,1]
+        possibleValues.put("labelScoreWeight", List.of("normalizedValue")); //TODO: Parse -1 to range [0,1] in Python
+        possibleValues.put("selectThresholdWeight", List.of("normalizedValue"));
 
         return possibleValues;
     }
