@@ -60,7 +60,7 @@ public class SimilarityFlooding extends Matcher {
             default -> throw new RuntimeException("No such fixpoint formula: " + fixpoint);
         };
 
-        boolean useWholeSchema = false;
+        boolean useWholeSchema = true;
         boolean fdv1 = false;
         boolean fdv2 = false;
         boolean uccv1 = false;
@@ -1032,7 +1032,7 @@ public class SimilarityFlooding extends Matcher {
         possibleValues.put("propCoeffPolicy", List.of("INV_AVG","INV_PROD"));
         possibleValues.put("fixpoint", List.of("BASIC", "A", "B", "C"));
         // normalizedValue describes a value in [0,1]
-        possibleValues.put("labelScoreWeight", List.of("normalizedValue")); //TODO: Parse -1 to range [0,1] in Python
+        possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
         possibleValues.put("selectThresholdWeight", List.of("normalizedValue"));
 
         return possibleValues;
