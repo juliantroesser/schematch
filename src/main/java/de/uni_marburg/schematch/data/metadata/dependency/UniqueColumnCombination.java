@@ -11,8 +11,8 @@ import java.util.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UniqueColumnCombination implements Dependency{
-    Collection<Column> columnCombination;
+public class UniqueColumnCombination implements Dependency {
+    Collection<Column> columnCombination; //Unique Column Combination //FD is most minimal
 
     @Override
     public boolean equals(Object o) {
