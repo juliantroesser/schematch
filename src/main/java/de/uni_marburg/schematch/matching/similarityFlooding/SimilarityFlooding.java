@@ -3,6 +3,7 @@ package de.uni_marburg.schematch.matching.similarityFlooding;
 import de.uni_marburg.schematch.data.Column;
 import de.uni_marburg.schematch.data.Database;
 import de.uni_marburg.schematch.data.Table;
+import de.uni_marburg.schematch.data.metadata.Datatype;
 import de.uni_marburg.schematch.data.metadata.dependency.FunctionalDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.InclusionDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.UniqueColumnCombination;
@@ -17,6 +18,8 @@ import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
+
 import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.*;
 
 @NoArgsConstructor
@@ -622,10 +625,15 @@ public class SimilarityFlooding extends Matcher {
         for (InclusionDependency ind : inclusionDependencies) {
 
             if (!ind.getDependant().isEmpty() && ind.getDependant().size() <= 3) { //Foreign Key Constraints very rarely consist of more than 3 attributes
-                double score = ind.getForeignKeyScore(coverageScoreWeight, columnNameSimilarityScoreWeight, valueLengthDifferenceScoreWeight, outOfRangeScoreWeight);
 
-                if (score >= threshold) {
-                    filteredINDs.add(ind);
+                Set<Datatype> datatypesInIND = ind.getReferenced().stream().map(Column::getDatatype).collect(Collectors.toSet());
+
+                if(!datatypesInIND.contains(Datatype.BOOLEAN)) { //No boolean column should be part of the ind
+                    double score = ind.getForeignKeyScore(coverageScoreWeight, columnNameSimilarityScoreWeight, valueLengthDifferenceScoreWeight, outOfRangeScoreWeight);
+
+                    if (score >= threshold) {
+                        filteredINDs.add(ind);
+                    }
                 }
             }
         }
