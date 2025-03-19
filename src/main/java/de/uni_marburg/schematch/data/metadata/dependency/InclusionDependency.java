@@ -5,7 +5,6 @@ import de.uni_marburg.schematch.similarity.string.Levenshtein;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.*;
 
 @Data
@@ -85,8 +84,6 @@ public class InclusionDependency implements Dependency{
         Collection<Column> foreignKey = this.getDependant();
         return getLabel(foreignKey, withTablePrefix);
     }
-
-    //TODO: what do do with null values?
 
     public double coverageScore() { //Range [0,1]: 1 best, every FK value has a match in PK, 0 worst
 
@@ -205,80 +202,5 @@ public class InclusionDependency implements Dependency{
 
         return stringBuilder.toString();
     }
-
-//    private boolean typicalNameSuffix(String foreignKeyName) {
-//
-//        String[] suffixes = {"id", "key", "nr", "no"};
-//
-//        for(String suffix : suffixes) {
-//            if(foreignKeyName.endsWith(suffix)) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    } //True is better
-
-//    private double tableSizeRatio(Column foreignKey, Column primaryKey) {
-//        return (double) foreignKey.getValues().size() / (double) primaryKey.getValues().size();
-//    } //The higher the better
-
-    //    private int distinctDependentValues(Set<String> distinctForeignKeyValues) {
-//        return distinctForeignKeyValues.size();
-//    } //The higher the better
-
-//    private int dependentAndReferenced(Column foreignKey) {
-//        Collection<InclusionDependency> inds = foreignKey.getTable().getDatabase().getMetadata().getInds();
-//
-//        int count = 0;
-//
-//        for(InclusionDependency ind : inds) {
-//            if(ind.getReferenced().size() == 1) {
-//                Column referenced = ind.getReferenced().iterator().next(); //referenced
-//
-//                if(referenced.equals(foreignKey)) {
-//                    count++;
-//                }
-//            }
-//        }
-//
-//        return count;
-//    } //The lower the better
-
-//    private int multiDependent(Column foreignKey) {
-//        Collection<InclusionDependency> inds = foreignKey.getTable().getDatabase().getMetadata().getInds();
-//
-//        int count = 0;
-//
-//        for(InclusionDependency ind : inds) {
-//            if(ind.getReferenced().size() == 1) {
-//                Column dependent = ind.getDependant().iterator().next(); //referenced
-//
-//                if(dependent.equals(foreignKey)) {
-//                    count++;
-//                }
-//            }
-//        }
-//
-//        return count;
-//    } //The lower the better
-
-//    private int multiReferenced(Column primaryKey) {
-//        Collection<InclusionDependency> inds = primaryKey.getTable().getDatabase().getMetadata().getInds();
-//
-//        int count = 0;
-//
-//        for(InclusionDependency ind : inds) {
-//            if(ind.getReferenced().size() == 1) {
-//                Column referenced = ind.getReferenced().iterator().next(); //referenced
-//
-//                if(referenced.equals(primaryKey)) {
-//                    count++;
-//                }
-//            }
-//        }
-//
-//        return count;
-//    } //The higher the better
 
 }
