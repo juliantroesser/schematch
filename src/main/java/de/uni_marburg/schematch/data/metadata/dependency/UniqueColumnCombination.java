@@ -29,16 +29,30 @@ public class UniqueColumnCombination implements Dependency{
     public double valueLengthScore() { //range (0,1]: 1 is best because most keys have smaller values, 0 is worst
         int n = 8; //Max Length of values at which a primary Key should be punished
 
-        int sumLength = 0;
+//        int sumLength = 0;
+//
+//        //To also work on approximate UCCs iterate over all values
+//        for(Column column : columnCombination) {
+//            sumLength = sumLength + getLongestValue(column).length();
+//        }
+//
+//        double maxX = (double) sumLength / (double) columnCombination.size();
+//
+//        return 1 / Math.max(1, maxX - n);
 
-        //To also work on approximate UCCs iterate over all values
+        double scoreSum = 0;
+
         for(Column column : columnCombination) {
-            sumLength = sumLength + getLongestValue(column).length();
+            double valueLengthScore = calculateValueLengthScoreForColumn(column, n);
+            scoreSum += valueLengthScore;
         }
 
-        double maxX = (double) sumLength / (double) columnCombination.size();
+        return scoreSum / columnCombination.size();
+    }
 
-        return 1 / Math.max(1, maxX - n);
+    private double calculateValueLengthScoreForColumn(Column column, int n) {
+        int maxX = column.getValues().stream().mapToInt(String::length).max().orElse(Integer.MAX_VALUE);
+        return 1.0 / Math.max(1, maxX - n);
     }
 
     public double positionScore() { //range (0,1]: 1 is best because most keys are at the beginning of a table and for multi-column keys there are no other attributes between them, 0 is worst
