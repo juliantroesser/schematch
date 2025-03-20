@@ -9,93 +9,20 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Data
-public class FunctionalDependency implements Dependency {
+public class FunctionalDependency implements Dependency{
     Collection<Column> determinant;
     Column dependant;
 
     //{left1, left2,...} -> {right}
-    public FunctionalDependency(Collection<Column> left, Column right) {
+    public FunctionalDependency(Collection<Column> left, Column right){
         this.determinant = left;
         this.dependant = right;
-    }
-
-    public static double getSelfDependencyScore(Collection<Column> columnCombination) {
-
-        int N = columnCombination.iterator().next().getValues().size();
-        Set<String> distinctValues = getDistinctValues(columnCombination, N);
-        Map<String, Integer> frequencyCount = getFrequencyCount(columnCombination, N);
-
-        double score = 0.0;
-
-        for (String value : distinctValues) {
-            int frequency = frequencyCount.get(value);
-            score = score + (double) (frequency * frequency);
-        }
-
-        return score / (double) (N * N);
-    } //probabilistic self dependency measure
-
-    //----------------------------------------------------------------------------------------
-
-    public static Set<String> getDistinctValues(Collection<Column> columnCombination, int N) {
-
-        Set<String> values = new HashSet<>();
-
-        for (int i = 0; i < N; i++) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (Column column : columnCombination) {
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-
-            stringBuilder.setLength(stringBuilder.length() - 1);
-
-            values.add(stringBuilder.toString());
-        }
-
-        return values;
-    }
-
-    //----------------------------------------------------------------------------------------
-
-    public static int countNumberOfRecordsWithGivenXandY(String x, String y, Collection<Column> columnCombinationForX, Column columnForY, int N) {
-        return (int) IntStream.range(0, N).parallel()
-                .filter(i -> {
-                    String concatenated = columnCombinationForX.stream()
-                            .map(column -> column.getValues().get(i))
-                            .collect(Collectors.joining(","));
-                    return concatenated.equals(x) && columnForY.getValues().get(i).equals(y);
-                })
-                .count();
-    }
-
-    public static Map<String, Integer> getFrequencyCount(Collection<Column> columnCombination, int N) {
-
-        Map<String, Integer> frequencyCount = new HashMap<>();
-
-        for (int i = 0; i < N; i++) {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (Column column : columnCombination) {
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-
-            stringBuilder.setLength(stringBuilder.length() - 1);
-            String valuesForX = stringBuilder.toString();
-
-            frequencyCount.put(valuesForX, frequencyCount.getOrDefault(valuesForX, 0) + 1);
-        }
-
-        return frequencyCount;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
-        if (determinant.isEmpty()) {
+        if(determinant.isEmpty()){
             sb.append("[]");
         } else {
             for (Column column : determinant) { //[tableName1.columnName1, tableName2.columnName2, ... ]
@@ -114,17 +41,19 @@ public class FunctionalDependency implements Dependency {
         return sb.toString();
     }
 
+    //----------------------------------------------------------------------------------------
+
     public double getRedundancyMeasure() {
 
         Map<String, Integer> valueOccurrenceCount = new HashMap<>();
         Table table = dependant.getTable();
         int numberRows = table.getColumns().get(0).getValues().size();
 
-        for (int i = 0; i < numberRows; i++) { //iterate through all tuples
+        for(int i = 0; i < numberRows; i++){ //iterate through all tuples
 
             StringBuilder valuesInDeterminant = new StringBuilder();
 
-            for (Column column : determinant) { //Has no order?
+            for(Column column : determinant){ //Has no order?
                 String valueInDeterminant = column.getValues().get(i);
 
                 valuesInDeterminant.append(valueInDeterminant);
@@ -138,12 +67,14 @@ public class FunctionalDependency implements Dependency {
 
         Optional<Integer> count = valueOccurrenceCount.values().stream().reduce(Integer::sum);
 
-        return count.map(integer -> (double) (integer - valueOccurrenceCount.size()) / (double) numberRows).orElse(0.0); //If no values are present in table, lowest possible score
+        return count.map(integer -> (double) (integer - valueOccurrenceCount.keySet().size()) / (double) numberRows).orElse(0.0); //If no values are present in table, lowest possible score
     }
+
+    //----------------------------------------------------------------------------------------
 
     public double getAltNGPDEPSumScore() {
 
-        if (this.getDeterminant().isEmpty()) {
+        if(this.getDeterminant().isEmpty()) {
             return 0.0;
         }
 
@@ -156,11 +87,11 @@ public class FunctionalDependency implements Dependency {
 
         double sum = 0.0;
 
-        for (FunctionalDependency fd : fdsWithDependentY) {
+        for(FunctionalDependency fd : fdsWithDependentY){
             sum += fd.getGPDEPScore();
         }
 
-        if (sum == 0.0) {
+        if(sum == 0.0) {
             return 0.0;
         } else {
             double score = gpdepXY / sum;
@@ -168,11 +99,9 @@ public class FunctionalDependency implements Dependency {
         }
     }
 
-    //TODO: Utils Functions could be moved to another class
-
     public double getAltNGPDEPMaxScore() {
 
-        if (this.getDeterminant().isEmpty()) {
+        if(this.getDeterminant().isEmpty()) {
             return 0.0;
         }
 
@@ -185,13 +114,13 @@ public class FunctionalDependency implements Dependency {
 
         double max = Double.NEGATIVE_INFINITY;
 
-        for (FunctionalDependency fd : fdsWithDependentY) {
-            if (fd.getGPDEPScore() > max) {
+        for(FunctionalDependency fd : fdsWithDependentY){
+            if(fd.getGPDEPScore() > max) {
                 max = fd.getGPDEPScore();
             }
         }
 
-        if (max == 0.0) {
+        if(max == 0.0) {
             return 0.0;
         } else {
             double score = gpdepXY / max;
@@ -201,7 +130,7 @@ public class FunctionalDependency implements Dependency {
 
     public double getNGPDEPScore() {
 
-        if (this.getDeterminant().isEmpty()) {
+        if(this.getDeterminant().isEmpty()) {
             return 0.0;
         }
 
@@ -213,7 +142,7 @@ public class FunctionalDependency implements Dependency {
         int N = this.getDependant().getValues().size();
         int K = getDistinctValues(X, N).size();
 
-        if (pdepY == 1.0 || N == K) { //Avoid division by zero (If pdepY equals zero then, the amount of Information that X gives is none)
+        if(pdepY == 1.0 || N == K) { //Avoid division by zero (If pdepY equals zero then, the amount of Information that X gives is none)
             return 0.0;
         } else {
             double score = 1.0 - (((1.0 - pdepXY) / (1.0 - pdepY)) * ((N - 1.0) / (N - K)));
@@ -224,7 +153,7 @@ public class FunctionalDependency implements Dependency {
 
     public double getGPDEPScore() {
 
-        if (this.getDeterminant().isEmpty()) { //As epdep Score for X -> Y with X = {} defaults to pdep(Y) which is 1 as all values are equal in Y
+        if(this.getDeterminant().isEmpty()) { //As epdep Score for X -> Y with X = {} defaults to pdep(Y) which is 1 as all values are equal in Y
             return 0.0;
         }
 
@@ -241,9 +170,9 @@ public class FunctionalDependency implements Dependency {
         return pdepXY - epdepXY;
     } //PDEP Measure with reduced bias
 
-    public double getPDEPScore() {
+    public double getPDEPScore(){
 
-        if (this.getDeterminant().isEmpty()) { //As Pdep Score for X -> Y with X = {} defaults to sum p(x) over all x as pdep(Y|x) becomes 1 as there is only one value in Y which is not dependent on x
+        if(this.getDeterminant().isEmpty()) { //As Pdep Score for X -> Y with X = {} defaults to sum p(x) over all x as pdep(Y|x) becomes 1 as there is only one value in Y which is not dependent on x
             return 1.0;
         }
 
@@ -257,8 +186,8 @@ public class FunctionalDependency implements Dependency {
 
         double score = 0.0;
 
-        for (String xValue : distinctXValues) {
-            for (String yValue : distinctYValues) {
+        for(String xValue : distinctXValues){
+            for(String yValue : distinctYValues){
 
                 int jointCount = countNumberOfRecordsWithGivenXandY(xValue, yValue, this.getDeterminant(), this.getDependant(), N);
                 int frequency = frequencyCountForX.get(xValue);
@@ -269,6 +198,77 @@ public class FunctionalDependency implements Dependency {
 
         return score / (double) N;
     } //Standard probabilistic dependency measure
+
+    //TODO: Utils Functions could be moved to another class
+
+    public static double getSelfDependencyScore(Collection<Column> columnCombination) {
+
+        int N = columnCombination.iterator().next().getValues().size();
+        Set<String> distinctValues = getDistinctValues(columnCombination, N);
+        Map<String, Integer> frequencyCount = getFrequencyCount(columnCombination, N);
+
+        double score = 0.0;
+
+        for(String value : distinctValues){
+            int frequency = frequencyCount.get(value);
+            score = score + (double) (frequency * frequency);
+        }
+
+        return score / (double) (N * N);
+    } //probabilistic self dependency measure
+
+    public static Set<String> getDistinctValues(Collection<Column> columnCombination, int N) {
+
+        Set<String> values = new HashSet<>();
+
+        for(int i = 0; i < N; i++){
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(Column column : columnCombination){
+                stringBuilder.append(column.getValues().get(i));
+                stringBuilder.append(",");
+            }
+
+            stringBuilder.setLength(stringBuilder.length() - 1);
+
+            values.add(stringBuilder.toString());
+        }
+
+        return values;
+    }
+
+    public static int countNumberOfRecordsWithGivenXandY(String x, String y, Collection<Column> columnCombinationForX, Column columnForY, int N) {
+        return (int) IntStream.range(0, N).parallel()
+                .filter(i -> {
+                    String concatenated = columnCombinationForX.stream()
+                            .map(column -> column.getValues().get(i))
+                            .collect(Collectors.joining(","));
+                    return concatenated.equals(x) && columnForY.getValues().get(i).equals(y);
+                })
+                .count();
+    }
+
+    public static Map<String, Integer> getFrequencyCount(Collection<Column> columnCombination, int N) {
+
+        Map<String, Integer> frequencyCount = new HashMap<>();
+
+        for(int i = 0; i < N; i++) {
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for(Column column : columnCombination) {
+                stringBuilder.append(column.getValues().get(i));
+                stringBuilder.append(",");
+            }
+
+            stringBuilder.setLength(stringBuilder.length() - 1);
+            String valuesForX = stringBuilder.toString();
+
+            frequencyCount.put(valuesForX, frequencyCount.getOrDefault(valuesForX, 0) + 1);
+        }
+
+        return frequencyCount;
+    }
 
     //-----------------------------------------------------------------------------------------
 
