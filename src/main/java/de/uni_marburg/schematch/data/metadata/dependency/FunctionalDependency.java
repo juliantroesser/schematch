@@ -5,6 +5,8 @@ import de.uni_marburg.schematch.data.Table;
 import lombok.Data;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Data
 public class FunctionalDependency implements Dependency{
@@ -46,14 +48,14 @@ public class FunctionalDependency implements Dependency{
         Map<String, Integer> valueOccurrenceCount = new HashMap<>();
         Table table = dependant.getTable();
         int numberRows = table.getColumns().get(0).getValues().size();
-        
+
         for(int i = 0; i < numberRows; i++){ //iterate through all tuples
-            
+
             StringBuilder valuesInDeterminant = new StringBuilder();
-            
+
             for(Column column : determinant){ //Has no order?
                 String valueInDeterminant = column.getValues().get(i);
-                
+
                 valuesInDeterminant.append(valueInDeterminant);
                 valuesInDeterminant.append(", ");
             }
@@ -62,7 +64,7 @@ public class FunctionalDependency implements Dependency{
             String key = valuesInDeterminant.toString();
             valueOccurrenceCount.put(key, valueOccurrenceCount.getOrDefault(key, 0) + 1); //count occurrences
         }
-        
+
         Optional<Integer> count = valueOccurrenceCount.values().stream().reduce(Integer::sum);
 
         return count.map(integer -> (double) (integer - valueOccurrenceCount.keySet().size()) / (double) numberRows).orElse(0.0); //If no values are present in table, lowest possible score
@@ -237,24 +239,14 @@ public class FunctionalDependency implements Dependency{
     }
 
     public static int countNumberOfRecordsWithGivenXandY(String x, String y, Collection<Column> columnCombinationForX, Column columnForY, int N) {
-
-        int count = 0;
-
-        for(int i = 0; i < N; i++){
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for(Column column : columnCombinationForX){
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-            stringBuilder.setLength(stringBuilder.length() - 1);
-
-            if(stringBuilder.toString().equals(x) && columnForY.getValues().get(i).equals(y)){
-                count++;
-            }
-        }
-        return count;
+        return (int) IntStream.range(0, N).parallel()
+                .filter(i -> {
+                    String concatenated = columnCombinationForX.stream()
+                            .map(column -> column.getValues().get(i))
+                            .collect(Collectors.joining(","));
+                    return concatenated.equals(x) && columnForY.getValues().get(i).equals(y);
+                })
+                .count();
     }
 
     public static Map<String, Integer> getFrequencyCount(Collection<Column> columnCombination, int N) {
