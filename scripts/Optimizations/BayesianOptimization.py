@@ -130,10 +130,17 @@ class Receiver:
         accept it, and wrap the connection in a file-like reader for line-based JSON input.
         """
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.server_socket.bind((self.host, self.port))
         self.server_socket.listen(1)
         logging.info("Listening on %s:%d for incoming connection...", self.host, self.port)
-        self.connection, addr = self.server_socket.accept()
+        while True:
+            try:
+                self.connection, addr = self.server_socket.accept()
+                break
+            except socket.error as e:
+                logging.warning("Port not open yet, retrying...")
+                time.sleep(1)
         logging.info("Accepted connection from %s", addr)
         self.reader = self.connection.makefile("r")
 
