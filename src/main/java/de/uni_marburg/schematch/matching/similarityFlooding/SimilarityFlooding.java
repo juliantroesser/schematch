@@ -686,9 +686,9 @@ public class SimilarityFlooding extends Matcher {
         possibleValues.put("FDQuick", List.of("true")); //TODO: Set to always true
         possibleValues.put("FDComplete", List.of("false")); //TODO: Set to always false
         possibleValues.put("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max")); //TODO: Removed gpdep
-        possibleValues.put("fdFilterThreshold", List.of("-1"));
-        possibleValues.put("labelScoreWeight", List.of("-1"));
-        possibleValues.put("selectThresholdWeight", List.of("-1"));
+        possibleValues.put("fdFilterThreshold", List.of("normalizedValue"));
+        possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
+        possibleValues.put("selectThresholdWeight", List.of("0.95")); // Results from constraint testing suggest that a value near 1 is good
 
         return possibleValues;
     }
