@@ -1,9 +1,14 @@
-import itertools
+#!/usr/bin/env python3
 import json
 import logging
-import math
 import socket
 import time
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from skopt import gp_minimize
+from skopt.space import Categorical, Real
 
 # Configure logging for detailed debug output.
 logging.basicConfig(
@@ -26,11 +31,89 @@ def format_time(seconds: float) -> str:
     return f"{hours}h {minutes}m {secs:.2f}s"
 
 
+def plot_iteration_times(iteration_durations):
+    """
+    Plot individual iteration durations and cumulative elapsed time.
+    """
+    iterations = np.arange(1, len(iteration_durations) + 1)
+    cumulative_times = np.cumsum(iteration_durations)
+
+    plt.figure(figsize=(12, 5))
+
+    # Plot individual iteration durations.
+    plt.subplot(1, 2, 1)
+    plt.plot(iterations, iteration_durations, marker='o', linestyle='-', label='Iteration Duration')
+    plt.xlabel("Iteration")
+    plt.ylabel("Time (s)")
+    plt.title("Individual Iteration Durations")
+    plt.legend()
+    plt.grid(True)
+
+    # Plot cumulative elapsed time.
+    plt.subplot(1, 2, 2)
+    plt.plot(iterations, cumulative_times, marker='o', linestyle='-', label='Cumulative Time')
+    plt.xlabel("Iteration")
+    plt.ylabel("Cumulative Time (s)")
+    plt.title("Cumulative Optimization Time")
+    plt.legend()
+    plt.grid(True)
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_semilog_cumulative(iteration_durations):
+    """
+    Plot cumulative elapsed time using a semilog scale.
+    """
+    iterations = np.arange(1, len(iteration_durations) + 1)
+    cumulative_times = np.cumsum(iteration_durations)
+
+    plt.figure(figsize=(6, 5))
+    plt.semilogy(iterations, cumulative_times, marker='o', linestyle='-', label='Cumulative Time (log scale)')
+    plt.xlabel("Iteration")
+    plt.ylabel("Cumulative Time (s, log scale)")
+    plt.title("Semilog Plot of Cumulative Optimization Time")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+def plot_parameter_effects(res, space):
+    """
+    Plot the effect of each parameter on the score.
+
+    For continuous parameters a scatter plot is created; for categorical parameters,
+    a box plot is used.
+    """
+    param_names = [dim.name for dim in space]
+    # Create a DataFrame with one row per evaluation.
+    df = pd.DataFrame(res.x_iters, columns=param_names)
+    # Convert the minimized objective back to positive scores.
+    df['score'] = -np.array(res.func_vals)
+
+    for param in param_names:
+        # Create a new figure and axis explicitly
+        fig, ax = plt.subplots()
+        if df[param].dtype == object:
+            df.boxplot(column='score', by=param, ax=ax)
+            ax.set_title(f"Score by {param}")
+            ax.set_xlabel(param)
+            ax.set_ylabel("Score")
+            # Remove the automatic suptitle that pandas adds.
+            plt.suptitle("")
+        else:
+            ax.scatter(df[param], df['score'])
+            ax.set_title(f"Score vs {param}")
+            ax.set_xlabel(param)
+            ax.set_ylabel("Score")
+        ax.grid(True)
+        plt.show()
+
+
 class Receiver:
     """
-    A class to handle incoming connections and JSON message reception.
-    It sets up a server socket, accepts a connection, and provides
-    a method to continuously receive valid JSON messages.
+    Handle incoming connections and JSON message reception.
     """
 
     def __init__(self, host: str, port: int, buffer_size: int = 1024):
@@ -68,7 +151,7 @@ class Receiver:
                 continue
             try:
                 message = json.loads(line)
-                logging.info("Received JSON: %s", message)
+                # logging.info("Received JSON: %s", message)
                 return message
             except json.JSONDecodeError:
                 logging.error("Error decoding JSON, waiting for complete data...")
@@ -86,9 +169,7 @@ class Receiver:
 
 class Sender:
     """
-    A class to handle outgoing connections and sending JSON messages.
-    It connects to a specified host and port and wraps the connection
-    in a file-like writer for convenient output.
+    Handle outgoing connections and sending JSON messages.
     """
 
     def __init__(self, host: str, port: int):
@@ -105,7 +186,7 @@ class Sender:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.socket.connect((self.host, self.port))
         self.writer = self.socket.makefile("w")
-        logging.info("Connected to %s:%d for sending data.", self.host, self.port)
+        # logging.info("Connected to %s:%d for sending data.", self.host, self.port)
 
     def send_json(self, data: dict):
         """
@@ -117,7 +198,7 @@ class Sender:
         payload = json.dumps(data) + "\n"
         self.writer.write(payload)
         self.writer.flush()
-        logging.info("Sent data: %s", data)
+        # logging.info("Sent data: %s", data)
 
     def cleanup(self):
         """
@@ -131,14 +212,19 @@ class Sender:
 
 class Optimizer:
     """
-    A class encapsulating the optimization loop. It uses a Sender to send parameter
+    Encapsulate the optimization loop. Uses a Sender to send parameter
     updates and a Receiver to wait for new scores until a desired threshold is reached.
     """
 
-    def __init__(self, sender: Sender, receiver: Receiver, possible_values: dict):
+    def __init__(self, sender: Sender, receiver: Receiver, possible_values: dict, start_time):
         self.sender = sender
         self.receiver = receiver
         self.possible_values = possible_values
+        self.start_time = start_time
+        self.iteration_durations = []
+        self.last_callback_time = None
+        self.res = None  # Will store the optimization result.
+        self.space = None  # Will store the search space.
 
     def objective_function(self, params: dict) -> float:
         """
@@ -148,95 +234,136 @@ class Optimizer:
         Returns:
             float: The score received from the response.
         """
-        logging.info("Sending new parameters: %s", params)
+        # logging.info("Sending new parameters: %s", params)
         self.sender.send_json(params)
-        logging.info("Waiting for new score...")
+        # logging.info("Waiting for new score...")
         result = self.receiver.receive_json()
         score = result.get("score")
         while score is None:
             logging.warning("Score not found in response, waiting for valid score...")
             result = self.receiver.receive_json()
             score = result.get("score")
-        logging.info("Received new score: %f", score)
+        # logging.info("Received new score: %f", score)
         return score
 
-    def log_progress(self, iteration_count: int, total_iterations: int, start_time: float):
+    def estimate_total_time_quadratic(self, total_iterations: int) -> float:
         """
-        Calculate and log progress information.
+        Fit a quadratic to the cumulative times and predict total time at total_iterations.
         """
-        elapsed_time = time.time() - start_time
-        avg_time = elapsed_time / iteration_count
-        remaining_iterations = total_iterations - iteration_count
-        est_remaining_time = avg_time * remaining_iterations
+        current_iter = len(self.iteration_durations)
+        if current_iter < 3:
+            if current_iter == 0:
+                return 0
+            elapsed = sum(self.iteration_durations)
+            return elapsed / current_iter * total_iterations
+
+        x = np.arange(1, current_iter + 1)
+        y = np.cumsum(self.iteration_durations)
+        a, b, c = np.polyfit(x, y, 2)
+        predicted_total = a * (total_iterations ** 2) + b * total_iterations + c
+
+        actual_so_far = y[-1]
+        if predicted_total < actual_so_far:
+            logging.warning("Quadratic fit predicted total < actual so far; falling back to average.")
+            predicted_total = (actual_so_far / current_iter) * total_iterations
+
+        return predicted_total
+
+    def log_progress(self, iteration_count: int, total_iterations: int):
+        """
+        Log the progress of the optimization process.
+        """
+        elapsed_wall_time = time.time() - self.start_time
+        predicted_total_time = self.estimate_total_time_quadratic(total_iterations)
+        est_remaining_time = predicted_total_time - elapsed_wall_time
         percentage = (iteration_count / total_iterations) * 100
 
-        formatted_elapsed = format_time(elapsed_time)
-        formatted_remaining = format_time(est_remaining_time)
-
         logging.info(
-            "Progress: %d/%d (%.2f%%) - Elapsed: %s - Estimated remaining: %s",
+            "Progress: %d/%d (%.2f%%) - Elapsed: %s - Estimated total: %s - Estimated remaining: %s",
             iteration_count,
             total_iterations,
             percentage,
-            formatted_elapsed,
-            formatted_remaining,
+            format_time(elapsed_wall_time),
+            format_time(predicted_total_time),
+            format_time(est_remaining_time),
         )
 
-    def optimize(self, initial_score: float) -> dict:
+    def optimize(self) -> dict:
         """
-        Evaluate all possible parameter combinations and return the best parameters.
-        Args:
-            initial_score (float): The starting score to compare against.
-        Returns:
-            dict: The parameters that resulted in the best (lowest) score.
+        Run the optimization process and return the best parameters.
         """
-        best_score = initial_score
-        best_params = {}
-        keys = list(self.possible_values.keys())
-        total_iterations = math.prod(len(self.possible_values[key]) for key in keys)
-        all_combinations = itertools.product(*(self.possible_values[key] for key in keys))
-        start_time = time.time()
-        iteration_count = 0
+        # Build the search space.
+        space = []
+        for key, value in self.possible_values.items():
+            if "normalizedValue" in value:
+                space.append(Real(0, 1, name=key))
+            else:
+                space.append(Categorical(value, name=key))
+        self.space = space
 
-        for combination in all_combinations:
-            iteration_count += 1
-            params = dict(zip(keys, combination))
-            logging.info("Evaluating parameters: %s", params)
-            score = self.objective_function(params)
-            logging.info("Score for %s: %f", params, score)
-            if score > best_score:
-                best_score = score
-                best_params = params
+        def objective(params):
+            param_dict = {dim.name: str(val) for dim, val in zip(space, params)}
+            # logging.info("Evaluating parameters: %s", param_dict)
+            score = self.objective_function(param_dict)
+            logging.info("Score for %s: %f", param_dict, score)
+            return -score
 
-            self.log_progress(iteration_count, total_iterations, start_time)
+        total_iterations = 60
+
+        def progress_callback(res):
+            current_time = time.time()
+            if self.last_callback_time is not None:
+                duration = current_time - self.last_callback_time
+                self.iteration_durations.append(duration)
+            self.last_callback_time = current_time
+            iteration_count = len(res.x_iters)
+            self.log_progress(iteration_count, total_iterations)
+
+        res = gp_minimize(
+            objective,
+            space,
+            n_calls=total_iterations,
+            random_state=42,
+            callback=progress_callback
+        )
+        self.res = res
+
+        # Convert any NumPy types to native Python types for cleaner logging.
+        def convert(value):
+            return value.item() if hasattr(value, "item") else value
+
+        best_params = {dim.name: convert(res.x[i]) for i, dim in enumerate(space)}
+        best_score = -res.fun
 
         logging.info("Best parameters found: %s with score %f", best_params, best_score)
+        logging.info("Optimization finished in %.2f seconds", time.time() - self.start_time)
         return best_params
 
 
 def main():
     """
     Main function to set up connections, receive initial data, and run the optimization loop.
-    Ensures that all connections are properly cleaned up at the end.
     """
+    logging.info("Program execution started.")
+
     receiver = Receiver(HOST, LISTEN_PORT)
     try:
         logging.info("Setting up receiving connection...")
         receiver.start_server()
-        logging.info("Waiting for initial data from Java...")
+        logging.info("Waiting for initial data...")
         initial_data = receiver.receive_json()
         while initial_data.get("score") is None:
             logging.warning("Initial data did not include a score. Waiting for valid data...")
             initial_data = receiver.receive_json()
         initial_score = initial_data.get("score")
         possible_values = initial_data.get("possible_values", {})
-
         logging.info("Initial data received - Score: %s, Possible values: %s", initial_score, possible_values)
     except Exception as e:
         logging.error("Error during receiving initial data: %s", e)
         receiver.cleanup()
         return
 
+    # Close the server socket after initial data is received.
     if receiver.server_socket:
         receiver.server_socket.close()
 
@@ -248,12 +375,21 @@ def main():
         receiver.cleanup()
         return
 
-    optimizer = Optimizer(sender, receiver, possible_values)
-    best_params = optimizer.optimize(initial_score)
-    logging.info("Optimization complete. Best parameters found: %s", best_params)
+    start_time = time.time()
+    optimizer = Optimizer(sender, receiver, possible_values, start_time)
+    best_params = optimizer.optimize()
+    # logging.info("Optimization complete. Best parameters found: %s", best_params)
+
+    # Plot iteration durations and the cumulative time.
+    plot_iteration_times(optimizer.iteration_durations)
+    plot_semilog_cumulative(optimizer.iteration_durations)
+    # Plot the effect of each parameter on the score.
+    if optimizer.res is not None and optimizer.space is not None:
+        plot_parameter_effects(optimizer.res, optimizer.space)
 
     sender.cleanup()
     receiver.cleanup()
+    logging.info("Program execution finished.")
 
 
 if __name__ == "__main__":
