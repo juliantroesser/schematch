@@ -756,4 +756,52 @@ public class SimilarityFlooding extends Matcher {
         return 1.0 / (1.0 + distance);
     }
 
+    public Map<String, String> getParameters() {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("propCoeffPolicy", propCoeffPolicy);
+        parameters.put("fixpoint", fixpoint);
+        parameters.put("UCCQuick", UCCQuick);
+        parameters.put("UCCComplete", UCCComplete);
+        parameters.put("lengthScoreWeight", lengthScoreWeight);
+        parameters.put("valueScoreWeight", valueScoreWeight);
+        parameters.put("postionScoreWeight", postionScoreWeight);
+        parameters.put("nameSuffixScoreWeight", nameSuffixScoreWeight);
+        parameters.put("uccFilterThreshold", uccFilterThreshold);
+        parameters.put("labelScoreWeight", labelScoreWeight);
+        parameters.put("selectThresholdWeight", selectThresholdWeight);
+
+        return parameters;
+    }
+
+    public void setParameters(Map<String, String> currentParams) {
+        propCoeffPolicy = currentParams.get("propCoeffPolicy");
+        fixpoint = currentParams.get("fixpoint");
+        UCCQuick = currentParams.get("UCCQuick");
+        UCCComplete = currentParams.get("UCCComplete");
+        lengthScoreWeight = currentParams.get("lengthScoreWeight");
+        valueScoreWeight = currentParams.get("valueScoreWeight");
+        postionScoreWeight = currentParams.get("postionScoreWeight");
+        nameSuffixScoreWeight = currentParams.get("nameSuffixScoreWeight");
+        uccFilterThreshold = currentParams.get("uccFilterThreshold");
+        labelScoreWeight = currentParams.get("labelScoreWeight");
+        selectThresholdWeight = currentParams.get("selectThresholdWeight");
+    }
+
+    public Map<String, Collection<String>> getPossibleValues() {
+        Map<String, Collection<String>> possibleValues = new HashMap<>();
+        possibleValues.put("propCoeffPolicy", List.of("INV_AVG", "INV_PROD"));
+        possibleValues.put("fixpoint", List.of("A", "B", "C")); //TODO: Removed Basic
+        possibleValues.put("UCCQuick", List.of("true", "false"));
+        possibleValues.put("UCCComplete", List.of("true", "false"));
+        possibleValues.put("lengthScoreWeight", List.of("normalizedValue"));
+        possibleValues.put("valueScoreWeight", List.of("normalizedValue"));
+        possibleValues.put("postionScoreWeight", List.of("normalizedValue"));
+        possibleValues.put("nameSuffixScoreWeight", List.of("normalizedValue"));
+        possibleValues.put("uccFilterThreshold", List.of("normalizedValue"));
+        possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
+        possibleValues.put("selectThresholdWeight", List.of("0.95")); // Results from constraint testing suggest that a value near 1 is good
+
+        return possibleValues;
+    }
+
 }
