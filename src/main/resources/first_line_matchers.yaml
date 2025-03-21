@@ -3,14 +3,16 @@ name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
   propCoeffPolicy: ["INV_AVG"]
-  fixpoint: ["C"]
+  fixpoint: ["A"]
   INDQuick: ["true"]
   INDComplete: ["false"]
-  coverage: ["0.2", "0.3"]
-  columnNameSimilarity: ["0.2", "0.3"]
-  valueLengthDifference: ["0.2", "0.3"]
-  outOfRange: ["0.2", "0.3"]
-  indFilterThreshold: ["0.7", "0.8", "0.9"]
+  coverage: ["0.5"]
+  columnNameSimilarity: ["0.5"]
+  valueLengthDifference: ["0.5"]
+  outOfRange: ["0.5"]
+  indFilterThreshold: ["0.5"]
+  labelScoreWeight: ["0.5"]
+  selectThresholdWeight: ["0.95"]
 
 #---
 #name: "SimilarityFlooding"
