@@ -660,10 +660,11 @@ public class SimilarityFlooding extends Matcher {
         Map<String, String> parameters = new HashMap<>();
         parameters.put("propCoeffPolicy", propCoeffPolicy);
         parameters.put("fixpoint", fixpoint);
-        parameters.put("FDQuick", FDQuick);
-        parameters.put("FDComplete", FDComplete);
-        parameters.put("fdFilter", fdFilter);
-        parameters.put("fdFilterThreshold", fdFilterThreshold);
+        parameters.put("coverage", coverage);
+        parameters.put("columnNameSimilarity", columnNameSimilarity);
+        parameters.put("valueLengthDifference", valueLengthDifference);
+        parameters.put("outOfRange", outOfRange);
+        parameters.put("indFilterThreshold", indFilterThreshold);
         parameters.put("labelScoreWeight", labelScoreWeight);
         parameters.put("selectThresholdWeight", selectThresholdWeight);
 
@@ -673,10 +674,11 @@ public class SimilarityFlooding extends Matcher {
     public void setParameters(Map<String, String> currentParams) {
         propCoeffPolicy = currentParams.get("propCoeffPolicy");
         fixpoint = currentParams.get("fixpoint");
-        FDQuick = currentParams.get("FDQuick");
-        FDComplete = currentParams.get("FDComplete");
-        fdFilter = currentParams.get("fdFilter");
-        fdFilterThreshold = currentParams.get("fdFilterThreshold");
+        coverage = currentParams.get("coverage");
+        columnNameSimilarity = currentParams.get("columnNameSimilarity");
+        valueLengthDifference = currentParams.get("valueLengthDifference");
+        outOfRange = currentParams.get("outOfRange");
+        indFilterThreshold = currentParams.get("indFilterThreshold");
         labelScoreWeight = currentParams.get("labelScoreWeight");
         selectThresholdWeight = currentParams.get("selectThresholdWeight");
     }
@@ -685,10 +687,11 @@ public class SimilarityFlooding extends Matcher {
         Map<String, Collection<String>> possibleValues = new HashMap<>();
         possibleValues.put("propCoeffPolicy", List.of("INV_AVG", "INV_PROD"));
         possibleValues.put("fixpoint", List.of("A", "B", "C")); //TODO: Removed Basic
-        possibleValues.put("FDQuick", List.of("true")); //TODO: Set to always true
-        possibleValues.put("FDComplete", List.of("false")); //TODO: Set to always false
-        possibleValues.put("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max")); //TODO: Removed gpdep
-        possibleValues.put("fdFilterThreshold", List.of("normalizedValue"));
+        possibleValues.put("coverage", List.of("normalizedValue"));
+        possibleValues.put("columnNameSimilarity", List.of("normalizedValue"));
+        possibleValues.put("valueLengthDifference", List.of("normalizedValue"));
+        possibleValues.put("outOfRange", List.of("normalizedValue"));
+        possibleValues.put("indFilterThreshold", List.of("normalizedValue"));
         possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
         possibleValues.put("selectThresholdWeight", List.of("0.95")); // Results from constraint testing suggest that a value near 1 is good
 
