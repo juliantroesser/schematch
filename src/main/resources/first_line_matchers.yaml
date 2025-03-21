@@ -2,16 +2,16 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  propCoeffPolicy: ["INV_PROD"]
-  fixpoint: ["A"]
-  UCCQuick: ["true"]
-  UCCComplete: ["false"]
-  lengthScoreWeight: ["0.25"]
-  valueScoreWeight: ["0.25"]
-  postionScoreWeight: ["0.25"]
-  nameSuffixScoreWeight: ["0.25"]
-  uccFilterThreshold: ["0.5"]
-  labelScoreWeight: ["0.25"]
+  propCoeffPolicy: ["INV_AVG"]
+  fixpoint: ["B"]
+  UCCQuick: ["false"]
+  UCCComplete: ["true"]
+  lengthScoreWeight: ["0.9698787952599848"]
+  valueScoreWeight: ["0.44196798374698165"]
+  postionScoreWeight: ["0.040136023763963975"]
+  nameSuffixScoreWeight: ["0.36720308725317047"]
+  uccFilterThreshold: ["0.08091270073053904"]
+  labelScoreWeight: ["0.5322420056190894"]
   selectThresholdWeight: ["0.95"]
 
 #---
