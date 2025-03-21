@@ -297,6 +297,13 @@ class PerformanceEvaluator {
      * @return The average performance score.
      */
     public double evaluateAveragePerformance() {
+
+        // Skip evaluation for illegal configurations.
+        if (similarityFlooding.getUCCComplete().equals(similarityFlooding.getUCCQuick())) {
+            log.warn("UCCComplete and UCCQuick cannot have the same value. Skipping evaluation.");
+            return 0.0;
+        }
+
         List<Double> datasetPerformances = new ArrayList<>();
         ThresholdSelectionBoosting thresholdBoosting = new ThresholdSelectionBoosting(Double.parseDouble(this.similarityFlooding.getSelectThresholdWeight()));
 
