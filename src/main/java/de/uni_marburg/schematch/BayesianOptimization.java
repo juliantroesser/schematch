@@ -90,12 +90,15 @@ public class BayesianOptimization {
         log.info("Configuring Similarity Flooding parameters");
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
-        similarityFlooding.setFDQuick("true");
-        similarityFlooding.setFDComplete("false");
-        similarityFlooding.setFdFilter("all");
-        similarityFlooding.setFdFilterThreshold("0.0");
+        similarityFlooding.setINDQuick("true");
+        similarityFlooding.setINDComplete("false");
+        similarityFlooding.setCoverage("0.5");
+        similarityFlooding.setColumnNameSimilarity("0.5");
+        similarityFlooding.setValueLengthDifference("0.5");
+        similarityFlooding.setOutOfRange("0.5");
+        similarityFlooding.setIndFilterThreshold("0.5");
         similarityFlooding.setLabelScoreWeight("0.5");
-        similarityFlooding.setSelectThresholdWeight("1.0");
+        similarityFlooding.setSelectThresholdWeight("0.95");
     }
 
     /**
@@ -127,10 +130,13 @@ public class BayesianOptimization {
             // Update Similarity Flooding parameters from the received JSON.
             similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
-            similarityFlooding.setFDQuick(message.getString("FDQuick"));
-            similarityFlooding.setFDComplete(message.getString("FDComplete"));
-            similarityFlooding.setFdFilter(message.getString("fdFilter"));
-            similarityFlooding.setFdFilterThreshold(message.getString("fdFilterThreshold"));
+            similarityFlooding.setINDQuick(message.getString("INDQuick"));
+            similarityFlooding.setINDComplete(message.getString("INDComplete"));
+            similarityFlooding.setCoverage(message.getString("coverage"));
+            similarityFlooding.setColumnNameSimilarity(message.getString("columnNameSimilarity"));
+            similarityFlooding.setValueLengthDifference(message.getString("valueLengthDifference"));
+            similarityFlooding.setOutOfRange(message.getString("outOfRange"));
+            similarityFlooding.setIndFilterThreshold(message.getString("indFilterThreshold"));
             similarityFlooding.setLabelScoreWeight(message.getString("labelScoreWeight"));
             similarityFlooding.setSelectThresholdWeight(message.getString("selectThresholdWeight"));
         } catch (Exception e) {
