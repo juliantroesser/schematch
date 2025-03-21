@@ -2,26 +2,33 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  wholeSchema: ["true"]
-  propCoeffPolicy: ["INV_PROD"]
-  fixpoint: ["BASIC"]
-  FDQuick: ["true"]
-  FDComplete: ["false"]
-  fdFilter: ["alt_ngpdep_max"]
-  fdFilterThreshold: ["0.3"]
+  propCoeffPolicy: ["INV_AVG"]
+  fixpoint: ["A"]
+  INDQuick: ["true"]
+  INDComplete: ["false"]
+  coverage: ["0.5"]
+  columnNameSimilarity: ["0.5"]
+  valueLengthDifference: ["0.5"]
+  outOfRange: ["0.5"]
+  indFilterThreshold: ["0.5"]
+  labelScoreWeight: ["0.5"]
+  selectThresholdWeight: ["0.95"]
 
 #---
 #name: "SimilarityFlooding"
 #packageName: "similarityFlooding"
 #params:
-#  wholeSchema: ["true", "false"]
+#  wholeSchema: ["true"]
 #  propCoeffPolicy: ["INV_PROD", "INV_AVG"]
 #  fixpoint: ["BASIC", "A", "B", "C"]
-#  FDQuick: ["true", "false"]
-#  FDComplete: ["true", "false"]
-#  fdFilter: ["ngpdep","alt_ngpdep_sum", "alt_ngpdep_max"]
+#  FDV1: ["false"]
+#  FDV2: ["false"]
+#  UCCV1: ["true"]
+#  UCCV2: ["false"]
+#  INDV1: ["false"]
+#  INDV2: ["false"]
+#  fdFilter: ["all","ngpdep","alt_ngpdep_sum", "alt_ngpdep_max"]
 #  fdFilterThreshold: ["0.0", "0.05", "0.1", "0.15", "0.2", "0.25", "0.3"]
-
 
 
 
