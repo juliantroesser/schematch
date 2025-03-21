@@ -6,12 +6,12 @@ params:
   fixpoint: ["A"]
   UCCQuick: ["true"]
   UCCComplete: ["false"]
-  lengthScoreWeight: ["0.1"]
-  valueScoreWeight: ["0.1"]
-  postionScoreWeight: ["0.1"]
-  nameSuffixScoreWeight: ["0.1"]
-  uccFilterThreshold: ["0.0"]
-  labelScoreWeight: ["0.5"]
+  lengthScoreWeight: ["0.25"]
+  valueScoreWeight: ["0.25"]
+  postionScoreWeight: ["0.25"]
+  nameSuffixScoreWeight: ["0.25"]
+  uccFilterThreshold: ["0.5"]
+  labelScoreWeight: ["0.25"]
   selectThresholdWeight: ["0.95"]
 
 #---
