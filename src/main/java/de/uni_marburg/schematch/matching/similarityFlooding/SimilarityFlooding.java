@@ -745,4 +745,15 @@ public class SimilarityFlooding extends Matcher {
         return distance;
     }
 
+    public double getValueSimilarityBetweenColumns(Column column1, Column column2) {
+        Map<String, Double> probabilityMap1 = getValueProbabilities(column1);
+        Map<String, Double> probabilityMap2 = getValueProbabilities(column2);
+
+        double distance = getDistanceBetweenProbabilityMaps(probabilityMap1, probabilityMap2);
+
+        //System.out.println("Distance: " + distance + "; Similarity: " + 1.0 / (1.0 + distance));
+
+        return 1.0 / (1.0 + distance);
+    }
+
 }
