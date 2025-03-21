@@ -2,15 +2,15 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  propCoeffPolicy: ["INV_AVG"]
+  propCoeffPolicy: ["INV_PROD"]
   fixpoint: ["A"]
-  INDQuick: ["true"]
-  INDComplete: ["false"]
-  coverage: ["0.5"]
-  columnNameSimilarity: ["0.5"]
-  valueLengthDifference: ["0.5"]
-  outOfRange: ["0.5"]
-  indFilterThreshold: ["0.5"]
+  UCCQuick: ["true"]
+  UCCComplete: ["false"]
+  lengthScoreWeight: ["0.1"]
+  valueScoreWeight: ["0.1"]
+  postionScoreWeight: ["0.1"]
+  nameSuffixScoreWeight: ["0.1"]
+  uccFilterThreshold: ["0.0"]
   labelScoreWeight: ["0.5"]
   selectThresholdWeight: ["0.95"]
 
