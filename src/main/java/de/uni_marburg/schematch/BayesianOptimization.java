@@ -90,13 +90,13 @@ public class BayesianOptimization {
         log.info("Configuring Similarity Flooding parameters");
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
-        similarityFlooding.setINDQuick("true");
-        similarityFlooding.setINDComplete("false");
-        similarityFlooding.setCoverage("0.5");
-        similarityFlooding.setColumnNameSimilarity("0.5");
-        similarityFlooding.setValueLengthDifference("0.5");
-        similarityFlooding.setOutOfRange("0.5");
-        similarityFlooding.setIndFilterThreshold("0.5");
+        similarityFlooding.setUCCQuick("true");
+        similarityFlooding.setUCCComplete("false");
+        similarityFlooding.setLengthScoreWeight("0.5");
+        similarityFlooding.setValueScoreWeight("0.5");
+        similarityFlooding.setPostionScoreWeight("0.5");
+        similarityFlooding.setNameSuffixScoreWeight("0.5");
+        similarityFlooding.setUccFilterThreshold("0.5");
         similarityFlooding.setLabelScoreWeight("0.5");
         similarityFlooding.setSelectThresholdWeight("0.95");
     }
@@ -130,13 +130,13 @@ public class BayesianOptimization {
             // Update Similarity Flooding parameters from the received JSON.
             similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
-            similarityFlooding.setINDQuick(message.getString("INDQuick"));
-            similarityFlooding.setINDComplete(message.getString("INDComplete"));
-            similarityFlooding.setCoverage(message.getString("coverage"));
-            similarityFlooding.setColumnNameSimilarity(message.getString("columnNameSimilarity"));
-            similarityFlooding.setValueLengthDifference(message.getString("valueLengthDifference"));
-            similarityFlooding.setOutOfRange(message.getString("outOfRange"));
-            similarityFlooding.setIndFilterThreshold(message.getString("indFilterThreshold"));
+            similarityFlooding.setUCCQuick(message.getString("UCCQuick"));
+            similarityFlooding.setUCCComplete(message.getString("UCCComplete"));
+            similarityFlooding.setLengthScoreWeight(message.getString("lengthScoreWeight"));
+            similarityFlooding.setValueScoreWeight(message.getString("valueScoreWeight"));
+            similarityFlooding.setPostionScoreWeight(message.getString("postionScoreWeight"));
+            similarityFlooding.setNameSuffixScoreWeight(message.getString("nameSuffixScoreWeight"));
+            similarityFlooding.setUccFilterThreshold(message.getString("uccFilterThreshold"));
             similarityFlooding.setLabelScoreWeight(message.getString("labelScoreWeight"));
             similarityFlooding.setSelectThresholdWeight(message.getString("selectThresholdWeight"));
         } catch (Exception e) {
