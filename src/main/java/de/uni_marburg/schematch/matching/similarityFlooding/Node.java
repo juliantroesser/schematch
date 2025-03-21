@@ -1,5 +1,6 @@
 package de.uni_marburg.schematch.matching.similarityFlooding;
 
+import de.uni_marburg.schematch.data.Column;
 import de.uni_marburg.schematch.data.Table;
 import de.uni_marburg.schematch.data.metadata.Datatype;
 import lombok.Getter;
@@ -15,15 +16,18 @@ public class Node {
     private final boolean isIDNode;
     private final Node name;
     private final Table table;
+    @Getter
+    private final Column representedColumn;
 
 
-    public Node(String value, NodeType nodeType, Datatype datatype, boolean isIDNode, Node name, Table table) {
+    public Node(String value, NodeType nodeType, Datatype datatype, boolean isIDNode, Node name, Table table, Column representedColumn) {
         this.value = value;
         this.nodeType = nodeType;
         this.datatype = datatype;
         this.isIDNode = isIDNode;
         this.name = name; //Only Necessary for NodeID Nodes, represents the Node that contains the name attribute
         this.table = table;
+        this.representedColumn = representedColumn;
     }
 
 

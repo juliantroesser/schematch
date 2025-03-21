@@ -1,9 +1,3 @@
-#---
-#name: "DependencyTest"
-#path: "DependencyTest"
-#---
-#name: "Thesis-Examples"
-#path: "Thesis-Examples"
 ---
 name: "DeNorm"
 path: "DeNorm"
@@ -19,6 +13,9 @@ path: "DeNorm"
 #---
 #name: "ISIA-real_estate2"
 #path: "ISIA-real_estate2"
+#---
+#name: "Pubs"
+#path: "Pubs"
 #---
 #name: "Sakila"
 #path: "Sakila"
@@ -37,6 +34,18 @@ path: "DeNorm"
 #---
 #name: "Valentine-Magellan"
 #path: "Valentine-Magellan"
+#---
+#name: "Valentine-TPC-DI_joinable"
+#path: "Valentine-TPC-DI_joinable"
+#---
+#name: "Valentine-TPC-DI_semantically-joinable"
+#path: "Valentine-TPC-DI_semantically-joinable"
+#---
+#name: "Valentine-TPC-DI_unionable"
+#path: "Valentine-TPC-DI_unionable"
+#---
+#name: "Valentine-TPC-DI_view-unionable"
+#path: "Valentine-TPC-DI_view-unionable"
 #---
 #name: "Valentine-Wikidata"
 #path: "Valentine-Wikidata"

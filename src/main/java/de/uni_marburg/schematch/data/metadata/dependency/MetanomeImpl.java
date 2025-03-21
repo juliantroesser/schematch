@@ -3,6 +3,7 @@ package de.uni_marburg.schematch.data.metadata.dependency;
 import de.hpi.isg.pyro.algorithms.Pyro;
 import de.hpi.isg.pyro.model.PartialFD;
 import de.hpi.isg.pyro.model.PartialKey;
+import de.hpi.mpss2015n.approxind.FAIDA;
 import de.metanome.algorithm_integration.AlgorithmConfigurationException;
 import de.metanome.algorithm_integration.AlgorithmExecutionException;
 import de.metanome.algorithm_integration.ColumnIdentifier;
@@ -14,8 +15,6 @@ import de.metanome.algorithm_integration.results.Result;
 import de.metanome.algorithms.binder.BINDERFile;
 import de.metanome.algorithms.hyfd.HyFD;
 import de.metanome.algorithms.hyucc.HyUCC;
-import de.metanome.algorithms.sawfish.SawfishInterface;
-import de.metanome.backend.algorithm_execution.TempFileGenerator;
 import de.metanome.backend.input.file.DefaultFileInputGenerator;
 import de.metanome.backend.result_receiver.ResultCache;
 import de.uni_marburg.schematch.data.Column;
@@ -25,13 +24,12 @@ import org.apache.commons.io.output.NullOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.file.Path;
 import java.util.*;
 
-
 public class MetanomeImpl{
 
+    //Execute exact Dependency Profilers
     public static List<UniqueColumnCombination> executeUCC(List<Table> tables) {
         return executeHyUCC(tables);
     }
@@ -44,6 +42,7 @@ public class MetanomeImpl{
         return executeBinder(tables);
     }
 
+    //Execute partial Dependency Profilers
     public static List<UniqueColumnCombination> executePartialUCC(List<Table> tables) {
         return executePyroUCC(tables);
     }
@@ -53,9 +52,10 @@ public class MetanomeImpl{
     }
 
     public static List<InclusionDependency> executePartialIND(List<Table> tables) {
-        return executeSawFishIND(tables);
+        return executeFAIDA(tables);
     }
 
+    //Execute Profilers
     private static List<UniqueColumnCombination> executeHyUCC(List<Table> tables) {
         List<UniqueColumnCombination> allResults = new ArrayList<>();
         try {
@@ -209,12 +209,13 @@ public class MetanomeImpl{
         return allResults;
     }
 
-    private static List<InclusionDependency> executeSawFishIND(List<Table> tables) {
+    private static List<InclusionDependency> executeFAIDA(List<Table> tables) {
         try {
-            SawfishInterface sawfish = new SawfishInterface();
+            FAIDA faida = new FAIDA();
 
             RelationalInputGenerator[] inputs = new RelationalInputGenerator[tables.size()];
             List<ColumnIdentifier> columnIdentifiers = new ArrayList<>();
+
             for (int i = 0; i < tables.size(); i++) {
                 inputs[i] =  getInputGenerator(tables.get(i).getPath());
                 columnIdentifiers.addAll(getAcceptedColumns(inputs[i]));
@@ -222,29 +223,30 @@ public class MetanomeImpl{
 
             ResultCache resultReceiver = new ResultCache("MetanomeMock", columnIdentifiers);
 
-            sawfish.setRelationalInputConfigurationValue(SawfishInterface.Identifier.INPUT_FILES.name(), inputs);
-            sawfish.setStringConfigurationValue(SawfishInterface.Identifier.similarityThreshold.name(), "0.8");
-            sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.ignoreShortStrings.name(), false);
-            sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.measureTime.name(), false);
-            sawfish.setBooleanConfigurationValue(SawfishInterface.Identifier.ignoreNumericColumns.name(), false);
-            sawfish.setResultReceiver(resultReceiver);
-            sawfish.setTempFileGenerator(new TempFileGenerator());
+            faida.setRelationalInputConfigurationValue(FAIDA.Identifier.INPUT_FILES.name(), inputs);
+            faida.setBooleanConfigurationValue(FAIDA.Identifier.DETECT_NARY.name(), true);
+            faida.setBooleanConfigurationValue(FAIDA.Identifier.IGNORE_NULL.name(), true);
+            faida.setBooleanConfigurationValue(FAIDA.Identifier.COMBINE_NULL.name(), false);
+            faida.setBooleanConfigurationValue(FAIDA.Identifier.IGNORE_CONSTANT.name(), true);
+            faida.setIntegerConfigurationValue(FAIDA.Identifier.SAMPLE_GOAL.name(), 100); //#Value Sample Size
+            faida.setStringConfigurationValue(FAIDA.Identifier.HLL_REL_STD_DEV.name(), "0.1"); //HyperLogLog Accuracy
+
+            faida.setResultReceiver(resultReceiver);
 
             suppressSysout(() -> {
                 try {
-                    sawfish.execute();
+                    faida.execute();
                 } catch (AlgorithmExecutionException e) {
                     throw new RuntimeException(e);
                 }
             });
 
-
             List<Result> results = resultReceiver.fetchNewResults();
             ArrayList<InclusionDependency> inclusionDependencies = new ArrayList<>(getINDs(tables, results));
             if(Metanome.SAVE) MetadataUtils.saveINDs(MetadataUtils.getMetadataRootPathFromTable(Path.of(tables.get(0).getPath())), inclusionDependencies);
             return inclusionDependencies;
-        }
-        catch (AlgorithmExecutionException | FileNotFoundException | UnsupportedEncodingException e) {
+
+        } catch(AlgorithmExecutionException | FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -291,9 +293,8 @@ public class MetanomeImpl{
         //Profiling AUCCs with Pyro:
         if (partialFDS == null) {
             pyro.setBooleanConfigurationValue("isFindFds", false);
-            pyro.setStringConfigurationValue("maxUccError", "0.1"); //Range [0.0, 1.0]; 0.0 = all UCCs; 1.0 = every column is Unique
+            pyro.setStringConfigurationValue("maxUccError", "0.1");
             pyro.setUccConsumer(partialUCCs::add);
-
 
         //Profiling AFDs with Pyro
         } else {
@@ -353,12 +354,14 @@ public class MetanomeImpl{
 
     private static Collection<? extends UniqueColumnCombination> getPartialUCCs(Table table, List<PartialKey> results) {
         return results.stream()
+                .filter(Objects::nonNull)
                 .map(resultCast -> createUniqueColumnCombination(table, resultCast.toMetanomeUniqueColumnCobination()))
                 .toList();
     }
 
     private static Collection<? extends FunctionalDependency> getPartialFDs(Table table, List<PartialFD> results) {
         return results.stream()
+                .filter(Objects::nonNull)
                 .map(resultCast -> createFunctionalDependency(table, resultCast.toMetanomeFunctionalDependency()))
                 .toList();
     }
