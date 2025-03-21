@@ -3,7 +3,7 @@ name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
   propCoeffPolicy: ["INV_PROD"]
-  fixpoint: ["BASIC"]
+  fixpoint: ["A"]
   UCCQuick: ["true"]
   UCCComplete: ["false"]
   lengthScoreWeight: ["0.1"]
