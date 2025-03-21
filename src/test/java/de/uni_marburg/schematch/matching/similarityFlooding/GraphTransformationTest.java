@@ -32,32 +32,32 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, false, false);
 
         //All Type Nodes
-        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
 
         //All Name Nodes
-        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Database Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null, null);
 
         //All Table Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //Check vertices
         Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
@@ -139,27 +139,27 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationTable(sourceDb, sourceTable, false, false, false, false, false, false);
 
         //All Type Nodes
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
 
         //All Name Nodes
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Table Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.TABLE, null, true, authors, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID2 = new Node("NodeID2", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //Check vertices
         Assertions.assertEquals(13, graphRepresentation.vertexSet().size());
@@ -243,32 +243,32 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, true, false, false, false, false, false);
 
         //All Type Nodes
-        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
 
         //All Name Nodes
-        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Database Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null, null);
 
         //All Table Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //Check vertices
         Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
@@ -366,36 +366,36 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, true, false, false, false, false);
 
         //All Type Nodes
-        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
-        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
+        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
 
         //All Name Nodes
-        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Database Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null, null);
 
         //All Table Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //All FD Nodes
-        Node fd1 = new Node("FD1", NodeType.CONSTRAINT, null, false, null, null);
+        Node fd1 = new Node("FD1", NodeType.CONSTRAINT, null, false, null, null, null);
 
         //Check vertices
         Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
@@ -499,35 +499,35 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, true, false, false, false);
 
         //All Type Nodes
-        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
 
         //All Name Nodes
-        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Database Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null, null);
 
         //All Table Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //UCC Node
-        Node ucc = new Node("UCC#2", NodeType.CONSTRAINT, null, false, null, null);
+        Node ucc = new Node("UCC#2", NodeType.CONSTRAINT, null, false, null, null, null);
 
         //Check vertices
         Assertions.assertEquals(17, graphRepresentation.vertexSet().size());
@@ -630,38 +630,38 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, true, false, false);
 
         //All Type Nodes
-        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
-        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
+        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
 
         //All Name Nodes
-        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Database Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null, null);
 
         //All Table Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //UCC Nodes
-        Node ucc1 = new Node("UCC1", NodeType.CONSTRAINT, null, false, null, null);
-        Node ucc2 = new Node("UCC2", NodeType.CONSTRAINT, null, false, null, null);
-        Node ucc_size_1 = new Node("UCC#1", NodeType.CONSTRAINT, null, false, null, null);
+        Node ucc1 = new Node("UCC1", NodeType.CONSTRAINT, null, false, null, null, null);
+        Node ucc2 = new Node("UCC2", NodeType.CONSTRAINT, null, false, null, null, null);
+        Node ucc_size_1 = new Node("UCC#1", NodeType.CONSTRAINT, null, false, null, null, null);
 
         //Check vertices
         Assertions.assertEquals(20, graphRepresentation.vertexSet().size());
@@ -772,32 +772,32 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, true, false);
 
         //All Type Nodes
-        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
 
         //All Name Nodes
-        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Database Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null, null);
 
         //All Table Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //Check vertices
         Assertions.assertEquals(16, graphRepresentation.vertexSet().size());
@@ -894,36 +894,36 @@ class GraphTransformationTest {
         Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false, false, true);
 
         //All Type Nodes
-        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null);
-        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null);
-        Node table = new Node("Table", NodeType.TABLE, null, false, null, null);
-        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null);
-        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null);
+        Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
+        Node column = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
+        Node table = new Node("Table", NodeType.TABLE, null, false, null, null, null);
+        Node columnType = new Node("ColumnType", NodeType.COLUMN_TYPE, null, false, null, null, null);
+        Node constraint = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
 
         //All Name Nodes
-        Node source = new Node("source", NodeType.DATABASE, null, false, null, null);
-        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null);
-        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable);
-        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable);
-        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null);
-        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null);
+        Node source = new Node("source", NodeType.DATABASE, null, false, null, null, null);
+        Node authors = new Node("authors", NodeType.TABLE, null, false, null, null, null);
+        Node aid = new Node("aid", NodeType.COLUMN, Datatype.INTEGER, false, null, sourceTable, null);
+        Node name = new Node("name", NodeType.COLUMN, Datatype.STRING, false, null, sourceTable, null);
+        Node integer = new Node("INTEGER", NodeType.COLUMN_TYPE, Datatype.INTEGER, false, null, null, null);
+        Node string = new Node("STRING", NodeType.COLUMN_TYPE, Datatype.STRING, false, null, null, null);
 
         //All Database Nodes
-        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null);
+        Node NodeID1 = new Node("NodeID1", NodeType.DATABASE, null, true, source, null, null);
 
         //All Table Nodes
-        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null);
+        Node NodeID2 = new Node("NodeID2", NodeType.TABLE, null, true, authors, null, null);
 
         //All Column Nodes
-        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable);
-        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable);
+        Node NodeID3 = new Node("NodeID3", NodeType.COLUMN, Datatype.INTEGER, true, aid, sourceTable, null);
+        Node NodeID5 = new Node("NodeID5", NodeType.COLUMN, Datatype.STRING, true, name, sourceTable, null);
 
         //All ColumnType Nodes
-        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null);
-        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null);
+        Node NodeID4 = new Node("NodeID4", NodeType.COLUMN_TYPE, Datatype.INTEGER, true, integer, null, null);
+        Node NodeID6 = new Node("NodeID6", NodeType.COLUMN_TYPE, Datatype.STRING, true, string, null, null);
 
         //Additional IND Nodes
-        Node ind1 = new Node("IND1", NodeType.CONSTRAINT, null, false, null, null);
+        Node ind1 = new Node("IND1", NodeType.CONSTRAINT, null, false, null, null, null);
 
         //Check vertices
         Assertions.assertEquals(18, graphRepresentation.vertexSet().size());
@@ -1010,9 +1010,9 @@ class GraphTransformationTest {
 
         //Build Graph Model A
         Graph<Node, LabelEdge> modelA = new DefaultDirectedGraph<>(LabelEdge.class);
-        Node a = new Node("a", null, null, false, null, null);
-        Node a1 = new Node("a1", null, null, false, null, null);
-        Node a2 = new Node("a2", null, null, false, null, null);
+        Node a = new Node("a", null, null, false, null, null, null);
+        Node a1 = new Node("a1", null, null, false, null, null, null);
+        Node a2 = new Node("a2", null, null, false, null, null, null);
 
         modelA.addVertex(a);
         modelA.addVertex(a1);
@@ -1024,9 +1024,9 @@ class GraphTransformationTest {
 
         //Build Graph Model B
         Graph<Node, LabelEdge> modelB = new DefaultDirectedGraph<>(LabelEdge.class);
-        Node b = new Node("b", null, null, false, null, null);
-        Node b1 = new Node("b1", null, null, false, null, null);
-        Node b2 = new Node("b2", null, null, false, null, null);
+        Node b = new Node("b", null, null, false, null, null, null);
+        Node b1 = new Node("b1", null, null, false, null, null, null);
+        Node b2 = new Node("b2", null, null, false, null, null, null);
 
         modelB.addVertex(b);
         modelB.addVertex(b1);
@@ -1078,9 +1078,9 @@ class GraphTransformationTest {
 
         //Build Graph Model A
         Graph<Node, LabelEdge> modelA = new DefaultDirectedGraph<>(LabelEdge.class);
-        Node a = new Node("a", null, null, false, null, null);
-        Node a1 = new Node("a1", null, null, false, null, null);
-        Node a2 = new Node("a2", null, null, false, null, null);
+        Node a = new Node("a", null, null, false, null, null, null);
+        Node a1 = new Node("a1", null, null, false, null, null, null);
+        Node a2 = new Node("a2", null, null, false, null, null, null);
 
         modelA.addVertex(a);
         modelA.addVertex(a1);
@@ -1092,9 +1092,9 @@ class GraphTransformationTest {
 
         //Build Graph Model B
         Graph<Node, LabelEdge> modelB = new DefaultDirectedGraph<>(LabelEdge.class);
-        Node b = new Node("b", null, null, false, null, null);
-        Node b1 = new Node("b1", null, null, false, null, null);
-        Node b2 = new Node("b2", null, null, false, null, null);
+        Node b = new Node("b", null, null, false, null, null, null);
+        Node b1 = new Node("b1", null, null, false, null, null, null);
+        Node b2 = new Node("b2", null, null, false, null, null, null);
 
         modelB.addVertex(b);
         modelB.addVertex(b1);
