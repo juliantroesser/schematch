@@ -52,7 +52,7 @@ public class InclusionDependency implements Dependency{
         double valueLengthDifferenceScore = valueLengthDifferenceScore();
         double outOfRangeScore = outOfRangeScore();
 
-        return coverageScoreWeight * coverageScore + columnNameSimilarityScoreWeight * columnNameSimilarityScore + valueLengthDifferenceScoreWeight * valueLengthDifferenceScore + outOfRangeScoreWeight * outOfRangeScore;
+        return (coverageScore + columnNameSimilarityScore + valueLengthDifferenceScore + outOfRangeScore) / 4.0;
     }
 
     private Set<String> getDistinctForeignKeyValues() {
