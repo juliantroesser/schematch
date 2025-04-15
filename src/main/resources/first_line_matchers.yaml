@@ -4,8 +4,6 @@ packageName: "similarityFlooding"
 params:
   propCoeffPolicy: ["INV_AVG"]
   fixpoint: ["A"]
-  INDQuick: ["true"]
-  INDComplete: ["false"]
   coverage: ["0.5"]
   columnNameSimilarity: ["0.5"]
   valueLengthDifference: ["0.5"]
