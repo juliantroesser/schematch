@@ -4,8 +4,6 @@ packageName: "similarityFlooding"
 params:
   propCoeffPolicy: ["INV_PROD"]
   fixpoint: ["BASIC"]
-  FDQuick: ["true"]
-  FDComplete: ["false"]
   fdFilter: ["alt_ngpdep_max"]
   fdFilterThreshold: ["0.3"]
   labelScoreWeight: ["0", "0.05", "0.1"]

@@ -90,8 +90,6 @@ public class BayesianOptimization {
         log.info("Configuring Similarity Flooding parameters");
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
-        similarityFlooding.setFDQuick("true");
-        similarityFlooding.setFDComplete("false");
         similarityFlooding.setFdFilter("all");
         similarityFlooding.setFdFilterThreshold("0.0");
         similarityFlooding.setLabelScoreWeight("0.5");
@@ -127,8 +125,6 @@ public class BayesianOptimization {
             // Update Similarity Flooding parameters from the received JSON.
             similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
-            similarityFlooding.setFDQuick(message.getString("FDQuick"));
-            similarityFlooding.setFDComplete(message.getString("FDComplete"));
             similarityFlooding.setFdFilter(message.getString("fdFilter"));
             similarityFlooding.setFdFilterThreshold(message.getString("fdFilterThreshold"));
             similarityFlooding.setLabelScoreWeight(message.getString("labelScoreWeight"));
