@@ -496,7 +496,7 @@ class GraphTransformationTest {
 
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, true, false);
 
         //All Type Nodes
         Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
@@ -627,7 +627,7 @@ class GraphTransformationTest {
 
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, true);
 
         //All Type Nodes
         Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
@@ -769,7 +769,7 @@ class GraphTransformationTest {
         metadata.setInds(List.of(inclusionDependency));
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, true, false);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false);
 
         //All Type Nodes
         Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
@@ -891,7 +891,7 @@ class GraphTransformationTest {
         metadata.setInds(List.of(inclusionDependency));
         sourceDb.setMetadata(metadata);
 
-        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, true);
+        Graph<Node, LabelEdge> graphRepresentation = similarityFlooding.transformIntoGraphRepresentationSchema(sourceDb, false, false, false, false);
 
         //All Type Nodes
         Node schema = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
