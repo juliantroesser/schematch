@@ -90,8 +90,6 @@ public class BayesianOptimization {
         log.info("Configuring Similarity Flooding parameters");
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
-        similarityFlooding.setUCCQuick("true");
-        similarityFlooding.setUCCComplete("false");
         similarityFlooding.setLengthScoreWeight("0.5");
         similarityFlooding.setValueScoreWeight("0.5");
         similarityFlooding.setPostionScoreWeight("0.5");
@@ -130,8 +128,6 @@ public class BayesianOptimization {
             // Update Similarity Flooding parameters from the received JSON.
             similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
-            similarityFlooding.setUCCQuick(message.getString("UCCQuick"));
-            similarityFlooding.setUCCComplete(message.getString("UCCComplete"));
             similarityFlooding.setLengthScoreWeight(message.getString("lengthScoreWeight"));
             similarityFlooding.setValueScoreWeight(message.getString("valueScoreWeight"));
             similarityFlooding.setPostionScoreWeight(message.getString("postionScoreWeight"));
@@ -297,12 +293,6 @@ class PerformanceEvaluator {
      * @return The average performance score.
      */
     public double evaluateAveragePerformance() {
-
-        // Skip evaluation for illegal configurations.
-        if (similarityFlooding.getUCCComplete().equals(similarityFlooding.getUCCQuick())) {
-            log.warn("UCCComplete and UCCQuick cannot have the same value. Skipping evaluation.");
-            return 0.0;
-        }
 
         List<Double> datasetPerformances = new ArrayList<>();
         ThresholdSelectionBoosting thresholdBoosting = new ThresholdSelectionBoosting(Double.parseDouble(this.similarityFlooding.getSelectThresholdWeight()));
