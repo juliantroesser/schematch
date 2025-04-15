@@ -2,10 +2,11 @@
 name: "SimilarityFlooding"
 packageName: "similarityFlooding"
 params:
-  propCoeffPolicy: ["INV_PROD"]
-  fixpoint: ["BASIC"]
-  fdFilter: ["alt_ngpdep_sum"]
-  fdFilterThreshold: ["0.3"]
+  propCoeffPolicy: ["INV_AVG"]
+  fixpoint: ["A"]
+  indFilterThreshold: ["0.5"]
+  uccFilterThreshold: ["0.5"]
+#  fdFilterThreshold: ["0.3"]
   labelScoreWeight: ["0.05"]
   selectThresholdWeight: ["0.95"]
 
