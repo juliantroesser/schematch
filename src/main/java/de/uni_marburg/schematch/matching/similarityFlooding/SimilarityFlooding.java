@@ -33,8 +33,8 @@ import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFlo
 @Getter
 public class SimilarityFlooding extends Matcher {
 
+    public static final double FD_FILTER_THRESHOLD = 0.95;
     private static final Logger log = LogManager.getLogger(SimilarityFlooding.class);
-
     private String propCoeffPolicy;
     private String fixpoint;
     private String uccFilterThreshold;
@@ -179,70 +179,16 @@ public class SimilarityFlooding extends Matcher {
         Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
         graphRepresentation.addVertex(constraintNode);
 
+        functionalDependencies(db, graphRepresentation, constraintNode);
 
-        Collection<FunctionalDependency> functionalDependencies;
+        uniqueColumnCombinations(db, graphRepresentation, constraintNode);
 
-        functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+        inclusionDependencies(db, graphRepresentation, constraintNode);
 
-        int fdID = 1;
+        return graphRepresentation;
+    }
 
-        for (FunctionalDependency functionalDependency : filterFunctionalDependencies(functionalDependencies)) {
-
-            Node fdNode = new Node("FD" + fdID++, NodeType.CONSTRAINT, null, true, null, null, null);
-            graphRepresentation.addVertex(fdNode);
-            graphRepresentation.addEdge(fdNode, constraintNode, new LabelEdge("type"));
-
-            List<Node> determinantIdNodes = new ArrayList<>();
-
-            for (Column determinant : functionalDependency.getDeterminant()) {
-                LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(determinant.getLabel(), NodeType.COLUMN, determinant.getDatatype(), false, null, determinant.getTable(), null)).stream().findFirst().get();
-                Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
-                determinantIdNodes.add(determinantIDNode);
-            }
-
-            Column dependant = functionalDependency.getDependant();
-
-            LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
-            Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
-
-            for (Node determinantIDNode : determinantIdNodes) {
-                graphRepresentation.addEdge(fdNode, determinantIDNode, new LabelEdge("determinant"));
-            }
-
-            graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("dependant"));
-
-        List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
-        int uccID = 1;
-
-        for (UniqueColumnCombination ucc : filterUniqueColumnCombinations(uniqueColumnCombinations)) {
-
-            Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, true, null, null, null);
-            graphRepresentation.addVertex(uccNode);
-            graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type"));
-
-            int uccSize = ucc.getColumnCombination().size();
-            Node uccSizeNode = new Node("UCC#" + uccSize, NodeType.CONSTRAINT, null, false, null, null, null);
-
-            if (!graphRepresentation.containsVertex(uccSizeNode)) {
-                graphRepresentation.addVertex(uccSizeNode);
-            }
-
-            graphRepresentation.addEdge(uccNode, uccSizeNode, new LabelEdge("size"));
-
-            List<Node> nodesPartOfUcc = new ArrayList<>();
-
-            for (Column nodePartOfUcc : ucc.getColumnCombination()) {
-                LabelEdge edgeFromIDtoUccNode = graphRepresentation.incomingEdgesOf(new Node(nodePartOfUcc.getLabel(), NodeType.COLUMN, nodePartOfUcc.getDatatype(), false, null, nodePartOfUcc.getTable(), null)).stream().findFirst().get();
-                Node uccIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoUccNode);
-                nodesPartOfUcc.add(uccIDNode);
-            }
-
-            for (Node nodePartOfUcc : nodesPartOfUcc) {
-                graphRepresentation.addEdge(nodePartOfUcc, uccNode, new LabelEdge("ucc"));
-            }
-        }
-
-
+    private void inclusionDependencies(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
         List<InclusionDependency> inclusionDependencies = db.getMetadata().getInds().stream().toList();
         int indID = 1;
 
@@ -275,8 +221,73 @@ public class SimilarityFlooding extends Matcher {
                 graphRepresentation.addEdge(indNode, dependantIDNode, new LabelEdge("dependant"));
             }
         }
+    }
 
-        return graphRepresentation;
+    private void uniqueColumnCombinations(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
+        List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
+        int uccID = 1;
+
+        for (UniqueColumnCombination ucc : filterUniqueColumnCombinations(uniqueColumnCombinations)) {
+
+            Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, true, null, null, null);
+            graphRepresentation.addVertex(uccNode);
+            graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type"));
+
+            int uccSize = ucc.getColumnCombination().size();
+            Node uccSizeNode = new Node("UCC#" + uccSize, NodeType.CONSTRAINT, null, false, null, null, null);
+
+            if (!graphRepresentation.containsVertex(uccSizeNode)) {
+                graphRepresentation.addVertex(uccSizeNode);
+            }
+
+            graphRepresentation.addEdge(uccNode, uccSizeNode, new LabelEdge("size"));
+
+            List<Node> nodesPartOfUcc = new ArrayList<>();
+
+            for (Column nodePartOfUcc : ucc.getColumnCombination()) {
+                LabelEdge edgeFromIDtoUccNode = graphRepresentation.incomingEdgesOf(new Node(nodePartOfUcc.getLabel(), NodeType.COLUMN, nodePartOfUcc.getDatatype(), false, null, nodePartOfUcc.getTable(), null)).stream().findFirst().get();
+                Node uccIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoUccNode);
+                nodesPartOfUcc.add(uccIDNode);
+            }
+
+            for (Node nodePartOfUcc : nodesPartOfUcc) {
+                graphRepresentation.addEdge(nodePartOfUcc, uccNode, new LabelEdge("ucc"));
+            }
+        }
+    }
+
+    private void functionalDependencies(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
+        Collection<FunctionalDependency> functionalDependencies;
+
+        functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+
+        int fdID = 1;
+
+        for (FunctionalDependency functionalDependency : filterFunctionalDependencies(functionalDependencies)) {
+
+            Node fdNode = new Node("FD" + fdID++, NodeType.CONSTRAINT, null, true, null, null, null);
+            graphRepresentation.addVertex(fdNode);
+            graphRepresentation.addEdge(fdNode, constraintNode, new LabelEdge("type"));
+
+            List<Node> determinantIdNodes = new ArrayList<>();
+
+            for (Column determinant : functionalDependency.getDeterminant()) {
+                LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(determinant.getLabel(), NodeType.COLUMN, determinant.getDatatype(), false, null, determinant.getTable(), null)).stream().findFirst().get();
+                Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
+                determinantIdNodes.add(determinantIDNode);
+            }
+
+            Column dependant = functionalDependency.getDependant();
+
+            LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
+            Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
+
+            for (Node determinantIDNode : determinantIdNodes) {
+                graphRepresentation.addEdge(fdNode, determinantIDNode, new LabelEdge("determinant"));
+            }
+
+            graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("dependant"));
+        }
     }
 
     public Graph<NodePair, LabelEdge> createConnectivityGraph(Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) {
@@ -314,7 +325,9 @@ public class SimilarityFlooding extends Matcher {
         return connectivityGraph;
     }
 
-    public Graph<NodePair, CoefficientEdge> inducePropagationGraph(Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy policy) {
+    public Graph<NodePair, CoefficientEdge> inducePropagationGraph
+            (Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy
+                    policy) {
 
         Graph<NodePair, CoefficientEdge> propagationGraph = new DefaultDirectedWeightedGraph<>(CoefficientEdge.class);
 
@@ -409,7 +422,8 @@ public class SimilarityFlooding extends Matcher {
         return initialMapping;
     }
 
-    public Map<NodePair, Double> similarityFlooding(Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
+    public Map<NodePair, Double> similarityFlooding
+            (Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
 
         double EPSILON = 0.0001;
         int MAX_ITERATIONS = 200;
@@ -517,7 +531,6 @@ public class SimilarityFlooding extends Matcher {
     private Collection<FunctionalDependency> filterFunctionalDependencies(Collection<FunctionalDependency> functionalDependencies) {
 
         Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
-        double threshold = Double.parseDouble(fdFilterThreshold);
 
         for (FunctionalDependency fd : functionalDependencies) {
 
@@ -538,7 +551,7 @@ public class SimilarityFlooding extends Matcher {
 
                 score = fd.getAltNGPDEPSumScore();
 
-                if (score >= threshold) {
+                if (score >= FD_FILTER_THRESHOLD) {
                     filteredFDs.add(fd);
                 }
             }
