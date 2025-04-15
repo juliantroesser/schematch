@@ -17,25 +17,10 @@ public class InclusionDependency implements Dependency {
 
     private static List<String> getTupleValuesForColumns(Collection<Column> columnCombination, int N) {
 
-        List<String> values = new ArrayList<>(N);
         List<Column> sortedColumns = new ArrayList<>(columnCombination);
         sortedColumns.sort(Comparator.comparing(Column::getLabel));
 
-        for (int i = 0; i < N; i++) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (Column column : sortedColumns) {
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-
-            stringBuilder.setLength(stringBuilder.length() - 1);
-
-            values.add(stringBuilder.toString());
-        }
-
-        return values;
+        return Util.getDistinctValues(sortedColumns, N);
     }
 
     private static String getLabel(Collection<Column> columnCombination, boolean withTablePrefix) {
