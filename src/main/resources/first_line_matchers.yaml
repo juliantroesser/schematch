@@ -4,12 +4,9 @@ packageName: "similarityFlooding"
 params:
   propCoeffPolicy: ["INV_AVG"]
   fixpoint: ["A"]
-  coverage: ["0.5"]
-  columnNameSimilarity: ["0.5"]
-  valueLengthDifference: ["0.5"]
-  outOfRange: ["0.5"]
   indFilterThreshold: ["0.5"]
-  labelScoreWeight: ["0.5"]
+  uccFilterThreshold: ["0.5"]
+  labelScoreWeight: ["0.05"]
   selectThresholdWeight: ["0.95"]
 
 #---
