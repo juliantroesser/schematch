@@ -35,12 +35,12 @@ public class SimilarityFloodingUtils {
         for (int i = 0; i < sourceColumns.size(); i++) {
 
             String sourceLabel = sourceColumns.get(i).getLabel();
-            Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, null, sourceTable);
+            Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, null, sourceTable, null);
 
             for (int j = 0; j < targetColumns.size(); j++) {
 
                 String targetLabel = targetColumns.get(j).getLabel();
-                Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable);
+                Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable, null);
 
                 //TODO: Problem falls zwei verschiedene Tabellen beide Source sind und Attribut mit gleichem Namen haben -> Node langen Namen geben
 
