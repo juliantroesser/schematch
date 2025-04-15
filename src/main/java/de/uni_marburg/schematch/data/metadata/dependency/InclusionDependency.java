@@ -5,20 +5,70 @@ import de.uni_marburg.schematch.similarity.string.Levenshtein;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InclusionDependency implements Dependency{
+public class InclusionDependency implements Dependency {
     Collection<Column> dependant; //Untermenge //In FKC ist Foreign Key
     Collection<Column> referenced; //Übermenge //dependent ist enthalten in referenced //In FKC ist Primary Key
 
-    public Collection<Column> getSubset(){
+    private static List<String> getTupleValuesForColumns(Collection<Column> columnCombination, int N) {
+
+        List<String> values = new ArrayList<>(N);
+        List<Column> sortedColumns = new ArrayList<>(columnCombination);
+        sortedColumns.sort(Comparator.comparing(Column::getLabel));
+
+        for (int i = 0; i < N; i++) {
+
+            StringBuilder stringBuilder = new StringBuilder();
+
+            for (Column column : sortedColumns) {
+                stringBuilder.append(column.getValues().get(i));
+                stringBuilder.append(",");
+            }
+
+            stringBuilder.setLength(stringBuilder.length() - 1);
+
+            values.add(stringBuilder.toString());
+        }
+
+        return values;
+    }
+
+    private static String getLabel(Collection<Column> columnCombination, boolean withTablePrefix) {
+
+        List<String> columnLabels = new ArrayList<>(columnCombination.size());
+        for (Column column : columnCombination) {
+            columnLabels.add(column.getLabel());
+        }
+        columnLabels.sort(String.CASE_INSENSITIVE_ORDER);
+
+        String tableName = columnCombination.iterator().next().getTable().getName();
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String label : columnLabels) {
+            if (withTablePrefix) {
+                stringBuilder.append(tableName);
+                stringBuilder.append("_");
+            }
+            stringBuilder.append(label);
+            stringBuilder.append("-");
+        }
+
+        stringBuilder.setLength(stringBuilder.length() - 1);
+
+        return stringBuilder.toString();
+    }
+
+    public Collection<Column> getSubset() {
         return dependant;
     }
 
-    public Collection<Column> getSuperset(){
+    public Collection<Column> getSuperset() {
         return referenced;
     }
 
@@ -46,7 +96,7 @@ public class InclusionDependency implements Dependency{
         return sb.toString();
     }
 
-    public double getForeignKeyScore(double coverageScoreWeight, double columnNameSimilarityScoreWeight, double valueLengthDifferenceScoreWeight, double outOfRangeScoreWeight) {
+    public double getForeignKeyScore() {
         double coverageScore = coverageScore();
         double columnNameSimilarityScore = columnNameSimilarityScore();
         double valueLengthDifferenceScore = valueLengthDifferenceScore();
@@ -90,14 +140,14 @@ public class InclusionDependency implements Dependency{
         Set<String> distinctForeignKeyValues = this.getDistinctForeignKeyValues();
         Set<String> distinctPrimaryKeyValues = this.getDistinctPrimaryKeyValues();
 
-        if(distinctForeignKeyValues.isEmpty()) {
+        if (distinctForeignKeyValues.isEmpty()) {
             return 0.0;
         } else {
 
             int commonValueCount = 0;
 
-            for(String value : distinctForeignKeyValues) { //Values of foreign Key that are also in primary Key
-                if(distinctPrimaryKeyValues.contains(value)) {
+            for (String value : distinctForeignKeyValues) { //Values of foreign Key that are also in primary Key
+                if (distinctPrimaryKeyValues.contains(value)) {
                     commonValueCount++;
                 }
             }
@@ -139,68 +189,19 @@ public class InclusionDependency implements Dependency{
         Set<String> distinctForeignKeyValues = getDistinctForeignKeyValues();
         Set<String> distinctPrimaryKeyValues = getDistinctPrimaryKeyValues();
 
-        if(distinctPrimaryKeyValues.isEmpty()) {
+        if (distinctPrimaryKeyValues.isEmpty()) {
             return 0.0;
         }
 
         int countValuesOnlyInPrimaryKey = 0;
 
-        for(String value : distinctPrimaryKeyValues) { //Values from primary Key that are not in foreign Key
-            if(!distinctForeignKeyValues.contains(value)) {
+        for (String value : distinctPrimaryKeyValues) { //Values from primary Key that are not in foreign Key
+            if (!distinctForeignKeyValues.contains(value)) {
                 countValuesOnlyInPrimaryKey++;
             }
         }
 
         return 1.0 - (double) countValuesOnlyInPrimaryKey / distinctPrimaryKeyValues.size();
     } //Range [0,1]: 1 is best as all foreign Key values are contained in primary Key, 0 worst
-
-    private static List<String> getTupleValuesForColumns(Collection<Column> columnCombination, int N) {
-
-        List<String> values = new ArrayList<>(N);
-        List<Column> sortedColumns = new ArrayList<>(columnCombination);
-        sortedColumns.sort(Comparator.comparing(Column::getLabel));
-
-        for(int i = 0; i < N; i++){
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for(Column column : sortedColumns) {
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-
-            stringBuilder.setLength(stringBuilder.length() - 1);
-
-            values.add(stringBuilder.toString());
-        }
-
-        return values;
-    }
-
-    private static String getLabel(Collection<Column> columnCombination, boolean withTablePrefix) {
-
-        List<String> columnLabels = new ArrayList<>(columnCombination.size());
-        for(Column column : columnCombination){
-            columnLabels.add(column.getLabel());
-        }
-        columnLabels.sort(String.CASE_INSENSITIVE_ORDER);
-
-        String tableName = columnCombination.iterator().next().getTable().getName();
-
-        StringBuilder stringBuilder = new StringBuilder();
-
-        for(String label : columnLabels){
-            if(withTablePrefix) {
-                stringBuilder.append(tableName);
-                stringBuilder.append("_");
-            }
-            stringBuilder.append(label);
-            stringBuilder.append("-");
-        }
-
-        stringBuilder.setLength(stringBuilder.length() - 1);
-
-        return stringBuilder.toString();
-    }
 
 }

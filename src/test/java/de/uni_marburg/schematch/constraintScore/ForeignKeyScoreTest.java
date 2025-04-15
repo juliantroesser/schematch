@@ -53,7 +53,7 @@ public class ForeignKeyScoreTest {
     @Test
     void foreignKeyScoreTest() {
         InclusionDependency ind = new InclusionDependency(primaryKey, foreignKey);
-        Assertions.assertEquals(0.9, ind.getForeignKeyScore(0.25, 0.25, 0.25, 0.25), 0.001);
+        Assertions.assertEquals(0.9, ind.getForeignKeyScore(), 0.001);
     }
 
 
