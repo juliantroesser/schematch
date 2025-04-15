@@ -4,10 +4,10 @@ packageName: "similarityFlooding"
 params:
   propCoeffPolicy: ["INV_PROD"]
   fixpoint: ["BASIC"]
-  fdFilter: ["alt_ngpdep_max"]
+  fdFilter: ["alt_ngpdep_sum"]
   fdFilterThreshold: ["0.3"]
-  labelScoreWeight: ["0", "0.05", "0.1"]
-  selectThresholdWeight: ["0", "0.05", "0.1"]
+  labelScoreWeight: ["0.05"]
+  selectThresholdWeight: ["0.95"]
 
 #---
 #name: "SimilarityFlooding"
