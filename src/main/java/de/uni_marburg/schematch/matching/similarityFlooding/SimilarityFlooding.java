@@ -39,6 +39,7 @@ public class SimilarityFlooding extends Matcher {
     private String fixpoint;
     private String uccFilterThreshold;
     private String indFilterThreshold;
+    private String fdFilter;
     private String labelScoreWeight;
     private String selectThresholdWeight;
 
@@ -67,16 +68,13 @@ public class SimilarityFlooding extends Matcher {
             default -> throw new RuntimeException("No such fixpoint formula: " + fixpoint);
         };
 
-        boolean fdv1 = false;
-        boolean fdv2 = false;
-
         float[][] simMatrix = matchTask.getEmptySimMatrix();
 
         Database sourceDb = matchTask.getScenario().getSourceDatabase();
         Database targetDb = matchTask.getScenario().getTargetDatabase();
 
-        Graph<Node, LabelEdge> sourceGraph = transformIntoGraphRepresentationSchema(sourceDb, fdv1, fdv2);
-        Graph<Node, LabelEdge> targetGraph = transformIntoGraphRepresentationSchema(targetDb, fdv1, fdv2);
+        Graph<Node, LabelEdge> sourceGraph = transformIntoGraphRepresentationSchema(sourceDb);
+        Graph<Node, LabelEdge> targetGraph = transformIntoGraphRepresentationSchema(targetDb);
 
         //Combine both Graphs into a connectivity-graph
         Graph<NodePair, LabelEdge> connectivityGraph = createConnectivityGraph(sourceGraph, targetGraph);
@@ -102,7 +100,7 @@ public class SimilarityFlooding extends Matcher {
         return simMatrix;
     }
 
-    public Graph<Node, LabelEdge> transformIntoGraphRepresentationSchema(Database db, boolean fdv1, boolean fdv2) {
+    public Graph<Node, LabelEdge> transformIntoGraphRepresentationSchema(Database db) {
 
         Graph<Node, LabelEdge> graphRepresentation = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
@@ -181,67 +179,37 @@ public class SimilarityFlooding extends Matcher {
         Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
         graphRepresentation.addVertex(constraintNode);
 
-        if (fdv1) { //New Edges for fdv1
 
-            Collection<FunctionalDependency> functionalDependencies;
+        Collection<FunctionalDependency> functionalDependencies;
 
-            functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+        functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
 
-            for (FunctionalDependency functionalDependency : filterFunctionalDependencies(functionalDependencies)) {
+        int fdID = 1;
 
-                List<Node> determinantIdNodes = new ArrayList<>();
+        for (FunctionalDependency functionalDependency : filterFunctionalDependencies(functionalDependencies)) {
 
-                for (Column determinant : functionalDependency.getDeterminant()) {
-                    LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(determinant.getLabel(), NodeType.COLUMN, determinant.getDatatype(), false, null, determinant.getTable(), null)).stream().findFirst().get();
-                    Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
-                    determinantIdNodes.add(determinantIDNode);
-                }
+            Node fdNode = new Node("FD" + fdID++, NodeType.CONSTRAINT, null, true, null, null, null);
+            graphRepresentation.addVertex(fdNode);
+            graphRepresentation.addEdge(fdNode, constraintNode, new LabelEdge("type"));
 
-                Column dependant = functionalDependency.getDependant();
+            List<Node> determinantIdNodes = new ArrayList<>();
 
-                LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
-                Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
-
-                for (Node determinantIDNode : determinantIdNodes) {
-                    graphRepresentation.addEdge(determinantIDNode, dependantIDNode, new LabelEdge("determines"));
-                }
+            for (Column determinant : functionalDependency.getDeterminant()) {
+                LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(determinant.getLabel(), NodeType.COLUMN, determinant.getDatatype(), false, null, determinant.getTable(), null)).stream().findFirst().get();
+                Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
+                determinantIdNodes.add(determinantIDNode);
             }
-        }
 
-        if (fdv2) { //New vertices and edges for fdv2
+            Column dependant = functionalDependency.getDependant();
 
-            Collection<FunctionalDependency> functionalDependencies;
+            LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
+            Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
 
-            functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
-
-            int fdID = 1;
-
-            for (FunctionalDependency functionalDependency : filterFunctionalDependencies(functionalDependencies)) {
-
-                Node fdNode = new Node("FD" + fdID++, NodeType.CONSTRAINT, null, true, null, null, null);
-                graphRepresentation.addVertex(fdNode);
-                graphRepresentation.addEdge(fdNode, constraintNode, new LabelEdge("type"));
-
-                List<Node> determinantIdNodes = new ArrayList<>();
-
-                for (Column determinant : functionalDependency.getDeterminant()) {
-                    LabelEdge edgeFromIDtoDeterminant = graphRepresentation.incomingEdgesOf(new Node(determinant.getLabel(), NodeType.COLUMN, determinant.getDatatype(), false, null, determinant.getTable(), null)).stream().findFirst().get();
-                    Node determinantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDeterminant);
-                    determinantIdNodes.add(determinantIDNode);
-                }
-
-                Column dependant = functionalDependency.getDependant();
-
-                LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
-                Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
-
-                for (Node determinantIDNode : determinantIdNodes) {
-                    graphRepresentation.addEdge(fdNode, determinantIDNode, new LabelEdge("determinant"));
-                }
-
-                graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("dependant"));
+            for (Node determinantIDNode : determinantIdNodes) {
+                graphRepresentation.addEdge(fdNode, determinantIDNode, new LabelEdge("determinant"));
             }
-        }
+
+            graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("dependant"));
 
         List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
         int uccID = 1;
@@ -547,7 +515,38 @@ public class SimilarityFlooding extends Matcher {
     }
 
     private Collection<FunctionalDependency> filterFunctionalDependencies(Collection<FunctionalDependency> functionalDependencies) {
-        return functionalDependencies;
+
+        Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
+        double threshold = Double.parseDouble(fdFilterThreshold);
+
+        for (FunctionalDependency fd : functionalDependencies) {
+
+            //Determinant should have at least one attribute
+            if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance)
+
+                double score;
+
+//                switch (fdFilter) {
+//                    case "all" -> score = 1.0;
+//                    case "pdep" -> score = fd.getPDEPScore();
+//                    case "gpdep" -> score = fd.getGPDEPScore();
+//                    case "ngpdep" -> score = fd.getNGPDEPScore();
+//                    case "alt_ngpdep_sum" -> score = fd.getAltNGPDEPSumScore();
+//                    case "alt_ngpdep_max" -> score = fd.getAltNGPDEPMaxScore();
+//                    default -> throw new IllegalArgumentException("FD Filter does not exist");
+//                }
+
+                score = fd.getAltNGPDEPSumScore();
+
+                if (score >= threshold) {
+                    filteredFDs.add(fd);
+                }
+            }
+        }
+
+        System.out.println("Filtered FDs: " + functionalDependencies.size() + "->" + filteredFDs.size());
+
+        return filteredFDs;
     }
 
     private Collection<UniqueColumnCombination> filterUniqueColumnCombinations(Collection<UniqueColumnCombination> uniqueColumnCombinations) {
@@ -602,6 +601,7 @@ public class SimilarityFlooding extends Matcher {
         parameters.put("propCoeffPolicy", propCoeffPolicy);
         parameters.put("fixpoint", fixpoint);
         parameters.put("indFilterThreshold", indFilterThreshold);
+        parameters.put("fdFilter", fdFilter);
         parameters.put("labelScoreWeight", labelScoreWeight);
         parameters.put("selectThresholdWeight", selectThresholdWeight);
 
@@ -612,6 +612,7 @@ public class SimilarityFlooding extends Matcher {
         propCoeffPolicy = currentParams.get("propCoeffPolicy");
         fixpoint = currentParams.get("fixpoint");
         indFilterThreshold = currentParams.get("indFilterThreshold");
+        fdFilter = currentParams.get("fdFilter");
         labelScoreWeight = currentParams.get("labelScoreWeight");
         selectThresholdWeight = currentParams.get("selectThresholdWeight");
     }
@@ -621,6 +622,7 @@ public class SimilarityFlooding extends Matcher {
         possibleValues.put("propCoeffPolicy", List.of("INV_AVG", "INV_PROD"));
         possibleValues.put("fixpoint", List.of("A", "B", "C")); //TODO: Removed Basic
         possibleValues.put("indFilterThreshold", List.of("normalizedValue"));
+        possibleValues.put("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max")); //TODO: Removed gpdep
         possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
         possibleValues.put("selectThresholdWeight", List.of("0.95")); // Results from constraint testing suggest that a value near 1 is good
 

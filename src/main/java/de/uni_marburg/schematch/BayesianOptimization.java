@@ -91,8 +91,10 @@ public class BayesianOptimization {
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
         similarityFlooding.setIndFilterThreshold("0.5");
+        similarityFlooding.setFdFilter("all");
+        similarityFlooding.setFdFilterThreshold("0.0");
         similarityFlooding.setLabelScoreWeight("0.5");
-        similarityFlooding.setSelectThresholdWeight("0.95");
+        similarityFlooding.setSelectThresholdWeight("1.0");
     }
 
     /**
@@ -125,6 +127,8 @@ public class BayesianOptimization {
             similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
             similarityFlooding.setIndFilterThreshold(message.getString("indFilterThreshold"));
+            similarityFlooding.setFdFilter(message.getString("fdFilter"));
+            similarityFlooding.setFdFilterThreshold(message.getString("fdFilterThreshold"));
             similarityFlooding.setLabelScoreWeight(message.getString("labelScoreWeight"));
             similarityFlooding.setSelectThresholdWeight(message.getString("selectThresholdWeight"));
         } catch (Exception e) {
