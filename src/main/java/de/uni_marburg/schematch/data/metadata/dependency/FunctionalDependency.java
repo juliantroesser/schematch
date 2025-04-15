@@ -1,7 +1,6 @@
 package de.uni_marburg.schematch.data.metadata.dependency;
 
 import de.uni_marburg.schematch.data.Column;
-import de.uni_marburg.schematch.data.Table;
 import lombok.Data;
 
 import java.util.*;
@@ -20,7 +19,7 @@ public class FunctionalDependency implements Dependency {
     public static double getSelfDependencyScore(Collection<Column> columnCombination) {
 
         int N = columnCombination.iterator().next().getValues().size();
-        Set<String> distinctValues = getDistinctValues(columnCombination, N);
+        ArrayList<String> distinctValues = Util.getDistinctValues(columnCombination, N);
         Map<String, Integer> frequencyCount = getFrequencyCount(columnCombination, N);
 
         double score = 0.0;
@@ -33,28 +32,6 @@ public class FunctionalDependency implements Dependency {
         return score / (double) (N * N);
     } //probabilistic self dependency measure
 
-    //----------------------------------------------------------------------------------------
-
-    public static Set<String> getDistinctValues(Collection<Column> columnCombination, int N) {
-
-        Set<String> values = new HashSet<>();
-
-        for (int i = 0; i < N; i++) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (Column column : columnCombination) {
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-
-            stringBuilder.setLength(stringBuilder.length() - 1);
-
-            values.add(stringBuilder.toString());
-        }
-
-        return values;
-    }
 
     //----------------------------------------------------------------------------------------
 
@@ -122,33 +99,6 @@ public class FunctionalDependency implements Dependency {
         return sb.toString();
     }
 
-    public double getRedundancyMeasure() {
-
-        Map<String, Integer> valueOccurrenceCount = new HashMap<>();
-        Table table = dependant.getTable();
-        int numberRows = table.getColumns().get(0).getValues().size();
-
-        for (int i = 0; i < numberRows; i++) { //iterate through all tuples
-
-            StringBuilder valuesInDeterminant = new StringBuilder();
-
-            for (Column column : determinant) { //Has no order?
-                String valueInDeterminant = column.getValues().get(i);
-
-                valuesInDeterminant.append(valueInDeterminant);
-                valuesInDeterminant.append(", ");
-            }
-
-            valuesInDeterminant.delete(valuesInDeterminant.length() - 2, valuesInDeterminant.length()); //Deletes last ", "
-            String key = valuesInDeterminant.toString();
-            valueOccurrenceCount.put(key, valueOccurrenceCount.getOrDefault(key, 0) + 1); //count occurrences
-        }
-
-        Optional<Integer> count = valueOccurrenceCount.values().stream().reduce(Integer::sum);
-
-        return count.map(integer -> (double) (integer - valueOccurrenceCount.size()) / (double) numberRows).orElse(0.0); //If no values are present in table, lowest possible score
-    }
-
     public double getAltNGPDEPSumScore() {
 
         if (this.getDeterminant().isEmpty()) {
@@ -177,57 +127,6 @@ public class FunctionalDependency implements Dependency {
 
     //TODO: Utils Functions could be moved to another class
 
-    public double getAltNGPDEPMaxScore() {
-
-        if (this.getDeterminant().isEmpty()) {
-            return 0.0;
-        }
-
-        Column Y = this.getDependant();
-
-        double gpdepXY = getGPDEPScore();
-
-        Collection<FunctionalDependency> fdsWithDependentY = this.getDependant().getTable().getDatabase().getMetadata().getFunctionalDependenciesWithGivenDependent(Y);
-
-        double max = Double.NEGATIVE_INFINITY;
-
-        for (FunctionalDependency fd : fdsWithDependentY) {
-            if (fd.getGPDEPScore() > max) {
-                max = fd.getGPDEPScore();
-            }
-        }
-
-        if (max == 0.0) {
-            return 0.0;
-        } else {
-            double score = gpdepXY / max;
-            return Math.max(score, 0.0);
-        }
-    }
-
-    public double getNGPDEPScore() {
-
-        if (this.getDeterminant().isEmpty()) {
-            return 0.0;
-        }
-
-        Collection<Column> X = this.getDeterminant();
-        Column Y = this.getDependant();
-
-        double pdepXY = this.getPDEPScore();
-        double pdepY = getSelfDependencyScore(List.of(Y));
-        int N = this.getDependant().getValues().size();
-        int K = getDistinctValues(X, N).size();
-
-        if (pdepY == 1.0 || N == K) { //Avoid division by zero (If pdepY equals zero then, the amount of Information that X gives is none)
-            return 0.0;
-        } else {
-            double score = 1.0 - (((1.0 - pdepXY) / (1.0 - pdepY)) * ((N - 1.0) / (N - K)));
-            return Math.max(score, 0.0);
-        }
-
-    } //PDEP Measure with reduced bias and normalized
-
     public double getGPDEPScore() {
 
         if (this.getDeterminant().isEmpty()) { //As epdep Score for X -> Y with X = {} defaults to pdep(Y) which is 1 as all values are equal in Y
@@ -239,7 +138,7 @@ public class FunctionalDependency implements Dependency {
 
         double pdepY = getSelfDependencyScore(List.of(Y));
         int N = this.getDependant().getValues().size();
-        int K = getDistinctValues(X, N).size();
+        int K = Util.getDistinctValues(X, N).size();
 
         double pdepXY = this.getPDEPScore();
         double epdepXY = pdepY + ((K - 1.0) / (N - 1.0)) * (1.0 - pdepY);
@@ -257,8 +156,8 @@ public class FunctionalDependency implements Dependency {
         Collection<Column> X = this.getDeterminant();
         Column Y = this.getDependant();
 
-        Set<String> distinctXValues = getDistinctValues(X, N);
-        Set<String> distinctYValues = getDistinctValues(List.of(Y), N);
+        ArrayList<String> distinctXValues = Util.getDistinctValues(X, N);
+        ArrayList<String> distinctYValues = Util.getDistinctValues(List.of(Y), N);
         Map<String, Integer> frequencyCountForX = getFrequencyCount(X, N);
 
         double score = 0.0;
