@@ -609,7 +609,7 @@ public class SimilarityFlooding extends Matcher {
                 Set<Datatype> datatypesInIND = ind.getReferenced().stream().map(Column::getDatatype).collect(Collectors.toSet());
 
                 if (!datatypesInIND.contains(Datatype.BOOLEAN)) { //No boolean column should be part of the ind
-                    double score = ind.getForeignKeyScore(coverageScoreWeight, columnNameSimilarityScoreWeight, valueLengthDifferenceScoreWeight, outOfRangeScoreWeight);
+                    double score = ind.getForeignKeyScore();
 
                     if (score >= threshold) {
                         filteredINDs.add(ind);
