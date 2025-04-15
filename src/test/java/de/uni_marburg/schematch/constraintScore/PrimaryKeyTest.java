@@ -10,10 +10,10 @@ import java.util.List;
 
 public class PrimaryKeyTest {
 
-    public static Column X1 = new Column("X1", List.of("A", "A", "B", "B", "C"));
-    public static Column object_id = new Column("object_id", List.of("1", "1", "2", "3", "3"));
-    public static Column X2 = new Column("X2", List.of("true", "true", "false", "false", "true"));
-    public static Column o_attr = new Column("o_attr", List.of("test1", "test11", "test2", "t3", "t3"));
+    static Column X1 = new Column("X1", List.of("A", "A", "B", "B", "C"));
+    static Column object_id = new Column("object_id", List.of("1", "1", "2", "3", "3"));
+    static Column X2 = new Column("X2", List.of("true", "true", "false", "false", "true"));
+    static Column o_attr = new Column("o_attr", List.of("test1", "test11", "test2", "t3", "t3"));
     Table table = new Table("Test", List.of("X1", "object_id", "X2", "o_attr"), List.of(X1, object_id, X2, o_attr), null, null);
 
     @Test

@@ -90,8 +90,13 @@ public class BayesianOptimization {
         log.info("Configuring Similarity Flooding parameters");
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
+        similarityFlooding.setLengthScoreWeight("0.5");
+        similarityFlooding.setValueScoreWeight("0.5");
+        similarityFlooding.setPostionScoreWeight("0.5");
+        similarityFlooding.setNameSuffixScoreWeight("0.5");
+        similarityFlooding.setUccFilterThreshold("0.5");
         similarityFlooding.setLabelScoreWeight("0.5");
-        similarityFlooding.setSelectThresholdWeight("1.0");
+        similarityFlooding.setSelectThresholdWeight("0.95");
     }
 
     /**
@@ -123,6 +128,11 @@ public class BayesianOptimization {
             // Update Similarity Flooding parameters from the received JSON.
             similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
+            similarityFlooding.setLengthScoreWeight(message.getString("lengthScoreWeight"));
+            similarityFlooding.setValueScoreWeight(message.getString("valueScoreWeight"));
+            similarityFlooding.setPostionScoreWeight(message.getString("postionScoreWeight"));
+            similarityFlooding.setNameSuffixScoreWeight(message.getString("nameSuffixScoreWeight"));
+            similarityFlooding.setUccFilterThreshold(message.getString("uccFilterThreshold"));
             similarityFlooding.setLabelScoreWeight(message.getString("labelScoreWeight"));
             similarityFlooding.setSelectThresholdWeight(message.getString("selectThresholdWeight"));
         } catch (Exception e) {
@@ -283,6 +293,7 @@ class PerformanceEvaluator {
      * @return The average performance score.
      */
     public double evaluateAveragePerformance() {
+
         List<Double> datasetPerformances = new ArrayList<>();
         ThresholdSelectionBoosting thresholdBoosting = new ThresholdSelectionBoosting(Double.parseDouble(this.similarityFlooding.getSelectThresholdWeight()));
 
