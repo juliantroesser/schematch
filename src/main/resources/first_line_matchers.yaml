@@ -5,8 +5,8 @@ params:
   propCoeffPolicy: ["INV_AVG"]
   fixpoint: ["A"]
   indFilterThreshold: ["0.5"]
-  uccFilterThreshold: ["0.08091270073053904"]
-  labelScoreWeight: ["0.5"]
+  uccFilterThreshold: ["0.5"]
+  labelScoreWeight: ["0.05"]
   selectThresholdWeight: ["0.95"]
 
 #---

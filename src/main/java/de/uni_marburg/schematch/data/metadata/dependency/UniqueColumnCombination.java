@@ -5,21 +5,22 @@ import de.uni_marburg.schematch.data.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.util.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UniqueColumnCombination implements Dependency{
+public class UniqueColumnCombination implements Dependency {
     Collection<Column> columnCombination; //Unique Column Combination //FD is most minimal
 
-    public double getPrimaryKeyScore(double lengthScoreWeight, double valueScoreWeight, double postionScoreWeight, double nameSuffixScoreWeight) {
+    public double getPrimaryKeyScore() {
         double lengthScore = this.cardinalityScore();
         double valueScore = this.valueLengthScore();
         double positionScore = this.positionScore();
         double nameSuffixScore = this.nameSuffixScore();
 
-        return lengthScoreWeight * lengthScore + valueScoreWeight * valueScore + postionScoreWeight * positionScore + nameSuffixScoreWeight * nameSuffixScore;
+        return (lengthScore + valueScore + positionScore + nameSuffixScore) / 4.0;
     }
 
     public double cardinalityScore() { //range (0,1]: 1 is best because most keys have few attributes, 0 is worst
@@ -42,7 +43,7 @@ public class UniqueColumnCombination implements Dependency{
 
         double scoreSum = 0;
 
-        for(Column column : columnCombination) {
+        for (Column column : columnCombination) {
             double valueLengthScore = calculateValueLengthScoreForColumn(column, n);
             scoreSum += valueLengthScore;
         }
@@ -63,11 +64,11 @@ public class UniqueColumnCombination implements Dependency{
         int minIndexLeft = Integer.MAX_VALUE;
         int maxIndexRight = Integer.MIN_VALUE;
 
-        for(Column column : columnCombination) {
-            if(table.getColumnIndex(column) < minIndexLeft) {
+        for (Column column : columnCombination) {
+            if (table.getColumnIndex(column) < minIndexLeft) {
                 minIndexLeft = table.getColumnIndex(column);
             }
-            if(table.getColumnIndex(column) > maxIndexRight) {
+            if (table.getColumnIndex(column) > maxIndexRight) {
                 maxIndexRight = table.getColumnIndex(column);
             }
         }
@@ -77,13 +78,13 @@ public class UniqueColumnCombination implements Dependency{
 
         Collection<Column> attributesLeftOfUCC = new HashSet<>();
 
-        for(int i = 0; i < minIndexLeft; i++) {
+        for (int i = 0; i < minIndexLeft; i++) {
             attributesLeftOfUCC.add(table.getColumn(i));
         }
 
         Collection<Column> attributesBetweenMinLeftAndMaxRightOfUCC = new HashSet<>();
 
-        for(int i = minIndexLeft; i <= maxIndexRight; i++) {
+        for (int i = minIndexLeft; i <= maxIndexRight; i++) {
             attributesBetweenMinLeftAndMaxRightOfUCC.add(table.getColumn(i));
         }
 
@@ -101,12 +102,12 @@ public class UniqueColumnCombination implements Dependency{
 
         int count = 0;
 
-        for(Column column : columnCombination) {
+        for (Column column : columnCombination) {
 
             String columnLabel = column.getLabel().toLowerCase();
 
-            for(String suffix : suffixes) {
-                if(columnLabel.endsWith(suffix)) { //TODO: Contains oder endsWith?
+            for (String suffix : suffixes) {
+                if (columnLabel.endsWith(suffix)) { //TODO: Contains oder endsWith?
                     count++;
                 }
             }
