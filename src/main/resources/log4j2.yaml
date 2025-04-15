@@ -5,13 +5,13 @@ Configuration:
     Console:
       name: LogToConsole
       PatternLayout:
-        Pattern: "%highlight{[%-5level]} %d{HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+        Pattern: "%highlight{[%-5level]} %d{HH:mm:ss.SSS} [%t] %c{1} - %msg%n" # Increase number in '%c{1}' to see more of the package name
 
     File:
       - name: LogToFile
         fileName: "logs/schematch_${date:yyyy-MM-dd_HH-mm-ss}.log"
         PatternLayout:
-          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" # Don't forget to do the same here
 
   Loggers:
     logger:
