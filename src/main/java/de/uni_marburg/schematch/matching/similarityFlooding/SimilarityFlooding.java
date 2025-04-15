@@ -3,6 +3,7 @@ package de.uni_marburg.schematch.matching.similarityFlooding;
 import de.uni_marburg.schematch.data.Column;
 import de.uni_marburg.schematch.data.Database;
 import de.uni_marburg.schematch.data.Table;
+import de.uni_marburg.schematch.data.metadata.Datatype;
 import de.uni_marburg.schematch.data.metadata.dependency.FunctionalDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.InclusionDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.UniqueColumnCombination;
@@ -21,6 +22,7 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.hasConverged;
 import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.populateSimMatrix;
@@ -35,11 +37,11 @@ public class SimilarityFlooding extends Matcher {
 
     private String propCoeffPolicy;
     private String fixpoint;
-    private String lengthScoreWeight;
-    private String valueScoreWeight;
-    private String postionScoreWeight;
-    private String nameSuffixScoreWeight;
-    private String uccFilterThreshold;
+    private String coverage;
+    private String columnNameSimilarity;
+    private String valueLengthDifference;
+    private String outOfRange;
+    private String indFilterThreshold;
     private String labelScoreWeight;
     private String selectThresholdWeight;
 
@@ -70,16 +72,16 @@ public class SimilarityFlooding extends Matcher {
 
         boolean fdv1 = false;
         boolean fdv2 = false;
-        boolean indv1 = false;
-        boolean indv2 = false;
+        boolean uccv1 = false;
+        boolean uccv2 = false;
 
         float[][] simMatrix = matchTask.getEmptySimMatrix();
 
         Database sourceDb = matchTask.getScenario().getSourceDatabase();
         Database targetDb = matchTask.getScenario().getTargetDatabase();
 
-        Graph<Node, LabelEdge> sourceGraph = transformIntoGraphRepresentationSchema(sourceDb, fdv1, fdv2, indv1, indv2);
-        Graph<Node, LabelEdge> targetGraph = transformIntoGraphRepresentationSchema(targetDb, fdv1, fdv2, indv1, indv2);
+        Graph<Node, LabelEdge> sourceGraph = transformIntoGraphRepresentationSchema(sourceDb, fdv1, fdv2, uccv1, uccv2);
+        Graph<Node, LabelEdge> targetGraph = transformIntoGraphRepresentationSchema(targetDb, fdv1, fdv2, uccv1, uccv2);
 
         //Combine both Graphs into a connectivity-graph
         Graph<NodePair, LabelEdge> connectivityGraph = createConnectivityGraph(sourceGraph, targetGraph);
@@ -105,7 +107,7 @@ public class SimilarityFlooding extends Matcher {
         return simMatrix;
     }
 
-    public Graph<Node, LabelEdge> transformIntoGraphRepresentationSchema(Database db, boolean fdv1, boolean fdv2, boolean indv1, boolean indv2) {
+    public Graph<Node, LabelEdge> transformIntoGraphRepresentationSchema(Database db, boolean fdv1, boolean fdv2, boolean uccv1, boolean uccv2) {
 
         Graph<Node, LabelEdge> graphRepresentation = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
@@ -182,6 +184,7 @@ public class SimilarityFlooding extends Matcher {
         //Add Constraint Node only when introducing additional Nodes for dependency
 
         Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
+
         graphRepresentation.addVertex(constraintNode);
 
         if (fdv1) { //New Edges for fdv1
@@ -246,99 +249,100 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
-        List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
-        int uccID = 1;
+        if (uccv1) { //new vertices and edges for uccv1
 
-        for (UniqueColumnCombination ucc : filterUniqueColumnCombinations(uniqueColumnCombinations)) {
+            List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
 
-            Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, true, null, null, null);
-            graphRepresentation.addVertex(uccNode);
-            graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type"));
+            for (UniqueColumnCombination ucc : filterUniqueColumnCombinations(uniqueColumnCombinations)) {
 
-            int uccSize = ucc.getColumnCombination().size();
-            Node uccSizeNode = new Node("UCC#" + uccSize, NodeType.CONSTRAINT, null, false, null, null, null);
+                if (!ucc.getColumnCombination().isEmpty()) {
+                    int uccSize = ucc.getColumnCombination().size();
+                    Node uccSizeNode = new Node("UCC#" + uccSize, NodeType.CONSTRAINT, null, false, null, null, null);
 
-            if (!graphRepresentation.containsVertex(uccSizeNode)) {
-                graphRepresentation.addVertex(uccSizeNode);
-            }
+                    if (!graphRepresentation.containsVertex(uccSizeNode)) {
+                        graphRepresentation.addVertex(uccSizeNode);
+                    }
 
-            graphRepresentation.addEdge(uccNode, uccSizeNode, new LabelEdge("size"));
+                    List<Node> nodesPartOfUcc = new ArrayList<>();
 
-            List<Node> nodesPartOfUcc = new ArrayList<>();
+                    for (Column nodePartOfUcc : ucc.getColumnCombination()) {
+                        LabelEdge edgeFromIDtoUccNode = graphRepresentation.incomingEdgesOf(new Node(nodePartOfUcc.getLabel(), NodeType.COLUMN, nodePartOfUcc.getDatatype(), false, null, nodePartOfUcc.getTable(), null)).stream().findFirst().get();
+                        Node uccIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoUccNode);
+                        nodesPartOfUcc.add(uccIDNode);
+                    }
 
-            for (Column nodePartOfUcc : ucc.getColumnCombination()) {
-                LabelEdge edgeFromIDtoUccNode = graphRepresentation.incomingEdgesOf(new Node(nodePartOfUcc.getLabel(), NodeType.COLUMN, nodePartOfUcc.getDatatype(), false, null, nodePartOfUcc.getTable(), null)).stream().findFirst().get();
-                Node uccIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoUccNode);
-                nodesPartOfUcc.add(uccIDNode);
-            }
-
-            for (Node nodePartOfUcc : nodesPartOfUcc) {
-                graphRepresentation.addEdge(nodePartOfUcc, uccNode, new LabelEdge("ucc"));
-            }
-        }
-
-        if (indv1) { //new edges for indv1
-
-            List<InclusionDependency> inclusionDependencies = db.getMetadata().getInds().stream().toList();
-
-            for (InclusionDependency inclusionDependency : filterInclusionDependencies(inclusionDependencies)) {
-
-                List<Node> dependantIdNodes = new ArrayList<>();
-                List<Node> referencedIdNodes = new ArrayList<>();
-
-                for (Column dependant : inclusionDependency.getDependant()) {
-                    LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
-                    Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
-                    dependantIdNodes.add(dependantIDNode);
-                }
-
-                for (Column referenced : inclusionDependency.getReferenced()) {
-                    LabelEdge edgeFromIDtoReferenced = graphRepresentation.incomingEdgesOf(new Node(referenced.getLabel(), NodeType.COLUMN, referenced.getDatatype(), false, null, referenced.getTable(), null)).stream().findFirst().get();
-                    Node referencedIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoReferenced);
-                    referencedIdNodes.add(referencedIDNode);
-                }
-
-                for (Node referencedIDNode : referencedIdNodes) {
-                    for (Node dependantIDNode : dependantIdNodes) {
-                        graphRepresentation.addEdge(referencedIDNode, dependantIDNode, new LabelEdge("contains"));
+                    for (Node nodePartOfUcc : nodesPartOfUcc) {
+                        graphRepresentation.addEdge(nodePartOfUcc, uccSizeNode, new LabelEdge("ucc"));
                     }
                 }
             }
         }
 
-        if (indv2) { //new vertices and edges for indv2
+        if (uccv2) { //new vertices and edges for uccv2
 
-            List<InclusionDependency> inclusionDependencies = db.getMetadata().getInds().stream().toList();
-            int indID = 1;
+            List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
+            int uccID = 1;
 
-            for (InclusionDependency inclusionDependency : filterInclusionDependencies(inclusionDependencies)) {
+            for (UniqueColumnCombination ucc : filterUniqueColumnCombinations(uniqueColumnCombinations)) {
 
-                List<Node> dependantIdNodes = new ArrayList<>();
-                List<Node> referencedIdNodes = new ArrayList<>();
+                Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, true, null, null, null);
+                graphRepresentation.addVertex(uccNode);
+                graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type"));
 
-                for (Column dependant : inclusionDependency.getDependant()) {
-                    LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
-                    Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
-                    dependantIdNodes.add(dependantIDNode);
+                int uccSize = ucc.getColumnCombination().size();
+                Node uccSizeNode = new Node("UCC#" + uccSize, NodeType.CONSTRAINT, null, false, null, null, null);
+
+                if (!graphRepresentation.containsVertex(uccSizeNode)) {
+                    graphRepresentation.addVertex(uccSizeNode);
                 }
 
-                for (Column referenced : inclusionDependency.getReferenced()) {
-                    LabelEdge edgeFromIDtoReferenced = graphRepresentation.incomingEdgesOf(new Node(referenced.getLabel(), NodeType.COLUMN, referenced.getDatatype(), false, null, referenced.getTable(), null)).stream().findFirst().get();
-                    Node referencedIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoReferenced);
-                    referencedIdNodes.add(referencedIDNode);
+                graphRepresentation.addEdge(uccNode, uccSizeNode, new LabelEdge("size"));
+
+                List<Node> nodesPartOfUcc = new ArrayList<>();
+
+                for (Column nodePartOfUcc : ucc.getColumnCombination()) {
+                    LabelEdge edgeFromIDtoUccNode = graphRepresentation.incomingEdgesOf(new Node(nodePartOfUcc.getLabel(), NodeType.COLUMN, nodePartOfUcc.getDatatype(), false, null, nodePartOfUcc.getTable(), null)).stream().findFirst().get();
+                    Node uccIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoUccNode);
+                    nodesPartOfUcc.add(uccIDNode);
                 }
 
-                Node indNode = new Node("IND" + indID++, NodeType.CONSTRAINT, null, true, null, null, null);
-                graphRepresentation.addVertex(indNode);
-                graphRepresentation.addEdge(indNode, constraintNode, new LabelEdge("type"));
-
-                for (Node referencedIDNode : referencedIdNodes) {
-                    graphRepresentation.addEdge(indNode, referencedIDNode, new LabelEdge("referenced"));
+                for (Node nodePartOfUcc : nodesPartOfUcc) {
+                    graphRepresentation.addEdge(nodePartOfUcc, uccNode, new LabelEdge("ucc"));
                 }
+            }
+        }
 
-                for (Node dependantIDNode : dependantIdNodes) {
-                    graphRepresentation.addEdge(indNode, dependantIDNode, new LabelEdge("dependant"));
-                }
+
+        List<InclusionDependency> inclusionDependencies = db.getMetadata().getInds().stream().toList();
+        int indID = 1;
+
+        for (InclusionDependency inclusionDependency : filterInclusionDependencies(inclusionDependencies)) {
+
+            List<Node> dependantIdNodes = new ArrayList<>();
+            List<Node> referencedIdNodes = new ArrayList<>();
+
+            for (Column dependant : inclusionDependency.getDependant()) {
+                LabelEdge edgeFromIDtoDependant = graphRepresentation.incomingEdgesOf(new Node(dependant.getLabel(), NodeType.COLUMN, dependant.getDatatype(), false, null, dependant.getTable(), null)).stream().findFirst().get();
+                Node dependantIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoDependant);
+                dependantIdNodes.add(dependantIDNode);
+            }
+
+            for (Column referenced : inclusionDependency.getReferenced()) {
+                LabelEdge edgeFromIDtoReferenced = graphRepresentation.incomingEdgesOf(new Node(referenced.getLabel(), NodeType.COLUMN, referenced.getDatatype(), false, null, referenced.getTable(), null)).stream().findFirst().get();
+                Node referencedIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoReferenced);
+                referencedIdNodes.add(referencedIDNode);
+            }
+
+            Node indNode = new Node("IND" + indID++, NodeType.CONSTRAINT, null, true, null, null, null);
+            graphRepresentation.addVertex(indNode);
+            graphRepresentation.addEdge(indNode, constraintNode, new LabelEdge("type"));
+
+            for (Node referencedIDNode : referencedIdNodes) {
+                graphRepresentation.addEdge(indNode, referencedIDNode, new LabelEdge("referenced"));
+            }
+
+            for (Node dependantIDNode : dependantIdNodes) {
+                graphRepresentation.addEdge(indNode, dependantIDNode, new LabelEdge("dependant"));
             }
         }
 
@@ -585,33 +589,89 @@ public class SimilarityFlooding extends Matcher {
     }
 
     private Collection<UniqueColumnCombination> filterUniqueColumnCombinations(Collection<UniqueColumnCombination> uniqueColumnCombinations) {
+        return uniqueColumnCombinations;
+    }
 
-        Collection<UniqueColumnCombination> filteredUCCs = new HashSet<>();
+    private Collection<InclusionDependency> filterInclusionDependencies(Collection<InclusionDependency> inclusionDependencies) {
 
-        double lengthScoreWeight = Double.parseDouble(this.lengthScoreWeight);
-        double valueScoreWeight = Double.parseDouble(this.valueScoreWeight);
-        double postionScoreWeight = Double.parseDouble(this.postionScoreWeight);
-        double nameSuffixScoreWeight = Double.parseDouble(this.nameSuffixScoreWeight);
-        double threshold = Double.parseDouble(this.uccFilterThreshold);
+        Collection<InclusionDependency> filteredINDs = new HashSet<>();
 
-        for (UniqueColumnCombination ucc : uniqueColumnCombinations) {
+        double coverageScoreWeight = Double.parseDouble(this.coverage);
+        double columnNameSimilarityScoreWeight = Double.parseDouble(this.columnNameSimilarity);
+        double valueLengthDifferenceScoreWeight = Double.parseDouble(this.valueLengthDifference);
+        double outOfRangeScoreWeight = Double.parseDouble(this.outOfRange);
+        double threshold = Double.parseDouble(this.indFilterThreshold);
 
-            if (!ucc.getColumnCombination().isEmpty() && ucc.getColumnCombination().size() <= 3) { //(Primary) Keys very rarely consist of more than 3 columns
-                double score = ucc.getPrimaryKeyScore(lengthScoreWeight, valueScoreWeight, postionScoreWeight, nameSuffixScoreWeight);
+        for (InclusionDependency ind : inclusionDependencies) {
 
-                if (score >= threshold) {
-                    filteredUCCs.add(ucc);
+            if (!ind.getDependant().isEmpty() && ind.getDependant().size() <= 3) { //Foreign Key Constraints very rarely consist of more than 3 attributes
+
+                Set<Datatype> datatypesInIND = ind.getReferenced().stream().map(Column::getDatatype).collect(Collectors.toSet());
+
+                if (!datatypesInIND.contains(Datatype.BOOLEAN)) { //No boolean column should be part of the ind
+                    double score = ind.getForeignKeyScore(coverageScoreWeight, columnNameSimilarityScoreWeight, valueLengthDifferenceScoreWeight, outOfRangeScoreWeight);
+
+                    if (score >= threshold) {
+                        filteredINDs.add(ind);
+                    }
                 }
             }
         }
 
-        System.out.println("Reduced AUCCs: " + uniqueColumnCombinations.size() + " -> " + filteredUCCs.size());
-
-        return filteredUCCs;
+        return filteredINDs;
     }
 
-    private Collection<InclusionDependency> filterInclusionDependencies(Collection<InclusionDependency> inclusionDependencies) {
-        return inclusionDependencies;
+    public Map<String, String> getParameters() {
+        Map<String, String> parameters = new HashMap<>();
+        parameters.put("propCoeffPolicy", propCoeffPolicy);
+        parameters.put("fixpoint", fixpoint);
+        parameters.put("coverage", coverage);
+        parameters.put("columnNameSimilarity", columnNameSimilarity);
+        parameters.put("valueLengthDifference", valueLengthDifference);
+        parameters.put("outOfRange", outOfRange);
+        parameters.put("indFilterThreshold", indFilterThreshold);
+        parameters.put("labelScoreWeight", labelScoreWeight);
+        parameters.put("selectThresholdWeight", selectThresholdWeight);
+
+        return parameters;
+    }
+
+    public void setParameters(Map<String, String> currentParams) {
+        propCoeffPolicy = currentParams.get("propCoeffPolicy");
+        fixpoint = currentParams.get("fixpoint");
+        coverage = currentParams.get("coverage");
+        columnNameSimilarity = currentParams.get("columnNameSimilarity");
+        valueLengthDifference = currentParams.get("valueLengthDifference");
+        outOfRange = currentParams.get("outOfRange");
+        indFilterThreshold = currentParams.get("indFilterThreshold");
+        labelScoreWeight = currentParams.get("labelScoreWeight");
+        selectThresholdWeight = currentParams.get("selectThresholdWeight");
+    }
+
+    public Map<String, Collection<String>> getPossibleValues() {
+        Map<String, Collection<String>> possibleValues = new HashMap<>();
+        possibleValues.put("propCoeffPolicy", List.of("INV_AVG", "INV_PROD"));
+        possibleValues.put("fixpoint", List.of("A", "B", "C")); //TODO: Removed Basic
+        possibleValues.put("coverage", List.of("normalizedValue"));
+        possibleValues.put("columnNameSimilarity", List.of("normalizedValue"));
+        possibleValues.put("valueLengthDifference", List.of("normalizedValue"));
+        possibleValues.put("outOfRange", List.of("normalizedValue"));
+        possibleValues.put("indFilterThreshold", List.of("normalizedValue"));
+        possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
+        possibleValues.put("selectThresholdWeight", List.of("0.95")); // Results from constraint testing suggest that a value near 1 is good
+
+        return possibleValues;
+    }
+
+    public double getValueSimilarityBetweenColumns(Column column1, Column column2) {
+        Map<String, Double> probabilityMap1 = getValueProbabilities(column1);
+        Map<String, Double> probabilityMap2 = getValueProbabilities(column2);
+
+        double distance = getDistanceBetweenProbabilityMaps(probabilityMap1, probabilityMap2);
+
+        //System.out.println("Distance: " + distance + "; Similarity: " + 1.0 / (1.0 + distance));
+
+        return 1.0 / (1.0 + distance);
     }
 
     private Map<String, Double> getValueProbabilities(Column column) {
@@ -648,61 +708,6 @@ public class SimilarityFlooding extends Matcher {
             distance += Math.pow(probability1 - probability2, 2);
         }
         return distance;
-    }
-
-    public double getValueSimilarityBetweenColumns(Column column1, Column column2) {
-        Map<String, Double> probabilityMap1 = getValueProbabilities(column1);
-        Map<String, Double> probabilityMap2 = getValueProbabilities(column2);
-
-        double distance = getDistanceBetweenProbabilityMaps(probabilityMap1, probabilityMap2);
-
-        //System.out.println("Distance: " + distance + "; Similarity: " + 1.0 / (1.0 + distance));
-
-        return 1.0 / (1.0 + distance);
-    }
-
-    public Map<String, String> getParameters() {
-        Map<String, String> parameters = new HashMap<>();
-        parameters.put("propCoeffPolicy", propCoeffPolicy);
-        parameters.put("fixpoint", fixpoint);
-        parameters.put("lengthScoreWeight", lengthScoreWeight);
-        parameters.put("valueScoreWeight", valueScoreWeight);
-        parameters.put("postionScoreWeight", postionScoreWeight);
-        parameters.put("nameSuffixScoreWeight", nameSuffixScoreWeight);
-        parameters.put("uccFilterThreshold", uccFilterThreshold);
-        parameters.put("labelScoreWeight", labelScoreWeight);
-        parameters.put("selectThresholdWeight", selectThresholdWeight);
-
-        return parameters;
-    }
-
-    public void setParameters(Map<String, String> currentParams) {
-        propCoeffPolicy = currentParams.get("propCoeffPolicy");
-        fixpoint = currentParams.get("fixpoint");
-        lengthScoreWeight = currentParams.get("lengthScoreWeight");
-        valueScoreWeight = currentParams.get("valueScoreWeight");
-        postionScoreWeight = currentParams.get("postionScoreWeight");
-        nameSuffixScoreWeight = currentParams.get("nameSuffixScoreWeight");
-        uccFilterThreshold = currentParams.get("uccFilterThreshold");
-        labelScoreWeight = currentParams.get("labelScoreWeight");
-        selectThresholdWeight = currentParams.get("selectThresholdWeight");
-    }
-
-    public Map<String, Collection<String>> getPossibleValues() {
-        Map<String, Collection<String>> possibleValues = new HashMap<>();
-        possibleValues.put("propCoeffPolicy", List.of("INV_AVG", "INV_PROD"));
-        possibleValues.put("fixpoint", List.of("A", "B", "C")); //TODO: Removed Basic
-        possibleValues.put("UCCQuick", List.of("true", "false"));
-        possibleValues.put("UCCComplete", List.of("true", "false"));
-        possibleValues.put("lengthScoreWeight", List.of("normalizedValue"));
-        possibleValues.put("valueScoreWeight", List.of("normalizedValue"));
-        possibleValues.put("postionScoreWeight", List.of("normalizedValue"));
-        possibleValues.put("nameSuffixScoreWeight", List.of("normalizedValue"));
-        possibleValues.put("uccFilterThreshold", List.of("normalizedValue"));
-        possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
-        possibleValues.put("selectThresholdWeight", List.of("0.95")); // Results from constraint testing suggest that a value near 1 is good
-
-        return possibleValues;
     }
 
 }
