@@ -155,7 +155,6 @@ public class FunctionalDependency implements Dependency {
             return 0.0;
         }
 
-        Collection<Column> X = this.getDeterminant();
         Column Y = this.getDependant();
 
         double gpdepXY = getGPDEPScore();
@@ -184,7 +183,6 @@ public class FunctionalDependency implements Dependency {
             return 0.0;
         }
 
-        Collection<Column> X = this.getDeterminant();
         Column Y = this.getDependant();
 
         double gpdepXY = getGPDEPScore();
