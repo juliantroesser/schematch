@@ -104,6 +104,25 @@ public class SimilarityFlooding extends Matcher {
 
         Graph<Node, LabelEdge> graphRepresentation = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
+        buildGraphRepresentation(db, graphRepresentation);
+
+        //Extending the schema-graph with dependency information:
+
+        //Add Constraint Node only when introducing additional Nodes for dependency
+
+        Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
+        graphRepresentation.addVertex(constraintNode);
+
+        functionalDependencies(db, graphRepresentation, constraintNode);
+
+        uniqueColumnCombinations(db, graphRepresentation, constraintNode);
+
+        inclusionDependencies(db, graphRepresentation, constraintNode);
+
+        return graphRepresentation;
+    }
+
+    private void buildGraphRepresentation(Database db, Graph<Node, LabelEdge> graphRepresentation) {
         Node schemaNode = new Node("Schema", NodeType.DATABASE, null, false, null, null, null);
         Node tableNode = new Node("Table", NodeType.TABLE, null, false, null, null, null);
         Node columnNode = new Node("Column", NodeType.COLUMN, null, false, null, null, null);
@@ -171,21 +190,6 @@ public class SimilarityFlooding extends Matcher {
                 }
             }
         }
-
-        //Extending the schema-graph with dependency information:
-
-        //Add Constraint Node only when introducing additional Nodes for dependency
-
-        Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
-        graphRepresentation.addVertex(constraintNode);
-
-        functionalDependencies(db, graphRepresentation, constraintNode);
-
-        uniqueColumnCombinations(db, graphRepresentation, constraintNode);
-
-        inclusionDependencies(db, graphRepresentation, constraintNode);
-
-        return graphRepresentation;
     }
 
     private void inclusionDependencies(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
@@ -345,7 +349,7 @@ public class SimilarityFlooding extends Matcher {
             try {
                 propagationCoefficients = policy.evaluate(nodeGraph1, nodeGraph2, graph1, graph2);
             } catch (Exception e) {
-                System.out.println("Not a policy");
+                log.info("Not a policy");
             }
 
             Map<String, Double> countInLabelsTotal = propagationCoefficients.get(0);
@@ -535,29 +539,11 @@ public class SimilarityFlooding extends Matcher {
         for (FunctionalDependency fd : functionalDependencies) {
 
             //Determinant should have at least one attribute
-            if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) { //Maximum determinant size of 3 (because large determinant often appear by chance)
-
-                double score;
-
-//                switch (fdFilter) {
-//                    case "all" -> score = 1.0;
-//                    case "pdep" -> score = fd.getPDEPScore();
-//                    case "gpdep" -> score = fd.getGPDEPScore();
-//                    case "ngpdep" -> score = fd.getNGPDEPScore();
-//                    case "alt_ngpdep_sum" -> score = fd.getAltNGPDEPSumScore();
-//                    case "alt_ngpdep_max" -> score = fd.getAltNGPDEPMaxScore();
-//                    default -> throw new IllegalArgumentException("FD Filter does not exist");
-//                }
-
-                score = fd.getAltNGPDEPSumScore();
-
-                if (score >= FD_FILTER_THRESHOLD) {
-                    filteredFDs.add(fd);
-                }
-            }
+            //Maximum determinant size of 3 (because large determinant often appear by chance)
+            if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3 && fd.getAltNGPDEPSumScore() >= FD_FILTER_THRESHOLD) filteredFDs.add(fd);
         }
 
-        System.out.println("Filtered FDs: " + functionalDependencies.size() + "->" + filteredFDs.size());
+        log.info("Filtered FDs: " + functionalDependencies.size() + "->" + filteredFDs.size());
 
         return filteredFDs;
     }
@@ -579,7 +565,7 @@ public class SimilarityFlooding extends Matcher {
             }
         }
 
-        System.out.println("Reduced AUCCs: " + uniqueColumnCombinations.size() + " -> " + filteredUCCs.size());
+        log.info("Reduced AUCCs: " + uniqueColumnCombinations.size() + " -> " + filteredUCCs.size());
 
         return filteredUCCs;
     }
@@ -648,7 +634,7 @@ public class SimilarityFlooding extends Matcher {
 
         double distance = getDistanceBetweenProbabilityMaps(probabilityMap1, probabilityMap2);
 
-        //System.out.println("Distance: " + distance + "; Similarity: " + 1.0 / (1.0 + distance));
+        //log.info("Distance: " + distance + "; Similarity: " + 1.0 / (1.0 + distance));
 
         return 1.0 / (1.0 + distance);
     }
