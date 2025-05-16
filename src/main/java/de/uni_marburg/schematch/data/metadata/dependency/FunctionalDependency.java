@@ -79,25 +79,11 @@ public class FunctionalDependency implements Dependency {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[");
-        if (determinant.isEmpty()) {
-            sb.append("[]");
-        } else {
-            for (Column column : determinant) { //[tableName1.columnName1, tableName2.columnName2, ... ]
-                sb.append(column.getTable().getName());
-                sb.append(".");
-                sb.append(column.getLabel());
-                sb.append(", ");
-            }
-        }
-
-        sb.delete(sb.length() - 2, sb.length()); // Remove the trailing ", "
-        sb.append("]");
-        sb.append(" --> ");
-        sb.append(dependant.getTable().getName()).append(".").append(dependant.getLabel()); // [tableName.columnName]
-
-        return sb.toString();
+        String left = determinant.isEmpty() ? "[]" : Util.columnsToString(determinant);
+        String right = Util.columnToString(dependant);
+        return left + " --> " + right;
     }
+
 
     public double getAltNGPDEPSumScore() {
 

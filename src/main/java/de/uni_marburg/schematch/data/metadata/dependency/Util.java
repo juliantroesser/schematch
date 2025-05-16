@@ -4,6 +4,7 @@ import de.uni_marburg.schematch.data.Column;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class Util {
     public static ArrayList<String> getDistinctValues(Collection<Column> columnCombination, int N) {
@@ -26,5 +27,27 @@ public class Util {
         }
 
         return values;
+    }
+
+    // Formats columns as [Table.Column, ...]
+    public static String columnsToString(Collection<Column> columns) {
+        StringBuilder sb = new StringBuilder("[");
+        Iterator<Column> iterator = columns.iterator();
+        while (iterator.hasNext()) {
+            Column column = iterator.next();
+            sb.append(column.getTable().getName())
+                    .append(".")
+                    .append(column.getLabel());
+            if (iterator.hasNext()) {
+                sb.append(", ");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    // Formats a single column as Table.Column
+    public static String columnToString(Column column) {
+        return column.getTable().getName() + "." + column.getLabel();
     }
 }
