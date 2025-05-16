@@ -14,11 +14,12 @@ import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 
 import java.lang.reflect.Field;
 import java.util.*;
 
+import static de.uni_marburg.schematch.matching.similarityFlooding.SchemaGraphBuilder.createConnectivityGraph;
+import static de.uni_marburg.schematch.matching.similarityFlooding.SchemaGraphBuilder.inducePropagationGraph;
 import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFloodingUtils.*;
 
 @NoArgsConstructor
@@ -35,6 +36,72 @@ public class SimilarityFlooding extends Matcher {
     private String fdFilter;
     private String labelScoreWeight;
     private String selectThresholdWeight;
+
+    private static Map<NodePair, Double> similarityFlooding
+            (Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
+
+        double EPSILON = 0.0001;
+        int MAX_ITERATIONS = 200;
+        boolean convergence = false;
+        int iterationCount = 0;
+
+        Map<NodePair, Double> sigma_0 = new HashMap<>(initialMapping);
+        Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
+        Map<NodePair, Double> sigma_i = new HashMap<>(sigma_0);
+
+        while (!convergence && iterationCount <= MAX_ITERATIONS) {
+
+            double maxValueCurrentIteration = Double.MIN_VALUE;
+
+            for (NodePair node : sigma_0.keySet()) {
+
+                //Alle Nachbarn bekommen
+                Set<CoefficientEdge> incomingEdges = propagationGraph.incomingEdgesOf(node); //Only neighbors from incoming edges
+//                Set<NodePair> neighborNodes = incomingEdges.stream().map(propagationGraph::getEdgeSource).collect(Collectors.toSet());
+                Set<NodePair> neighborNodes = new HashSet<>();
+                for (CoefficientEdge edge : incomingEdges) {
+                    NodePair source = propagationGraph.getEdgeSource(edge);
+                    neighborNodes.add(source);
+                }
+
+                //Neuen Wert für Node auf Basis der Nachbarn berechnen
+                double newValue;
+                try {
+                    newValue = formula.evaluate(node, neighborNodes, sigma_0, sigma_i, propagationGraph);
+                } catch (NoSuchMethodException e) {
+                    throw new RuntimeException(e);
+                }
+
+                //MaxWert der aktuellen Iteration speichern, damit später normalisieren möglich
+                if (newValue > maxValueCurrentIteration) {
+                    maxValueCurrentIteration = newValue;
+                }
+
+                sigma_i_plus_1.put(node, newValue);
+            }
+
+            //Normalisieren für die aktuelle Iteration
+            for (NodePair node : sigma_0.keySet()) {
+                sigma_i_plus_1.put(node, (sigma_i_plus_1.get(node) / maxValueCurrentIteration));
+            }
+
+            //Prüfen ob Residuum(sigma_i, sigma_i+1) konvergiert
+            convergence = hasConverged(sigma_i, sigma_i_plus_1, EPSILON);
+            sigma_i.putAll(sigma_i_plus_1);
+            iterationCount++;
+        }
+
+        log.info("Ran {} Iterations for {} Nodes", iterationCount - 1, initialMapping.size());
+        return sigma_i_plus_1;
+    }
+
+    public static Map<String, Collection<String>> getPossibleValues() {
+        Map<String, Collection<String>> possibleValues = new HashMap<>();
+        for (Param param : Param.values()) {
+            possibleValues.put(param.key, param.possibleValues);
+        }
+        return possibleValues;
+    }
 
     @Override
     public float[][] match(MatchTask matchTask, MatchingStep matchStep) {
@@ -95,84 +162,7 @@ public class SimilarityFlooding extends Matcher {
         return simMatrix;
     }
 
-    public Graph<NodePair, LabelEdge> createConnectivityGraph(Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) {
-
-        Graph<NodePair, LabelEdge> connectivityGraph = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
-
-        //Für jede Kante aus Graph1
-        for (LabelEdge label1 : graph1.edgeSet()) {
-            //Für jede Kante aus Graph2
-            for (LabelEdge label2 : graph2.edgeSet()) {
-                //Falls die Labels beider Kanten gleich sind
-                if (label1 != label2 && label1.equals(label2)) {
-
-                    Node sourceVertex1 = graph1.getEdgeSource(label1);
-                    Node targetVertex1 = graph1.getEdgeTarget(label1);
-
-                    Node sourceVertex2 = graph2.getEdgeSource(label2);
-                    Node targetVertex2 = graph2.getEdgeTarget(label2);
-
-                    //Knotenpaar1 erstellen mit NodePair(startKnotenKante1, startKnotenKante2)
-                    NodePair connectedSourceNode = new NodePair(sourceVertex1, sourceVertex2);
-                    //Knotenpaar2 erstellen mit NodePair(endKnotenKante1, endKnotenKante2)
-                    NodePair connectedTargetNode = new NodePair(targetVertex1, targetVertex2);
-
-                    //Beide Knoten zu Graph hinzufügen
-                    connectivityGraph.addVertex(connectedSourceNode);
-                    connectivityGraph.addVertex(connectedTargetNode);
-
-                    //Kante von Knotenpaar1 zu Knotenpaar2 mit Label der beiden Kanten
-                    connectivityGraph.addEdge(connectedSourceNode, connectedTargetNode, new LabelEdge(label1.getLabel()));
-                }
-            }
-        }
-
-        return connectivityGraph;
-    }
-
-    public Graph<NodePair, CoefficientEdge> inducePropagationGraph
-            (Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy
-                    policy) {
-
-        Graph<NodePair, CoefficientEdge> propagationGraph = new DefaultDirectedWeightedGraph<>(CoefficientEdge.class);
-
-        for (NodePair nodePair : connectivityGraph.vertexSet()) {
-            propagationGraph.addVertex(nodePair);
-        }
-
-        for (NodePair nodePair : connectivityGraph.vertexSet()) {
-
-            Node nodeGraph1 = nodePair.getFirstNode();
-            Node nodeGraph2 = nodePair.getSecondNode();
-
-            List<Map<String, Double>> propagationCoefficients = new ArrayList<>();
-
-            try {
-                propagationCoefficients = policy.evaluate(nodeGraph1, nodeGraph2, graph1, graph2);
-            } catch (Exception e) {
-                log.info("Not a policy");
-            }
-
-            Map<String, Double> countInLabelsTotal = propagationCoefficients.get(0);
-            Map<String, Double> countOutLabelsTotal = propagationCoefficients.get(1);
-
-            for (LabelEdge edge : connectivityGraph.incomingEdgesOf(nodePair)) {
-                NodePair sourceNodePair = connectivityGraph.getEdgeSource(edge);
-                NodePair targetNodePair = connectivityGraph.getEdgeTarget(edge);
-                propagationGraph.addEdge(targetNodePair, sourceNodePair, new CoefficientEdge(countInLabelsTotal.get(edge.getLabel())));
-            }
-
-            for (LabelEdge edge : connectivityGraph.outgoingEdgesOf(nodePair)) {
-                NodePair sourceNodePair = connectivityGraph.getEdgeSource(edge);
-                NodePair targetNodePair = connectivityGraph.getEdgeTarget(edge);
-                propagationGraph.addEdge(sourceNodePair, targetNodePair, new CoefficientEdge(countOutLabelsTotal.get(edge.getLabel())));
-            }
-        }
-
-        return propagationGraph;
-    }
-
-    public Map<NodePair, Double> calculateInitialMapping(Graph<NodePair, CoefficientEdge> propagationGraph) {
+    private Map<NodePair, Double> calculateInitialMapping(Graph<NodePair, CoefficientEdge> propagationGraph) {
 
 //        double initial_fd_sim = Double.parseDouble(FDSim);
 //        double initial_ucc_sim = Double.parseDouble(UCCSim);
@@ -227,90 +217,6 @@ public class SimilarityFlooding extends Matcher {
         return initialMapping;
     }
 
-    public Map<NodePair, Double> similarityFlooding
-            (Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
-
-        double EPSILON = 0.0001;
-        int MAX_ITERATIONS = 200;
-        boolean convergence = false;
-        int iterationCount = 0;
-
-        Map<NodePair, Double> sigma_0 = new HashMap<>(initialMapping);
-        Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
-        Map<NodePair, Double> sigma_i = new HashMap<>(sigma_0);
-
-        while (!convergence && iterationCount <= MAX_ITERATIONS) {
-
-            double maxValueCurrentIteration = Double.MIN_VALUE;
-
-            for (NodePair node : sigma_0.keySet()) {
-
-                //Alle Nachbarn bekommen
-                Set<CoefficientEdge> incomingEdges = propagationGraph.incomingEdgesOf(node); //Only neighbors from incoming edges
-//                Set<NodePair> neighborNodes = incomingEdges.stream().map(propagationGraph::getEdgeSource).collect(Collectors.toSet());
-                Set<NodePair> neighborNodes = new HashSet<>();
-                for (CoefficientEdge edge : incomingEdges) {
-                    NodePair source = propagationGraph.getEdgeSource(edge);
-                    neighborNodes.add(source);
-                }
-
-                //Neuen Wert für Node auf Basis der Nachbarn berechnen
-                double newValue;
-                try {
-                    newValue = formula.evaluate(node, neighborNodes, sigma_0, sigma_i, propagationGraph);
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                }
-
-                //MaxWert der aktuellen Iteration speichern, damit später normalisieren möglich
-                if (newValue > maxValueCurrentIteration) {
-                    maxValueCurrentIteration = newValue;
-                }
-
-                sigma_i_plus_1.put(node, newValue);
-            }
-
-            //Normalisieren für die aktuelle Iteration
-            for (NodePair node : sigma_0.keySet()) {
-                sigma_i_plus_1.put(node, (sigma_i_plus_1.get(node) / maxValueCurrentIteration));
-            }
-
-            //Prüfen ob Residuum(sigma_i, sigma_i+1) konvergiert
-            convergence = hasConverged(sigma_i, sigma_i_plus_1, EPSILON);
-            sigma_i.putAll(sigma_i_plus_1);
-            iterationCount++;
-        }
-
-        log.info("Ran {} Iterations for {} Nodes", iterationCount - 1, initialMapping.size());
-        return sigma_i_plus_1;
-    }
-
-    //Only keep matching between elements of same kind, put simValue of IDNodes with their nameValues
-    public Map<NodePair, Double> filterMapping(Map<NodePair, Double> mapping) {
-
-        Map<NodePair, Double> filteredMapping = new HashMap<>();
-
-        for (Map.Entry<NodePair, Double> entry : mapping.entrySet()) {
-
-            Node node1 = entry.getKey().getFirstNode();
-            Node node2 = entry.getKey().getSecondNode();
-            Double simValue = entry.getValue();
-
-            if (node1.isIDNode() && node2.isIDNode()) {
-
-                NodePair pair = new NodePair(node1.getNameNode(), node2.getNameNode());
-
-                //Only keep matches between Columns
-                if (node1.getNodeType().equals(node2.getNodeType())) {
-                    if (node1.getNodeType().equals(NodeType.COLUMN)) {
-                        filteredMapping.put(pair, simValue);
-                    }
-                }
-            }
-        }
-        return filteredMapping;
-    }
-
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder(getClass().getSimpleName());
@@ -357,15 +263,7 @@ public class SimilarityFlooding extends Matcher {
         }
     }
 
-    public Map<String, Collection<String>> getPossibleValues() {
-        Map<String, Collection<String>> possibleValues = new HashMap<>();
-        for (Param param : Param.values()) {
-            possibleValues.put(param.key, param.possibleValues);
-        }
-        return possibleValues;
-    }
-
-    public enum Param {
+    private enum Param {
         PROP_COEFF_POLICY("propCoeffPolicy", List.of("INV_AVG", "INV_PROD")),
         FIXPOINT("fixpoint", List.of("A", "B", "C")),
         IND_FILTER_THRESHOLD("indFilterThreshold", List.of("normalizedValue")),

@@ -21,6 +21,83 @@ class SchemaGraphBuilder {
         this.dependencyFilter = new DependencyFilter(uccFilterThreshold, indFilterThreshold);
     }
 
+    static Graph<NodePair, LabelEdge> createConnectivityGraph(Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) {
+
+        Graph<NodePair, LabelEdge> connectivityGraph = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
+
+        //Für jede Kante aus Graph1
+        for (LabelEdge label1 : graph1.edgeSet()) {
+            //Für jede Kante aus Graph2
+            for (LabelEdge label2 : graph2.edgeSet()) {
+                //Falls die Labels beider Kanten gleich sind
+                if (label1 != label2 && label1.equals(label2)) {
+
+                    Node sourceVertex1 = graph1.getEdgeSource(label1);
+                    Node targetVertex1 = graph1.getEdgeTarget(label1);
+
+                    Node sourceVertex2 = graph2.getEdgeSource(label2);
+                    Node targetVertex2 = graph2.getEdgeTarget(label2);
+
+                    //Knotenpaar1 erstellen mit NodePair(startKnotenKante1, startKnotenKante2)
+                    NodePair connectedSourceNode = new NodePair(sourceVertex1, sourceVertex2);
+                    //Knotenpaar2 erstellen mit NodePair(endKnotenKante1, endKnotenKante2)
+                    NodePair connectedTargetNode = new NodePair(targetVertex1, targetVertex2);
+
+                    //Beide Knoten zu Graph hinzufügen
+                    connectivityGraph.addVertex(connectedSourceNode);
+                    connectivityGraph.addVertex(connectedTargetNode);
+
+                    //Kante von Knotenpaar1 zu Knotenpaar2 mit Label der beiden Kanten
+                    connectivityGraph.addEdge(connectedSourceNode, connectedTargetNode, new LabelEdge(label1.getLabel()));
+                }
+            }
+        }
+
+        return connectivityGraph;
+    }
+
+    static Graph<NodePair, CoefficientEdge> inducePropagationGraph
+            (Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy
+                    policy) {
+
+        Graph<NodePair, CoefficientEdge> propagationGraph = new DefaultDirectedWeightedGraph<>(CoefficientEdge.class);
+
+        for (NodePair nodePair : connectivityGraph.vertexSet()) {
+            propagationGraph.addVertex(nodePair);
+        }
+
+        for (NodePair nodePair : connectivityGraph.vertexSet()) {
+
+            Node nodeGraph1 = nodePair.getFirstNode();
+            Node nodeGraph2 = nodePair.getSecondNode();
+
+            List<Map<String, Double>> propagationCoefficients = new ArrayList<>();
+
+            try {
+                propagationCoefficients = policy.evaluate(nodeGraph1, nodeGraph2, graph1, graph2);
+            } catch (Exception e) {
+                log.info("Not a policy");
+            }
+
+            Map<String, Double> countInLabelsTotal = propagationCoefficients.get(0);
+            Map<String, Double> countOutLabelsTotal = propagationCoefficients.get(1);
+
+            for (LabelEdge edge : connectivityGraph.incomingEdgesOf(nodePair)) {
+                NodePair sourceNodePair = connectivityGraph.getEdgeSource(edge);
+                NodePair targetNodePair = connectivityGraph.getEdgeTarget(edge);
+                propagationGraph.addEdge(targetNodePair, sourceNodePair, new CoefficientEdge(countInLabelsTotal.get(edge.getLabel())));
+            }
+
+            for (LabelEdge edge : connectivityGraph.outgoingEdgesOf(nodePair)) {
+                NodePair sourceNodePair = connectivityGraph.getEdgeSource(edge);
+                NodePair targetNodePair = connectivityGraph.getEdgeTarget(edge);
+                propagationGraph.addEdge(sourceNodePair, targetNodePair, new CoefficientEdge(countOutLabelsTotal.get(edge.getLabel())));
+            }
+        }
+
+        return propagationGraph;
+    }
+
     Graph<Node, LabelEdge> transformIntoGraphRepresentationSchema(Database db) {
 
         Graph<Node, LabelEdge> graphRepresentation = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
@@ -214,4 +291,5 @@ class SchemaGraphBuilder {
             graphRepresentation.addEdge(fdNode, dependantIDNode, new LabelEdge("dependant"));
         }
     }
+
 }
