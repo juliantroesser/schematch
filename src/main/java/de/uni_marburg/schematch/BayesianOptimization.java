@@ -91,8 +91,6 @@ public class BayesianOptimization {
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
         similarityFlooding.setFdFilter("all");
-        similarityFlooding.setLabelScoreWeight("0.5");
-        similarityFlooding.setSelectThresholdWeight("1.0");
     }
 
     /**
@@ -125,8 +123,6 @@ public class BayesianOptimization {
             similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
             similarityFlooding.setFixpoint(message.getString("fixpoint"));
             similarityFlooding.setFdFilter(message.getString("fdFilter"));
-            similarityFlooding.setLabelScoreWeight(message.getString("labelScoreWeight"));
-            similarityFlooding.setSelectThresholdWeight(message.getString("selectThresholdWeight"));
         } catch (Exception e) {
             log.error("Error updating parameters from incoming message: ", e);
         }
@@ -286,7 +282,7 @@ class PerformanceEvaluator {
      */
     public double evaluateAveragePerformance() {
         List<Double> datasetPerformances = new ArrayList<>();
-        ThresholdSelectionBoosting thresholdBoosting = new ThresholdSelectionBoosting(Double.parseDouble(this.similarityFlooding.getSelectThresholdWeight()));
+        ThresholdSelectionBoosting thresholdBoosting = new ThresholdSelectionBoosting(SimilarityFlooding.SELECT_THRESHOLD_WEIGHT);
 
         // Iterate over each dataset configuration.
         for (Configuration.DatasetConfiguration datasetConfig : config.getDatasetConfigurations()) {
