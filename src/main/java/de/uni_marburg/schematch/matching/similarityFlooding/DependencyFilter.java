@@ -17,25 +17,33 @@ import java.util.stream.Collectors;
 public class DependencyFilter {
     private static final Logger log = LogManager.getLogger(DependencyFilter.class);
 
-    private static final double FD_FILTER_THRESHOLD = 0.95;
     private final String uccFilterThreshold;
     private final String indFilterThreshold;
+    private final String fdFilterThreshold;
 
-
-    DependencyFilter(String uccFilterThreshold, String indFilterThreshold) {
+    DependencyFilter(String uccFilterThreshold, String indFilterThreshold, String fdFilterThreshold) {
         this.uccFilterThreshold = uccFilterThreshold;
         this.indFilterThreshold = indFilterThreshold;
+        this.fdFilterThreshold = fdFilterThreshold;
     }
 
     Collection<FunctionalDependency> filterFunctionalDependencies(Collection<FunctionalDependency> functionalDependencies) {
 
         Collection<FunctionalDependency> filteredFDs = new ArrayList<>();
 
+        double threshold = Double.parseDouble(this.fdFilterThreshold);
+
         for (FunctionalDependency fd : functionalDependencies) {
 
             //Determinant should have at least one attribute
             //Maximum determinant size of 3 (because large determinant often appear by chance)
-            if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3 && fd.getAltNGPDEPSumScore() >= FD_FILTER_THRESHOLD) filteredFDs.add(fd);
+            if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) {
+                double score = fd.getAltNGPDEPSumScore();
+
+                if(score >= threshold) {
+                    filteredFDs.add(fd);
+                }
+            }
         }
 
         log.info("Filtered FDs: " + functionalDependencies.size() + "->" + filteredFDs.size());

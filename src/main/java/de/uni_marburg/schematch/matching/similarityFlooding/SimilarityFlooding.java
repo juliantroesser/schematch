@@ -28,14 +28,16 @@ import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFlo
 @Getter
 public class SimilarityFlooding extends Matcher {
 
+    private static final double LABEL_SCORE_WEIGHT = 0.5;
+    public static final double SELECT_THRESHOLD_WEIGHT = 0.95;
     private static final Logger log = LogManager.getLogger(SimilarityFlooding.class);
+
     private String propCoeffPolicy;
     private String fixpoint;
     private String uccFilterThreshold;
     private String indFilterThreshold;
+    private String fdFilterThreshold;
     private String fdFilter;
-    private String labelScoreWeight;
-    private String selectThresholdWeight;
 
     private static Map<NodePair, Double> similarityFlooding
             (Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
@@ -133,7 +135,7 @@ public class SimilarityFlooding extends Matcher {
         Database sourceDb = matchTask.getScenario().getSourceDatabase();
         Database targetDb = matchTask.getScenario().getTargetDatabase();
 
-        SchemaGraphBuilder schemaGraphBuilder = new SchemaGraphBuilder(this.uccFilterThreshold, this.indFilterThreshold);
+        SchemaGraphBuilder schemaGraphBuilder = new SchemaGraphBuilder(this.uccFilterThreshold, this.indFilterThreshold, this.fdFilterThreshold);
 
         Graph<Node, LabelEdge> sourceGraph = schemaGraphBuilder.transformIntoGraphRepresentationSchema(sourceDb);
         Graph<Node, LabelEdge> targetGraph = schemaGraphBuilder.transformIntoGraphRepresentationSchema(targetDb);
@@ -176,14 +178,8 @@ public class SimilarityFlooding extends Matcher {
             Levenshtein l = new Levenshtein();
             double similarity;
 
-            if (node1.getValue().startsWith("UCC#") && node2.getValue().startsWith("UCC#")) {
-                String node1value = node1.getValue();
-                String node2value = node2.getValue();
-                int size1 = Integer.parseInt(node1value.substring(node1value.indexOf("#") + 1));
-                int size2 = Integer.parseInt(node2value.substring(node2value.indexOf("#") + 1));
-
-                similarity = 1.0 / (1.0 + Math.abs(size1 - size2));
-            } else if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) {
+            //All Pairs of ID Nodes assign init similarity of 0.0
+            if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) {
 //                similarity = initial_fd_sim;
                 similarity = 0.0;
             } else if (node1.getValue().startsWith("UCC") && node2.getValue().startsWith("UCC")) {
@@ -194,18 +190,18 @@ public class SimilarityFlooding extends Matcher {
                 similarity = 0.0;
             } else if (node1.isIDNode() || node2.isIDNode()) {
                 similarity = 0.0;
-            } else {
 
+            //Otherwise if value Nodes assign combination of LabelScore and ValueScore (if applicable)
+            } else {
                 Column column1 = node1.getRepresentedColumn();
                 Column column2 = node2.getRepresentedColumn();
                 double labelSimilarity = l.compare(node1.getValue(), node2.getValue());
 
                 if (column1 == null || column2 == null) {
                     similarity = labelSimilarity;
-
                 } else {
-                    double labelWeight = Double.parseDouble(this.getLabelScoreWeight());
-
+                    //First Line Matcher
+                    double labelWeight = LABEL_SCORE_WEIGHT;
                     double valueSimilarity = getValueSimilarityBetweenColumns(column1, column2);
                     similarity = labelWeight * labelSimilarity + (1 - labelWeight) * valueSimilarity;
                 }
@@ -269,7 +265,8 @@ public class SimilarityFlooding extends Matcher {
         IND_FILTER_THRESHOLD("indFilterThreshold", List.of("normalizedValue")),
         FD_FILTER("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max")),
         LABEL_SCORE_WEIGHT("labelScoreWeight", List.of("normalizedValue")),
-        SELECT_THRESHOLD_WEIGHT("selectThresholdWeight", List.of("0.95"));
+        SELECT_THRESHOLD_WEIGHT("selectThresholdWeight", List.of("0.95")),
+        FD_FILTER_THRESHOLD("fdFilterThreshold", List.of("normalizedValue"));
 
         public final String key;
         public final Collection<String> possibleValues;

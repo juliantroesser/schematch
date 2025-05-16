@@ -17,8 +17,8 @@ class SchemaGraphBuilder {
     private static final Logger log = LogManager.getLogger(SchemaGraphBuilder.class);
     private final DependencyFilter dependencyFilter;
 
-    SchemaGraphBuilder(String uccFilterThreshold, String indFilterThreshold) {
-        this.dependencyFilter = new DependencyFilter(uccFilterThreshold, indFilterThreshold);
+    SchemaGraphBuilder(String uccFilterThreshold, String indFilterThreshold, String fdFilterThreshold) {
+        this.dependencyFilter = new DependencyFilter(uccFilterThreshold, indFilterThreshold, fdFilterThreshold);
     }
 
     static Graph<NodePair, LabelEdge> createConnectivityGraph(Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) {
@@ -225,7 +225,7 @@ class SchemaGraphBuilder {
         }
     }
 
-    private void uniqueColumnCombinations(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
+    private void uniqueColumnCombinationsLegacy(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
         List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
         int uccID = 1;
 
@@ -254,6 +254,50 @@ class SchemaGraphBuilder {
 
             for (Node nodePartOfUcc : nodesPartOfUcc) {
                 graphRepresentation.addEdge(nodePartOfUcc, uccNode, new LabelEdge("ucc"));
+            }
+        }
+    }
+
+    private void uniqueColumnCombinations(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
+        Collection<UniqueColumnCombination> uniqueColumnCombinations;
+
+        uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
+
+        int uccID = 1;
+
+        for (UniqueColumnCombination uniqueColumnCombination : dependencyFilter.filterUniqueColumnCombinations(uniqueColumnCombinations)) {
+
+            Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, true, null, null, null);
+            graphRepresentation.addVertex(uccNode);
+            graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type")); //TODO: Brauchen wir den constraintNode noch?
+
+            List<Node> nodesPartOfUcc = new ArrayList<>();
+
+            for(Column columnPartOfUCC : uniqueColumnCombination.getColumnCombination()) {
+                LabelEdge edgeFromIDtoColumn = graphRepresentation.incomingEdgesOf(new Node(columnPartOfUCC.getLabel(), NodeType.COLUMN, columnPartOfUCC.getDatatype(), false, null, columnPartOfUCC.getTable(), null)).stream().findFirst().get();
+                Node uccColumnIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoColumn);
+                nodesPartOfUcc.add(uccColumnIDNode);
+            }
+
+            Table tableOfUCC = nodesPartOfUcc.get(0).getNameNode().getRepresentedColumn().getTable();
+
+            List<Node> nodesNotPartOfUCC = new ArrayList<>();
+
+            for(Column columnInTableOfUCC : tableOfUCC.getColumns()) {
+                LabelEdge edgeFromIDtoColumn = graphRepresentation.incomingEdgesOf(new Node(columnInTableOfUCC.getLabel(), NodeType.COLUMN, columnInTableOfUCC.getDatatype(), false, null, columnInTableOfUCC.getTable(), null)).stream().findFirst().get();
+                Node columnIDNode = graphRepresentation.getEdgeSource(edgeFromIDtoColumn);
+
+                if(!nodesPartOfUcc.contains(columnIDNode)) {
+                    nodesNotPartOfUCC.add(columnIDNode);
+                }
+            }
+
+            for(Node IDNode : nodesPartOfUcc) {
+                graphRepresentation.addEdge(IDNode, uccNode, new LabelEdge("unique")); //TODO: Eventuell besseren Namen ausdenken
+            }
+
+            for(Node IDNode : nodesNotPartOfUCC) {
+                graphRepresentation.addEdge(uccNode, IDNode, new LabelEdge("notunique")); //TODO: Definitiv besseren Namen ausdenken
             }
         }
     }
