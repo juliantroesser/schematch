@@ -597,34 +597,33 @@ public class SimilarityFlooding extends Matcher {
 
     public Map<String, String> getParameters() {
         Map<String, String> parameters = new HashMap<>();
-        parameters.put("propCoeffPolicy", propCoeffPolicy);
-        parameters.put("fixpoint", fixpoint);
-        parameters.put("indFilterThreshold", indFilterThreshold);
-        parameters.put("fdFilter", fdFilter);
-        parameters.put("labelScoreWeight", labelScoreWeight);
-        parameters.put("selectThresholdWeight", selectThresholdWeight);
-
+        for (Param param : Param.values()) {
+            try {
+                Field field = this.getClass().getDeclaredField(param.key);
+                field.setAccessible(true);
+                parameters.put(param.key, (String) field.get(this));
+            } catch (Exception ignored) {
+            }
+        }
         return parameters;
     }
 
     public void setParameters(Map<String, String> currentParams) {
-        propCoeffPolicy = currentParams.get("propCoeffPolicy");
-        fixpoint = currentParams.get("fixpoint");
-        indFilterThreshold = currentParams.get("indFilterThreshold");
-        fdFilter = currentParams.get("fdFilter");
-        labelScoreWeight = currentParams.get("labelScoreWeight");
-        selectThresholdWeight = currentParams.get("selectThresholdWeight");
+        for (Param param : Param.values()) {
+            try {
+                Field field = this.getClass().getDeclaredField(param.key);
+                field.setAccessible(true);
+                field.set(this, currentParams.get(param.key));
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     public Map<String, Collection<String>> getPossibleValues() {
         Map<String, Collection<String>> possibleValues = new HashMap<>();
-        possibleValues.put("propCoeffPolicy", List.of("INV_AVG", "INV_PROD"));
-        possibleValues.put("fixpoint", List.of("A", "B", "C")); //TODO: Removed Basic
-        possibleValues.put("indFilterThreshold", List.of("normalizedValue"));
-        possibleValues.put("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max")); //TODO: Removed gpdep
-        possibleValues.put("labelScoreWeight", List.of("normalizedValue"));
-        possibleValues.put("selectThresholdWeight", List.of("0.95")); // Results from constraint testing suggest that a value near 1 is good
-
+        for (Param param : Param.values()) {
+            possibleValues.put(param.key, param.possibleValues);
+        }
         return possibleValues;
     }
 
@@ -673,6 +672,24 @@ public class SimilarityFlooding extends Matcher {
             distance += Math.pow(probability1 - probability2, 2);
         }
         return distance;
+    }
+
+    // Add this enum inside or outside the class
+    public enum Param {
+        PROP_COEFF_POLICY("propCoeffPolicy", List.of("INV_AVG", "INV_PROD")),
+        FIXPOINT("fixpoint", List.of("A", "B", "C")),
+        IND_FILTER_THRESHOLD("indFilterThreshold", List.of("normalizedValue")),
+        FD_FILTER("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max")),
+        LABEL_SCORE_WEIGHT("labelScoreWeight", List.of("normalizedValue")),
+        SELECT_THRESHOLD_WEIGHT("selectThresholdWeight", List.of("0.95"));
+
+        public final String key;
+        public final Collection<String> possibleValues;
+
+        Param(String key, Collection<String> possibleValues) {
+            this.key = key;
+            this.possibleValues = possibleValues;
+        }
     }
 
 }
