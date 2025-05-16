@@ -82,6 +82,32 @@ public class SimilarityFloodingUtils {
         return probabilityMap;
     }
 
+    //Only keep matching between elements of same kind, put simValue of IDNodes with their nameValues
+    static Map<NodePair, Double> filterMapping(Map<NodePair, Double> mapping) {
+
+        Map<NodePair, Double> filteredMapping = new HashMap<>();
+
+        for (Map.Entry<NodePair, Double> entry : mapping.entrySet()) {
+
+            Node node1 = entry.getKey().getFirstNode();
+            Node node2 = entry.getKey().getSecondNode();
+            Double simValue = entry.getValue();
+
+            if (node1.isIDNode() && node2.isIDNode()) {
+
+                NodePair pair = new NodePair(node1.getNameNode(), node2.getNameNode());
+
+                //Only keep matches between Columns
+                if (node1.getNodeType().equals(node2.getNodeType())) {
+                    if (node1.getNodeType().equals(NodeType.COLUMN)) {
+                        filteredMapping.put(pair, simValue);
+                    }
+                }
+            }
+        }
+        return filteredMapping;
+    }
+
     private static double getDistanceBetweenProbabilityMaps(Map<String, Double> map1, Map<String, Double> map2) {
 
         double distance = 0.0;
