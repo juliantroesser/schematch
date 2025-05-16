@@ -116,6 +116,7 @@ public class UniqueColumnCombination implements Dependency {
         return (double) count / (double) columnCombination.size();
     }
 
+    @SuppressWarnings("unused")
     private String getLongestValue(Column column) {
         return column.getValues().stream().max(Comparator.comparingInt(String::length)).orElse("");
     }
@@ -135,15 +136,7 @@ public class UniqueColumnCombination implements Dependency {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[");
-        for (Column column : columnCombination) {
-            sb.append(column.getTable().getName());
-            sb.append(".");
-            sb.append(column.getLabel());
-            sb.append(", ");
-        }
-        sb.delete(sb.length() - 2, sb.length());
-        sb.append("]");
-        return sb.toString();
+        return Util.columnsToString(columnCombination);
     }
+
 }

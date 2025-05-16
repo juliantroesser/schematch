@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.*;
 
+@SuppressWarnings("SameParameterValue")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -59,27 +60,11 @@ public class InclusionDependency implements Dependency {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[");
-        for (Column column : dependant) {
-            sb.append(column.getTable().getName());
-            sb.append(".");
-            sb.append(column.getLabel());
-            sb.append(", ");
-        }
-        sb.delete(sb.length() - 2, sb.length()); //delete trailing ", "
-        sb.append("]");
-        sb.append(" [= ");
-        sb.append("[");
-        for (Column column : referenced) {
-            sb.append(column.getTable().getName());
-            sb.append(".");
-            sb.append(column.getLabel());
-            sb.append(", ");
-        }
-        sb.delete(sb.length() - 2, sb.length());
-        sb.append("]");
-        return sb.toString();
+        String left = Util.columnsToString(dependant);
+        String right = Util.columnsToString(referenced);
+        return left + " [= " + right;
     }
+
 
     public double getForeignKeyScore() {
         double coverageScore = coverageScore();
