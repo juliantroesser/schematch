@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import itertools
 import json
 import logging
 import socket
@@ -7,8 +8,69 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import seaborn as sns
+import skopt
 from skopt import gp_minimize
-from skopt.space import Categorical, Real
+from skopt.space import Real
+
+
+def plot_parameter_pairwise_heatmaps(results, param_names):
+    """
+    For each pair of parameters, plot a heatmap of mean score for each value combination.
+    """
+    import math
+    df = pd.DataFrame([dict(**params, score=score) for params, score in results])
+
+    n_params = len(param_names)
+    n_pairs = n_params * (n_params - 1) // 2
+
+    # Calculate rows and columns for grid
+    ncols = 3 if n_pairs > 3 else n_pairs
+    nrows = math.ceil(n_pairs / ncols)
+    plt.figure(figsize=(5 * ncols, 5 * nrows))
+
+    plot_idx = 1
+    for i in range(n_params):
+        for j in range(i + 1, n_params):
+            p1 = param_names[i]
+            p2 = param_names[j]
+            pivot = df.pivot_table(index=p1, columns=p2, values="score", aggfunc="mean")
+            plt.subplot(nrows, ncols, plot_idx)
+            sns.heatmap(pivot, annot=True, fmt=".3f", cmap="viridis")
+            plt.title(f"Score Heatmap: {p1} vs {p2}")
+            plt.xlabel(p2)
+            plt.ylabel(p1)
+            plot_idx += 1
+
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_parameter_effects_bruteforce(results, param_names):
+    """
+    Plot a boxplot (or stripplot/violinplot) of score for each value of every parameter.
+    - results: list of (params_dict, score)
+    - param_names: list of parameter names
+    """
+    df = pd.DataFrame([dict(**params, score=score) for params, score in results])
+
+    n_params = len(param_names)
+    plt.figure(figsize=(4 * n_params, 5))
+    for i, param in enumerate(param_names, 1):
+        plt.subplot(1, n_params, i)
+        # Use boxplot for distribution, or swap to sns.stripplot for all points
+        sns.boxplot(x=param, y='score', data=df)
+        # sns.stripplot(x=param, y='score', data=df, color='black', alpha=0.4, jitter=True)
+        plt.title(param)
+        plt.xlabel(param)
+        if i == 1:
+            plt.ylabel('Score')
+        else:
+            plt.ylabel('')
+    plt.suptitle("Parameter Effect on Score (marginalized over other params)", y=1.04)
+    plt.tight_layout()
+    plt.show()
+
 
 # Configure logging for detailed debug output.
 logging.basicConfig(
@@ -295,56 +357,93 @@ class Optimizer:
             format_time(est_remaining_time),
         )
 
+    def all_params_are_categorical(self):
+        """
+        Return True if all possible_values lists do not contain 'normalizedValue'
+        """
+        return all("normalizedValue" not in vals for vals in self.possible_values.values())
+
     def optimize(self) -> dict:
         """
-        Run the optimization process and return the best parameters.
+        Run either brute-force search (all categorical) or Bayesian optimization (any continuous).
         """
-        # Build the search space.
-        space = []
-        for key, value in self.possible_values.items():
-            if "normalizedValue" in value:
-                space.append(Real(0, 1, name=key))
-            else:
-                space.append(Categorical(value, name=key))
-        self.space = space
+        if self.all_params_are_categorical():
+            # --- Brute-force all permutations ---
+            keys = list(self.possible_values.keys())
+            values = [self.possible_values[k] for k in keys]
+            all_combinations = list(itertools.product(*values))
+            logging.info("Brute-force: evaluating %d combinations...", len(all_combinations))
 
-        def objective(params):
-            param_dict = {dim.name: str(val) for dim, val in zip(space, params)}
-            # logging.info("Evaluating parameters: %s", param_dict)
-            score = self.objective_function(param_dict)
-            logging.info("Score for %s: %f", param_dict, score)
-            return -score
+            results = []
+            self.iteration_durations = []
+            start_time = time.time()
 
-        total_iterations = 60
-
-        def progress_callback(res):
-            current_time = time.time()
-            if self.last_callback_time is not None:
-                duration = current_time - self.last_callback_time
+            for i, combo in enumerate(all_combinations, 1):
+                params = {k: str(v) for k, v in zip(keys, combo)}
+                t0 = time.time()
+                score = self.objective_function(params)
+                duration = time.time() - t0
                 self.iteration_durations.append(duration)
-            self.last_callback_time = current_time
-            iteration_count = len(res.x_iters)
-            self.log_progress(iteration_count, total_iterations)
+                results.append((params, score))
+                logging.info("Evaluated %d/%d: %s => Score: %f (%.2fs)", i, len(all_combinations), params, score, duration)
 
-        res = gp_minimize(
-            objective,
-            space,
-            n_calls=total_iterations,
-            random_state=42,
-            callback=progress_callback
-        )
-        self.res = res
+                elapsed = time.time() - start_time
+                percent = (i / len(all_combinations)) * 100
+                logging.info("Progress: %.2f%% | Elapsed: %s", percent, format_time(elapsed))
 
-        # Convert any NumPy types to native Python types for cleaner logging.
-        def convert(value):
-            return value.item() if hasattr(value, "item") else value
+            best_params, best_score = max(results, key=lambda x: x[1])
+            logging.info("Best parameters: %s with score: %f", best_params, best_score)
 
-        best_params = {dim.name: convert(res.x[i]) for i, dim in enumerate(space)}
-        best_score = -res.fun
+            plot_parameter_effects_bruteforce(results, keys)
+            plot_parameter_pairwise_heatmaps(results, keys)
 
-        logging.info("Best parameters found: %s with score %f", best_params, best_score)
-        logging.info("Optimization finished in %.2f seconds", time.time() - self.start_time)
-        return best_params
+            return best_params
+
+        else:
+            # --- Bayesian optimization (skopt) ---
+            space = []
+            for key, value in self.possible_values.items():
+                if "normalizedValue" in value:
+                    space.append(Real(0, 1, name=key))
+                else:
+                    space.append(skopt.space.space.Categorical(value, name=key))
+            self.space = space
+
+            def objective(params):
+                param_dict = {dim.name: str(val) for dim, val in zip(space, params)}
+                score = self.objective_function(param_dict)
+                logging.info("Score for %s: %f", param_dict, score)
+                return -score
+
+            total_iterations = 60
+
+            def progress_callback(res):
+                current_time = time.time()
+                if self.last_callback_time is not None:
+                    duration = current_time - self.last_callback_time
+                    self.iteration_durations.append(duration)
+                self.last_callback_time = current_time
+                iteration_count = len(res.x_iters)
+                self.log_progress(iteration_count, total_iterations)
+
+            res = gp_minimize(
+                objective,
+                space,
+                n_calls=total_iterations,
+                random_state=42,
+                callback=progress_callback
+            )
+            self.res = res
+
+            def convert(value):
+                return value.item() if hasattr(value, "item") else value
+
+            best_params = {dim.name: convert(res.x[i]) for i, dim in enumerate(space)}
+            best_score = -res.fun
+
+            logging.info("Best parameters found: %s with score %f", best_params, best_score)
+            logging.info("Optimization finished in %.2f seconds", time.time() - self.start_time)
+            return best_params
 
 
 def main():
