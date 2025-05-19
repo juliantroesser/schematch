@@ -22,7 +22,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Main class that drives the Bayesian optimization process.
@@ -39,7 +41,6 @@ public class BayesianOptimization {
     private final CommunicationManager communicationManager;
     private final PerformanceEvaluator performanceEvaluator;
     private final SimilarityFlooding similarityFlooding;
-    private final Configuration config;
 
     /**
      * Constructs the BayesianOptimization instance by initializing the communication manager,
@@ -51,7 +52,7 @@ public class BayesianOptimization {
         // Initialize Similarity Flooding instance.
         this.similarityFlooding = new SimilarityFlooding();
         // Load configuration.
-        this.config = Configuration.getInstance();
+        Configuration config = Configuration.getInstance();
         // Initialize performance evaluator with a naive table pairs generator.
         this.performanceEvaluator = new PerformanceEvaluator(config, similarityFlooding, new NaiveTablePairsGenerator());
     }
@@ -90,6 +91,7 @@ public class BayesianOptimization {
         log.info("Configuring Similarity Flooding parameters");
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
+        similarityFlooding.setIndFilterThreshold("0.5");
         similarityFlooding.setFdFilter("all");
     }
 
@@ -104,7 +106,7 @@ public class BayesianOptimization {
         JSONObject initialData = new JSONObject();
         initialData.put("score", score);
         initialData.put("current_params", similarityFlooding.getParameters());
-        initialData.put("possible_values", similarityFlooding.getPossibleValues());
+        initialData.put("possible_values", SimilarityFlooding.getPossibleValues());
 
         log.info("Initial JSON data: {}", initialData);
         communicationManager.sendMessage(initialData);
@@ -119,10 +121,14 @@ public class BayesianOptimization {
     private void handleIncomingMessage(JSONObject message) {
         log.info("Handling incoming message: {}", message);
         try {
-            // Update Similarity Flooding parameters from the received JSON.
-            similarityFlooding.setPropCoeffPolicy(message.getString("propCoeffPolicy"));
-            similarityFlooding.setFixpoint(message.getString("fixpoint"));
-            similarityFlooding.setFdFilter(message.getString("fdFilter"));
+            // Build a map of parameters from the incoming JSON based on the Param enum.
+            Map<String, String> currentParams = new HashMap<>();
+            for (SimilarityFlooding.Param param : SimilarityFlooding.Param.values()) {
+                if (message.has(param.key)) {
+                    currentParams.put(param.key, message.getString(param.key));
+                }
+            }
+            similarityFlooding.setParameters(currentParams);
         } catch (Exception e) {
             log.error("Error updating parameters from incoming message: ", e);
         }
@@ -143,7 +149,6 @@ public class BayesianOptimization {
  */
 class CommunicationManager {
     private static final Logger log = LogManager.getLogger(CommunicationManager.class);
-    private final Socket sendSocket;
     private final PrintWriter messageSender;
     private final ServerSocket listenServer;
 
@@ -156,7 +161,7 @@ class CommunicationManager {
      */
     public CommunicationManager(String clientHost, int sendPort, int listenPort) {
         this.listenServer = initListenServer(listenPort);
-        this.sendSocket = initSendSocket(clientHost, sendPort);
+        Socket sendSocket = initSendSocket(clientHost, sendPort);
         this.messageSender = initMessageSender(sendSocket);
     }
 

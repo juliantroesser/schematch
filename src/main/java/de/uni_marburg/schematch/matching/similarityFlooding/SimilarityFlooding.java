@@ -31,6 +31,9 @@ public class SimilarityFlooding extends Matcher {
     private static final double LABEL_SCORE_WEIGHT = 0.5;
     public static final double SELECT_THRESHOLD_WEIGHT = 0.95;
     private static final Logger log = LogManager.getLogger(SimilarityFlooding.class);
+    private static final String IND_FILTER_THRESHOLD_DEFAULT = "0.5";
+    private static final String FD_FILTER_THRESHOLD_DEFAULT = "0.5";
+    private static final String UCC_FILTER_THRESHOLD_DEFAULT = "0.5";
 
     private String propCoeffPolicy;
     private String fixpoint;
@@ -134,6 +137,21 @@ public class SimilarityFlooding extends Matcher {
 
         Database sourceDb = matchTask.getScenario().getSourceDatabase();
         Database targetDb = matchTask.getScenario().getTargetDatabase();
+
+        if (this.indFilterThreshold == null) {
+            log.warn("No IND filter threshold specified. Using default value: {}", IND_FILTER_THRESHOLD_DEFAULT);
+            this.indFilterThreshold = IND_FILTER_THRESHOLD_DEFAULT;
+        }
+
+        if (this.fdFilterThreshold == null) {
+            log.warn("No FD filter threshold specified. Using default value: {}", FD_FILTER_THRESHOLD_DEFAULT);
+            this.fdFilterThreshold = FD_FILTER_THRESHOLD_DEFAULT;
+        }
+
+        if (this.uccFilterThreshold == null) {
+            log.warn("No UCC filter threshold specified. Using default value: {}", UCC_FILTER_THRESHOLD_DEFAULT);
+            this.uccFilterThreshold = UCC_FILTER_THRESHOLD_DEFAULT;
+        }
 
         SchemaGraphBuilder schemaGraphBuilder = new SchemaGraphBuilder(this.uccFilterThreshold, this.indFilterThreshold, this.fdFilterThreshold);
 
@@ -259,14 +277,13 @@ public class SimilarityFlooding extends Matcher {
         }
     }
 
-    private enum Param {
+    public enum Param {
         PROP_COEFF_POLICY("propCoeffPolicy", List.of("INV_AVG", "INV_PROD")),
         FIXPOINT("fixpoint", List.of("A", "B", "C")),
-        IND_FILTER_THRESHOLD("indFilterThreshold", List.of("normalizedValue")),
-        FD_FILTER("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max")),
-        LABEL_SCORE_WEIGHT("labelScoreWeight", List.of("normalizedValue")),
-        SELECT_THRESHOLD_WEIGHT("selectThresholdWeight", List.of("0.95")),
-        FD_FILTER_THRESHOLD("fdFilterThreshold", List.of("normalizedValue"));
+//        IND_FILTER_THRESHOLD("indFilterThreshold", List.of("normalizedValue")),
+        FD_FILTER("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max"));
+//        FD_FILTER_THRESHOLD("fdFilterThreshold", List.of("normalizedValue"));
+//        UCC_FILTER_THRESHOLD("uccFilterThreshold", List.of("normalizedValue"));
 
         public final String key;
         public final Collection<String> possibleValues;
