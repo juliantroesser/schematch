@@ -225,6 +225,7 @@ class SchemaGraphBuilder {
         }
     }
 
+    @Deprecated
     private void uniqueColumnCombinationsLegacy(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
         List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
         int uccID = 1;
@@ -292,8 +293,11 @@ class SchemaGraphBuilder {
                 }
             }
 
+            //log.debug("TotalNodesPartOfTable: {}", tableOfUCC.getColumns().size());
+            log.debug("nodesPartOfUcc: {}, nodesNotPartOfUCC: {}", nodesPartOfUcc.size(), nodesNotPartOfUCC.size());
+
             for(Node IDNode : nodesPartOfUcc) {
-                graphRepresentation.addEdge(IDNode, uccNode, new LabelEdge("unique")); //TODO: Eventuell besseren Namen ausdenken
+                graphRepresentation.addEdge(uccNode, IDNode, new LabelEdge("unique")); //TODO: Eventuell besseren Namen ausdenken
             }
 
             for(Node IDNode : nodesNotPartOfUCC) {
@@ -305,7 +309,7 @@ class SchemaGraphBuilder {
     private void functionalDependencies(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
         Collection<FunctionalDependency> functionalDependencies;
 
-        functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies();
+        functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies(); //We only use fds that are not a UCC themselves, as keys are trivial fds
 
         int fdID = 1;
 

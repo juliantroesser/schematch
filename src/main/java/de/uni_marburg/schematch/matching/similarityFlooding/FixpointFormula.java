@@ -216,8 +216,8 @@ public enum FixpointFormula {
         }
     };
 
-    protected static final double LAMBDA_D = 0.0;
-    protected static final double LAMBDA_E = 1.0; //Keep at 1.0
+    protected static final double LAMBDA_D = 0.0; //TODO: Find good values
+    protected static final double LAMBDA_E = 1.0; //TODO: Find good values
 
     public double evaluate(NodePair node, Set<NodePair> neighborNodes, Map<NodePair, Double> sigma_0, Map<NodePair, Double> sigma_i, Graph<NodePair, CoefficientEdge> propagationGraph) throws NoSuchMethodException {
         throw new NoSuchMethodException("Not implemented");
