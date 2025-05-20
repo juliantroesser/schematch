@@ -38,7 +38,7 @@ public class DependencyFilter {
             //Determinant should have at least one attribute
             //Maximum determinant size of 3 (because large determinant often appear by chance)
             if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) {
-                double score = fd.getAltNGPDEPSumScore();
+                double score = fd.getAltNGPDEPSumScore(); //TODO: function to calculate score type is hardcoded here
 
                 if(score >= threshold) {
                     filteredFDs.add(fd);
@@ -46,7 +46,7 @@ public class DependencyFilter {
             }
         }
 
-        log.info("Filtered FDs: " + functionalDependencies.size() + "->" + filteredFDs.size());
+        log.info("Filtered FDs: {} -> {}", functionalDependencies.size(), filteredFDs.size());
 
         return filteredFDs;
     }
@@ -68,7 +68,7 @@ public class DependencyFilter {
             }
         }
 
-        log.info("Reduced AUCCs: " + uniqueColumnCombinations.size() + " -> " + filteredUCCs.size());
+        log.info("Filtered UCCs: {} -> {}", uniqueColumnCombinations.size(), filteredUCCs.size());
 
         return filteredUCCs;
     }
@@ -85,7 +85,7 @@ public class DependencyFilter {
 
                 Set<Datatype> datatypesInIND = ind.getReferenced().stream().map(Column::getDatatype).collect(Collectors.toSet());
 
-                if (!datatypesInIND.contains(Datatype.BOOLEAN)) { //No boolean column should be part of the ind
+                if (!datatypesInIND.contains(Datatype.BOOLEAN)) { //No boolean column should be part of the ind, as these should not be a part of any keys
                     double score = ind.getForeignKeyScore();
 
                     if (score >= threshold) {
@@ -94,6 +94,8 @@ public class DependencyFilter {
                 }
             }
         }
+
+        log.info("Filtered INDs: {} -> {}", inclusionDependencies.size(), filteredINDs.size());
 
         return filteredINDs;
     }

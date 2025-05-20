@@ -5,6 +5,7 @@ import de.uni_marburg.schematch.data.Database;
 import de.uni_marburg.schematch.data.Table;
 import de.uni_marburg.schematch.matching.Matcher;
 import de.uni_marburg.schematch.matchtask.MatchTask;
+import de.uni_marburg.schematch.matchtask.matchstep.MatchStep;
 import de.uni_marburg.schematch.matchtask.matchstep.MatchingStep;
 import de.uni_marburg.schematch.similarity.string.Levenshtein;
 import lombok.AllArgsConstructor;
@@ -28,13 +29,19 @@ import static de.uni_marburg.schematch.matching.similarityFlooding.SimilarityFlo
 @Getter
 public class SimilarityFlooding extends Matcher {
 
+    private static final Logger log = LogManager.getLogger(SimilarityFlooding.class);
+
+    //Fixed parameters
     private static final double LABEL_SCORE_WEIGHT = 0.5;
     public static final double SELECT_THRESHOLD_WEIGHT = 0.95;
-    private static final Logger log = LogManager.getLogger(SimilarityFlooding.class);
+    private static final double PRECISION_OF_CONVERGENCE = 0.00001;
+    private static final int MAX_ITERATIONS = 200;
+
     private static final String IND_FILTER_THRESHOLD_DEFAULT = "0.5";
     private static final String FD_FILTER_THRESHOLD_DEFAULT = "0.5";
     private static final String UCC_FILTER_THRESHOLD_DEFAULT = "0.5";
 
+    //Free parameters
     private String propCoeffPolicy;
     private String fixpoint;
     private String uccFilterThreshold;
@@ -45,11 +52,11 @@ public class SimilarityFlooding extends Matcher {
     private static Map<NodePair, Double> similarityFlooding
             (Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
 
-        double EPSILON = 0.0001;
-        int MAX_ITERATIONS = 200;
+        //Termination conditions
         boolean convergence = false;
         int iterationCount = 0;
 
+        //First, current and next similarity maps
         Map<NodePair, Double> sigma_0 = new HashMap<>(initialMapping);
         Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
         Map<NodePair, Double> sigma_i = new HashMap<>(sigma_0);
@@ -91,7 +98,7 @@ public class SimilarityFlooding extends Matcher {
             }
 
             //Prüfen ob Residuum(sigma_i, sigma_i+1) konvergiert
-            convergence = hasConverged(sigma_i, sigma_i_plus_1, EPSILON);
+            convergence = hasConverged(sigma_i, sigma_i_plus_1, PRECISION_OF_CONVERGENCE);
             sigma_i.putAll(sigma_i_plus_1);
             iterationCount++;
         }
@@ -182,11 +189,8 @@ public class SimilarityFlooding extends Matcher {
         return simMatrix;
     }
 
+    //TODO: Make function a firstLine matcher for better comparison
     private Map<NodePair, Double> calculateInitialMapping(Graph<NodePair, CoefficientEdge> propagationGraph) {
-
-//        double initial_fd_sim = Double.parseDouble(FDSim);
-//        double initial_ucc_sim = Double.parseDouble(UCCSim);
-//        double initial_ind_sim = Double.parseDouble(INDSim);
 
         Map<NodePair, Double> initialMapping = new HashMap<>();
 
@@ -196,15 +200,12 @@ public class SimilarityFlooding extends Matcher {
             Levenshtein l = new Levenshtein();
             double similarity;
 
-            //All Pairs of ID Nodes assign init similarity of 0.0
+            //All Pairs with ID Nodes get assigned a initial similarity of 0.0
             if (node1.getValue().startsWith("FD") && node2.getValue().startsWith("FD")) {
-//                similarity = initial_fd_sim;
                 similarity = 0.0;
             } else if (node1.getValue().startsWith("UCC") && node2.getValue().startsWith("UCC")) {
-//                similarity = initial_ucc_sim;
                 similarity = 0.0;
             } else if (node1.getValue().startsWith("IND") && node2.getValue().startsWith("IND")) {
-//                similarity = initial_ind_sim;
                 similarity = 0.0;
             } else if (node1.isIDNode() || node2.isIDNode()) {
                 similarity = 0.0;
