@@ -34,12 +34,8 @@ public class SimilarityFlooding extends Matcher {
     //Fixed parameters
     private static final double LABEL_SCORE_WEIGHT = 0.5;
     public static final double SELECT_THRESHOLD_WEIGHT = 0.95;
-    private static final double PRECISION_OF_CONVERGENCE = 0.00001;
+    private static final double PRECISION_OF_CONVERGENCE = 0.0001;
     private static final int MAX_ITERATIONS = 200;
-
-    private static final String IND_FILTER_THRESHOLD_DEFAULT = "0.5";
-    private static final String FD_FILTER_THRESHOLD_DEFAULT = "0.5";
-    private static final String UCC_FILTER_THRESHOLD_DEFAULT = "0.5";
 
     //Free parameters
     private String propCoeffPolicy;
@@ -47,7 +43,6 @@ public class SimilarityFlooding extends Matcher {
     private String uccFilterThreshold;
     private String indFilterThreshold;
     private String fdFilterThreshold;
-    private String fdFilter;
 
     private static Map<NodePair, Double> similarityFlooding
             (Graph<NodePair, CoefficientEdge> propagationGraph, Map<NodePair, Double> initialMapping, FixpointFormula formula) {
@@ -145,20 +140,20 @@ public class SimilarityFlooding extends Matcher {
         Database sourceDb = matchTask.getScenario().getSourceDatabase();
         Database targetDb = matchTask.getScenario().getTargetDatabase();
 
-        if (this.indFilterThreshold == null) {
-            log.warn("No IND filter threshold specified. Using default value: {}", IND_FILTER_THRESHOLD_DEFAULT);
-            this.indFilterThreshold = IND_FILTER_THRESHOLD_DEFAULT;
-        }
-
-        if (this.fdFilterThreshold == null) {
-            log.warn("No FD filter threshold specified. Using default value: {}", FD_FILTER_THRESHOLD_DEFAULT);
-            this.fdFilterThreshold = FD_FILTER_THRESHOLD_DEFAULT;
-        }
-
-        if (this.uccFilterThreshold == null) {
-            log.warn("No UCC filter threshold specified. Using default value: {}", UCC_FILTER_THRESHOLD_DEFAULT);
-            this.uccFilterThreshold = UCC_FILTER_THRESHOLD_DEFAULT;
-        }
+//        if (this.indFilterThreshold == null) {
+//            log.warn("No IND filter threshold specified. Using default value: {}", IND_FILTER_THRESHOLD_DEFAULT);
+//            this.indFilterThreshold = IND_FILTER_THRESHOLD_DEFAULT;
+//        }
+//
+//        if (this.fdFilterThreshold == null) {
+//            log.warn("No FD filter threshold specified. Using default value: {}", FD_FILTER_THRESHOLD_DEFAULT);
+//            this.fdFilterThreshold = FD_FILTER_THRESHOLD_DEFAULT;
+//        }
+//
+//        if (this.uccFilterThreshold == null) {
+//            log.warn("No UCC filter threshold specified. Using default value: {}", UCC_FILTER_THRESHOLD_DEFAULT);
+//            this.uccFilterThreshold = UCC_FILTER_THRESHOLD_DEFAULT;
+//        }
 
         SchemaGraphBuilder schemaGraphBuilder = new SchemaGraphBuilder(this.uccFilterThreshold, this.indFilterThreshold, this.fdFilterThreshold);
 

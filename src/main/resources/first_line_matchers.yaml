@@ -7,7 +7,6 @@ params:
   indFilterThreshold: ["0.5"]
   uccFilterThreshold: ["0.5"]
   fdFilterThreshold: ["0.5"]
-  fdFilter: ["alt_ngpdep_max"]
 
 #---
 #name: "SimilarityFlooding"

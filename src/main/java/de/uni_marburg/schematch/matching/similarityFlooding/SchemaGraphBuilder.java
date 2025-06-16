@@ -106,16 +106,20 @@ class SchemaGraphBuilder {
 
         //Extending the schema-graph with dependency information:
 
-        //Add Constraint Node only when introducing additional Nodes for dependency
-
         Node constraintNode = new Node("Constraint", NodeType.CONSTRAINT, null, false, null, null, null);
         graphRepresentation.addVertex(constraintNode);
 
-        functionalDependencies(db, graphRepresentation, constraintNode);
+        if(!this.dependencyFilter.getFdFilterThreshold().isEmpty()) {
+            functionalDependencies(db, graphRepresentation, constraintNode);
+        }
 
-        uniqueColumnCombinations(db, graphRepresentation, constraintNode);
+        if(!this.dependencyFilter.getUccFilterThreshold().isEmpty()) {
+            uniqueColumnCombinations(db, graphRepresentation, constraintNode);
+        }
 
-        inclusionDependencies(db, graphRepresentation, constraintNode);
+        if(!this.dependencyFilter.getIndFilterThreshold().isEmpty()) {
+            inclusionDependencies(db, graphRepresentation, constraintNode);
+        }
 
         return graphRepresentation;
     }
@@ -294,7 +298,7 @@ class SchemaGraphBuilder {
             }
 
             //log.debug("TotalNodesPartOfTable: {}", tableOfUCC.getColumns().size());
-            log.debug("nodesPartOfUcc: {}, nodesNotPartOfUCC: {}", nodesPartOfUcc.size(), nodesNotPartOfUCC.size());
+            //log.debug("nodesPartOfUcc: {}, nodesNotPartOfUCC: {}", nodesPartOfUcc.size(), nodesNotPartOfUCC.size());
 
             for(Node IDNode : nodesPartOfUcc) {
                 graphRepresentation.addEdge(uccNode, IDNode, new LabelEdge("unique")); //TODO: Eventuell besseren Namen ausdenken
