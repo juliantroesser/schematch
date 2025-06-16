@@ -92,7 +92,6 @@ public class BayesianOptimization {
         similarityFlooding.setPropCoeffPolicy("INV_PROD");
         similarityFlooding.setFixpoint("A");
         similarityFlooding.setIndFilterThreshold("0.5");
-        similarityFlooding.setFdFilter("all");
     }
 
     /**

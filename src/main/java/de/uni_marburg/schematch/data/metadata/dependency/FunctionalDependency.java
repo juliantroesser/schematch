@@ -2,7 +2,6 @@ package de.uni_marburg.schematch.data.metadata.dependency;
 
 import de.uni_marburg.schematch.data.Column;
 import lombok.Data;
-
 import java.util.*;
 
 @Data
@@ -16,67 +15,6 @@ public class FunctionalDependency implements Dependency {
         this.dependant = right;
     }
 
-    public static double getSelfDependencyScore(Collection<Column> columnCombination) {
-
-        int N = columnCombination.iterator().next().getValues().size();
-        ArrayList<String> distinctValues = Util.getDistinctValues(columnCombination, N);
-        Map<String, Integer> frequencyCount = getFrequencyCount(columnCombination, N);
-
-        double score = 0.0;
-
-        for (String value : distinctValues) {
-            int frequency = frequencyCount.get(value);
-            score = score + (double) (frequency * frequency);
-        }
-
-        return score / (double) (N * N);
-    } //probabilistic self dependency measure
-
-
-    //----------------------------------------------------------------------------------------
-
-    public static int countNumberOfRecordsWithGivenXandY(String x, String y, Collection<Column> columnCombinationForX, Column columnForY, int N) {
-
-        int count = 0;
-
-        for (int i = 0; i < N; i++) {
-
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (Column column : columnCombinationForX) {
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-            stringBuilder.setLength(stringBuilder.length() - 1);
-
-            if (stringBuilder.toString().equals(x) && columnForY.getValues().get(i).equals(y)) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public static Map<String, Integer> getFrequencyCount(Collection<Column> columnCombination, int N) {
-
-        Map<String, Integer> frequencyCount = new HashMap<>();
-
-        for (int i = 0; i < N; i++) {
-            StringBuilder stringBuilder = new StringBuilder();
-
-            for (Column column : columnCombination) {
-                stringBuilder.append(column.getValues().get(i));
-                stringBuilder.append(",");
-            }
-
-            stringBuilder.setLength(stringBuilder.length() - 1);
-            String valuesForX = stringBuilder.toString();
-
-            frequencyCount.put(valuesForX, frequencyCount.getOrDefault(valuesForX, 0) + 1);
-        }
-
-        return frequencyCount;
-    }
-
     @Override
     public String toString() {
         String left = determinant.isEmpty() ? "[]" : Util.columnsToString(determinant);
@@ -84,84 +22,109 @@ public class FunctionalDependency implements Dependency {
         return left + " --> " + right;
     }
 
+    private List<String> getRowsAsStrings(Collection<Column> columns, int rowCount) {
 
-    public double getAltNGPDEPSumScore() {
+        List<String> rowsAsString = new ArrayList<>(rowCount);
+        StringBuilder stringBuilder = new StringBuilder();
 
+        for (int i = 0; i < rowCount; i++) {
+            for (Column column : columns) {
+                stringBuilder.append(column.getValues().get(i)).append("|"); //use delimiter to avoid ambiguities
+            }
+
+            stringBuilder.setLength(stringBuilder.length() - 1); //remove last delimiter
+            String rowAsString = stringBuilder.toString();
+            rowsAsString.add(rowAsString);
+            stringBuilder.setLength(0);
+        }
+
+        return rowsAsString;
+    }
+
+    private Map<String, Double> getProbabilityMap(List<String> rowsAsString, int rowCount) {
+
+        Map<String, Double> probabilityMap = new HashMap<>();
+
+        for (String rowAsString : rowsAsString) {
+            probabilityMap.merge(rowAsString, 1.0, Double::sum);
+        }
+
+        probabilityMap.replaceAll((k, v) -> v / rowCount);
+        return probabilityMap;
+    }
+
+    private Map<String, Map<String, Double>> getProbabilityMapGivenX(List<String> rowsAsStringX, List<String> rowsAsStringA, int rowCount) {
+
+        Map<String, Map<String, Double>> probabilityMapGivenX = new HashMap<>();
+
+        for (int i = 0; i < rowCount; i++) {
+            String x = rowsAsStringX.get(i);
+            String a = rowsAsStringA.get(i);
+
+            Map<String, Double> innerMap = probabilityMapGivenX.computeIfAbsent(x, k -> new HashMap<>());
+            innerMap.merge(a, 1.0, Double::sum);
+        }
+
+        for (Map<String, Double> map : probabilityMapGivenX.values()) {
+            double total = map.values().stream().mapToDouble(Double::doubleValue).sum();
+            map.replaceAll((k, v) -> v / total);
+        }
+
+        return probabilityMapGivenX;
+    }
+
+    public double calculateGPDEPScore() {
+
+        int rowCount = this.dependant.getValues().size();
+
+        List<String> rowsForXAsStrings = getRowsAsStrings(this.determinant, rowCount);
+        List<String> rowsForAAsStrings = this.getDependant().getValues();
+
+        Map<String, Double> probabilitiesForX = getProbabilityMap(rowsForXAsStrings, rowCount);
+        Map<String, Double> probabilitiesForA = getProbabilityMap(rowsForAAsStrings, rowCount);
+        Map<String, Map<String, Double>> probabilitiesForAGivenX = getProbabilityMapGivenX(rowsForXAsStrings, rowsForAAsStrings, rowCount);
+
+        double pdepXA = 0.0;
+
+        for(String x : probabilitiesForX.keySet()) {
+
+            double probabilityForX = probabilitiesForX.get(x);
+            double pdepAGivenX = 0;
+            Map<String, Double> probabilitiesForAGivenXMap = probabilitiesForAGivenX.get(x);
+
+            for(String a : probabilitiesForA.keySet()) {
+                double probabilityForAGivenX = probabilitiesForAGivenXMap.getOrDefault(a, 0.0);
+                pdepAGivenX = pdepAGivenX + probabilityForAGivenX * probabilityForAGivenX;
+            }
+
+            pdepXA = pdepXA + probabilityForX * pdepAGivenX;
+        }
+
+        double selfDependencyScoreA = probabilitiesForA.values().stream()
+                .mapToDouble(p -> p * p)
+                .sum();
+
+        double epdepXA = selfDependencyScoreA + ((probabilitiesForX.keySet().size() - 1.0) / (rowCount - 1.0)) * (1 - selfDependencyScoreA);
+
+        return pdepXA - epdepXA;
+    }
+
+    public double calculateNGPDEPScore() {
         if (this.getDeterminant().isEmpty()) {
             return 0.0;
         }
 
-        Column Y = this.getDependant();
+        Column A = this.getDependant();
+        double gpdepXA = this.calculateGPDEPScore();
 
-        double gpdepXY = getGPDEPScore();
+        Collection<FunctionalDependency> fdsWithDependentA =
+                A.getTable().getDatabase().getMetadata().getFunctionalDependenciesWithGivenDependent(A);
 
-        Collection<FunctionalDependency> fdsWithDependentY = this.getDependant().getTable().getDatabase().getMetadata().getFunctionalDependenciesWithGivenDependent(Y);
+        double sum = fdsWithDependentA.stream()
+                .mapToDouble(FunctionalDependency::calculateGPDEPScore)
+                .sum();
 
-        double sum = 0.0;
-
-        for (FunctionalDependency fd : fdsWithDependentY) {
-            sum += fd.getGPDEPScore();
-        }
-
-        if (sum == 0.0) {
-            return 0.0;
-        } else {
-            double score = gpdepXY / sum;
-            return Math.max(score, 0.0);
-        }
+        return sum == 0.0 ? 0.0 : Math.max(gpdepXA / sum, 0.0);
     }
-
-    //TODO: Utils Functions could be moved to another class
-
-    public double getGPDEPScore() {
-
-        if (this.getDeterminant().isEmpty()) { //As epdep Score for X -> Y with X = {} defaults to pdep(Y) which is 1 as all values are equal in Y
-            return 0.0;
-        }
-
-        Collection<Column> X = this.getDeterminant();
-        Column Y = this.getDependant();
-
-        double pdepY = getSelfDependencyScore(List.of(Y));
-        int N = this.getDependant().getValues().size();
-        int K = Util.getDistinctValues(X, N).size();
-
-        double pdepXY = this.getPDEPScore();
-        double epdepXY = pdepY + ((K - 1.0) / (N - 1.0)) * (1.0 - pdepY);
-
-        return pdepXY - epdepXY;
-    } //PDEP Measure with reduced bias
-
-    public double getPDEPScore() {
-
-        if (this.getDeterminant().isEmpty()) { //As Pdep Score for X -> Y with X = {} defaults to sum p(x) over all x as pdep(Y|x) becomes 1 as there is only one value in Y which is not dependent on x
-            return 1.0;
-        }
-
-        int N = this.getDependant().getValues().size();
-        Collection<Column> X = this.getDeterminant();
-        Column Y = this.getDependant();
-
-        ArrayList<String> distinctXValues = Util.getDistinctValues(X, N);
-        ArrayList<String> distinctYValues = Util.getDistinctValues(List.of(Y), N);
-        Map<String, Integer> frequencyCountForX = getFrequencyCount(X, N);
-
-        double score = 0.0;
-
-        for (String xValue : distinctXValues) {
-            for (String yValue : distinctYValues) {
-
-                int jointCount = countNumberOfRecordsWithGivenXandY(xValue, yValue, this.getDeterminant(), this.getDependant(), N);
-                int frequency = frequencyCountForX.get(xValue);
-
-                score = score + ((jointCount * jointCount) / (double) frequency);
-            }
-        }
-
-        return score / (double) N;
-    } //Standard probabilistic dependency measure
-
-    //-----------------------------------------------------------------------------------------
-
 
 }

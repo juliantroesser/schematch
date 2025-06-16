@@ -5,15 +5,18 @@ import de.uni_marburg.schematch.data.metadata.Datatype;
 import de.uni_marburg.schematch.data.metadata.dependency.FunctionalDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.InclusionDependency;
 import de.uni_marburg.schematch.data.metadata.dependency.UniqueColumnCombination;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Setter
+@Getter
 public class DependencyFilter {
     private static final Logger log = LogManager.getLogger(DependencyFilter.class);
 
@@ -38,7 +41,7 @@ public class DependencyFilter {
             //Determinant should have at least one attribute
             //Maximum determinant size of 3 (because large determinant often appear by chance)
             if (!fd.getDeterminant().isEmpty() && fd.getDeterminant().size() <= 3) {
-                double score = fd.getAltNGPDEPSumScore(); //TODO: function to calculate score type is hardcoded here
+                double score = fd.calculateNGPDEPScore();
 
                 if(score >= threshold) {
                     filteredFDs.add(fd);
