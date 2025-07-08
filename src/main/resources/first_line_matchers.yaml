@@ -1,12 +1,20 @@
 ---
-name: "SimilarityFlooding"
+name: "InitialMappingMatcher"
 packageName: "similarityFlooding"
 params:
-  propCoeffPolicy: ["INV_PROD", "INV_AVG"]
-  fixpoint: ["BASIC", "A", "B", "C"]
   indFilterThreshold: ["0"]
-  uccFilterThreshold: [""]
-  fdFilterThreshold: [""]
+  uccFilterThreshold: ["0"]
+  fdFilterThreshold: ["0"]
+
+#---
+#name: "SimilarityFlooding"
+#packageName: "similarityFlooding"
+#params:
+#  propCoeffPolicy: ["INV_AVG"]
+#  fixpoint: ["A"]
+#  indFilterThreshold: ["0.5"]
+#  uccFilterThreshold: ["0.5"]
+#  fdFilterThreshold: ["0.5"]
 
 #---
 #name: "SimilarityFlooding"
