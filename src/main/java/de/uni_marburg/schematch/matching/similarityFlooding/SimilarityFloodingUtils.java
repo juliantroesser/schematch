@@ -42,8 +42,6 @@ public class SimilarityFloodingUtils {
                 String targetLabel = targetColumns.get(j).getLabel();
                 Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable, null);
 
-                //TODO: Problem falls zwei verschiedene Tabellen beide Source sind und Attribut mit gleichem Namen haben -> Node langen Namen geben
-
                 float similarity = mapping.getOrDefault(new NodePair(sourceNode, targetNode), 0.0).floatValue();
 
                 simMatrix[sourceTable.getOffset() + i][targetTable.getOffset() + j] = similarity;
