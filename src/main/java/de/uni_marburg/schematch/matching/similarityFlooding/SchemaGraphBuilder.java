@@ -274,7 +274,7 @@ class SchemaGraphBuilder {
 
             Node uccNode = new Node("UCC" + uccID++, NodeType.CONSTRAINT, null, true, null, null, null);
             graphRepresentation.addVertex(uccNode);
-            graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type")); //TODO: Brauchen wir den constraintNode noch?
+            graphRepresentation.addEdge(uccNode, constraintNode, new LabelEdge("type"));
 
             List<Node> nodesPartOfUcc = new ArrayList<>();
 

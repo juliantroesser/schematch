@@ -73,9 +73,6 @@ public class UniqueColumnCombination implements Dependency {
             }
         }
 
-        //TODO: Judge attributeLeftOfUCC and attributesBetweenMinLeftAndMaxRightOfUCC if they are Primary Keys or Not
-        //Currently all attributes outside of these are considered non-primary
-
         Collection<Column> attributesLeftOfUCC = new HashSet<>();
 
         for (int i = 0; i < minIndexLeft; i++) {
