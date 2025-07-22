@@ -54,19 +54,19 @@ writeCacheFirstLineMatchers: False
 # Step 3: run similarity matrix boosting on the output of first line matchers
 runSimMatrixBoostingOnFirstLineMatchers: True
 saveOutputSimMatrixBoostingOnFirstLineMatchers: False
-evaluateSimMatrixBoostingOnFirstLineMatchers: True
+evaluateSimMatrixBoostingOnFirstLineMatchers: True # Should be true
 readCacheSimMatrixBoostingOnFirstLineMatchers: False
 writeCacheSimMatrixBoostingOnFirstLineMatchers: False
 # Step 4: run second line matchers (ensemble matchers and other matchers using output of first line matchers)
-runSecondLineMatchers: False
+runSecondLineMatchers: True
 saveOutputSecondLineMatchers: False
 evaluateSecondLineMatchers: False
 readCacheSecondLineMatchers: False
 writeCacheSecondLineMatchers: False
 # Step 5: run similarity matrix boosting on the output of second line matchers
-runSimMatrixBoostingOnSecondLineMatchers: False
+runSimMatrixBoostingOnSecondLineMatchers: True
 saveOutputSimMatrixBoostingOnSecondLineMatchers: False
-evaluateSimMatrixBoostingOnSecondLineMatchers: False
+evaluateSimMatrixBoostingOnSecondLineMatchers: True
 readCacheSimMatrixBoostingOnSecondLineMatchers: False
 writeCacheSimMatrixBoostingOnSecondLineMatchers: False
 

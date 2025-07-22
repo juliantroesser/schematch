@@ -52,7 +52,11 @@ public class SimilarityFlooding extends Matcher {
         int iterationCount = 0;
 
         //First, current and next similarity maps
-        Map<NodePair, Double> sigma_0 = new HashMap<>(initialMapping);
+        Map<NodePair, Double> sigma_0 = new HashMap<>();
+        for (NodePair node : propagationGraph.vertexSet()) {
+            sigma_0.put(node, initialMapping.getOrDefault(node, 0.0));
+        }
+
         Map<NodePair, Double> sigma_i_plus_1 = new HashMap<>();
         Map<NodePair, Double> sigma_i = new HashMap<>(sigma_0);
 
@@ -155,6 +159,10 @@ public class SimilarityFlooding extends Matcher {
 //            this.uccFilterThreshold = UCC_FILTER_THRESHOLD_DEFAULT;
 //        }
 
+        List<Matcher> matcher = matchTask.getFirstLineMatchers();
+        Matcher firstLineMatcher = matcher.get(0);
+        float [][] prevMatrix = matchTask.getSimMatrixFromPreviousMatchStep(matchStep, firstLineMatcher);
+
         SchemaGraphBuilder schemaGraphBuilder = new SchemaGraphBuilder(this.uccFilterThreshold, this.indFilterThreshold, this.fdFilterThreshold);
 
         Graph<Node, LabelEdge> sourceGraph = schemaGraphBuilder.transformIntoGraphRepresentationSchema(sourceDb);
@@ -167,7 +175,7 @@ public class SimilarityFlooding extends Matcher {
         Graph<NodePair, CoefficientEdge> propagationGraph = inducePropagationGraph(connectivityGraph, sourceGraph, targetGraph, policy);
 
         //Calculate the initial mapping (similarity) values
-        Map<NodePair, Double> initialMapping = calculateInitialMapping(propagationGraph);
+        Map<NodePair, Double> initialMapping = buildInitialMappingFromMatrix(prevMatrix,sourceDb, targetDb);
 
         //Run the similarity-flooding algorithm
         Map<NodePair, Double> floodingResults = similarityFlooding(propagationGraph, initialMapping, formula);
@@ -272,6 +280,38 @@ public class SimilarityFlooding extends Matcher {
             }
         }
     }
+
+
+    private Map<NodePair, Double> buildInitialMappingFromMatrix(float[][] simMatrix, Database sourceDb, Database targetDb) {
+        Map<NodePair, Double> initialMapping = new HashMap<>();
+
+        for (Table sourceTable : sourceDb.getTables()) {
+            for (Table targetTable : targetDb.getTables()) {
+
+                List<Column> sourceColumns = sourceTable.getColumns();
+                List<Column> targetColumns = targetTable.getColumns();
+
+                for (int i = 0; i < sourceColumns.size(); i++) {
+
+                    String sourceLabel = sourceColumns.get(i).getLabel();
+                    Node sourceNode = new Node(sourceLabel, NodeType.COLUMN, null, false, null, sourceTable, null);
+
+                    for (int j = 0; j < targetColumns.size(); j++) {
+
+                        String targetLabel = targetColumns.get(j).getLabel();
+                        Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable, null);
+
+                        float value = simMatrix[sourceTable.getOffset() + i] [targetTable.getOffset() + j];
+                        initialMapping.put(new NodePair(sourceNode,targetNode), Double.valueOf(value));
+                    }
+                }
+            }
+        }
+
+        return initialMapping;
+    }
+
+
 
     public enum Param {
         PROP_COEFF_POLICY("propCoeffPolicy", List.of("INV_AVG", "INV_PROD")),
