@@ -32,7 +32,7 @@ public class Main {
         // Configure similarity matrix boosting here for now
 
         SimMatrixBoosting firstLineSimMatrixBoosting = new ThresholdSelectionBoosting(0.95); //So if more than one matches are almost equally likely, we consider them all as true
-        SimMatrixBoosting secondLineSimMatrixBoosting = new IdentitySimMatrixBoosting();
+        SimMatrixBoosting secondLineSimMatrixBoosting = new ThresholdSelectionBoosting(0.95);
 
         log.info("Setting up matching steps as specified in config");
         List<MatchStep> matchSteps = new ArrayList<>();
