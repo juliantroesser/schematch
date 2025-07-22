@@ -31,8 +31,8 @@ public class Main {
         // FIXME: make sim matrix boosting configurable via .yaml files
         // Configure similarity matrix boosting here for now
 
-        SimMatrixBoosting firstLineSimMatrixBoosting = new ThresholdSelectionBoosting(1.0);
-        SimMatrixBoosting secondLineSimMatrixBoosting = new IdentitySimMatrixBoosting();
+        SimMatrixBoosting firstLineSimMatrixBoosting = new ThresholdSelectionBoosting(0.95); //So if more than one matches are almost equally likely, we consider them all as true
+        SimMatrixBoosting secondLineSimMatrixBoosting = new ThresholdSelectionBoosting(0.95);
 
         log.info("Setting up matching steps as specified in config");
         List<MatchStep> matchSteps = new ArrayList<>();
@@ -116,5 +116,8 @@ public class Main {
         log.info("Total time: " + DurationFormatUtils.formatDuration(durationInMillis, "HH:mm:ss:SSS"));
 
         log.info("Ending Schematch");
+
+        // Workaround for {@link de.hpi.isg.pyro.util.MemoryWatchdog} not stopping the JVM
+        System.exit(0);
     }
 }

@@ -1,191 +1,177 @@
 package de.uni_marburg.schematch.data.metadata.dependency;
 
 import de.uni_marburg.schematch.data.Column;
-import de.uni_marburg.schematch.data.metadata.Datatype;
-import de.uni_marburg.schematch.similarity.string.JaroWinkler;
+import de.uni_marburg.schematch.similarity.string.Levenshtein;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
 
+@SuppressWarnings("SameParameterValue")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InclusionDependency implements Dependency{
+public class InclusionDependency implements Dependency {
     Collection<Column> dependant; //Untermenge //In FKC ist Foreign Key
     Collection<Column> referenced; //Übermenge //dependent ist enthalten in referenced //In FKC ist Primary Key
 
-    public Collection<Column> getSubset(){
+    private static List<String> getTupleValuesForColumns(Collection<Column> columnCombination, int N) {
+
+        List<Column> sortedColumns = new ArrayList<>(columnCombination);
+        sortedColumns.sort(Comparator.comparing(Column::getLabel));
+
+        return Util.getDistinctValues(sortedColumns, N);
+    }
+
+    private static String getLabel(Collection<Column> columnCombination, boolean withTablePrefix) {
+
+        List<String> columnLabels = new ArrayList<>(columnCombination.size());
+        for (Column column : columnCombination) {
+            columnLabels.add(column.getLabel());
+        }
+        columnLabels.sort(String.CASE_INSENSITIVE_ORDER);
+
+        String tableName = columnCombination.iterator().next().getTable().getName();
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (String label : columnLabels) {
+            if (withTablePrefix) {
+                stringBuilder.append(tableName);
+                stringBuilder.append("_");
+            }
+            stringBuilder.append(label);
+            stringBuilder.append("-");
+        }
+
+        stringBuilder.setLength(stringBuilder.length() - 1);
+
+        return stringBuilder.toString();
+    }
+
+    public Collection<Column> getSubset() {
         return dependant;
     }
 
-    public Collection<Column> getSuperset(){
+    public Collection<Column> getSuperset() {
         return referenced;
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("[");
-        for (Column column : dependant) {
-            sb.append(column.getTable().getName());
-            sb.append(".");
-            sb.append(column.getLabel());
-            sb.append(", ");
-        }
-        sb.delete(sb.length() - 2, sb.length()); //delete trailing ", "
-        sb.append("]");
-        sb.append(" [= ");
-        sb.append("[");
-        for (Column column : referenced) {
-            sb.append(column.getTable().getName());
-            sb.append(".");
-            sb.append(column.getLabel());
-            sb.append(", ");
-        }
-        sb.delete(sb.length() - 2, sb.length());
-        sb.append("]");
-        return sb.toString();
+        String left = Util.columnsToString(dependant);
+        String right = Util.columnsToString(referenced);
+        return left + " [= " + right;
     }
 
-    //Check if IND could represent Foreign Key Constraint
-    //IND(A,B)
 
-    public Object[] calculateFeatureVectorFKC() {
+    public double getForeignKeyScore() {
+        double coverageScore = coverageScore();
+        double columnNameSimilarityScore = columnNameSimilarityScore();
+        double valueLengthDifferenceScore = valueLengthDifferenceScore();
+        double outOfRangeScore = outOfRangeScore();
 
-        if(this.getDependant().size() == 1 && this.getReferenced().size() == 1) {
-            Column foreignKey = this.getDependant().iterator().next(); //dependent //A
-            Column primaryKey = this.getReferenced().iterator().next(); //referenced //B
+        return (coverageScore + columnNameSimilarityScore + valueLengthDifferenceScore + outOfRangeScore) / 4.0;
+    }
 
-            Set<String> distinctForeignKeyValues = new HashSet<>(foreignKey.getValues());
-            Set<String> distinctPrimaryKeyValues = new HashSet<>(primaryKey.getValues());
+    private Set<String> getDistinctForeignKeyValues() {
+        return new HashSet<>(getForeignKeyValues());
+    }
 
-            String foreignKeyName = foreignKey.getLabel();
-            String primaryKeyName = primaryKey.getLabel();
+    private Set<String> getDistinctPrimaryKeyValues() {
+        return new HashSet<>(getPrimaryKeyValues());
+    }
 
-            int f1 = distinctDependentValues(distinctForeignKeyValues);
-            double f2 = coverage(distinctForeignKeyValues, distinctPrimaryKeyValues);
-            int f3 = dependentAndReferenced(foreignKey);
-            int f4 = multiDependent(foreignKey);
-            int f5 = multiReferenced(primaryKey);
-            double f6 = columnNameSimilarity(foreignKeyName, primaryKeyName + "_" + primaryKey.getTable().getName());
-            double f7 = valueLengthDifference(foreignKey, primaryKey);
-            double f8 = outOfRange(distinctForeignKeyValues, distinctPrimaryKeyValues);
-            boolean f9 = typicalNameSuffix(foreignKeyName);
-            double f10 = tableSizeRatio(foreignKey, primaryKey);
+    private List<String> getForeignKeyValues() {
+        Collection<Column> foreignKey = this.getDependant();
+        int tupleCountForeignKey = foreignKey.iterator().next().getValues().size();
+        return getTupleValuesForColumns(foreignKey, tupleCountForeignKey);
+    }
 
-            return new Object[]{f1, f2, f3, f4, f5, f6, f7, f8, f9, f10};
+    private List<String> getPrimaryKeyValues() {
+        Collection<Column> primaryKey = this.getReferenced();
+        int tupleCountPrimaryKey = primaryKey.iterator().next().getValues().size();
+        return getTupleValuesForColumns(primaryKey, tupleCountPrimaryKey);
+    }
+
+    private String getPrimaryKeyName(boolean withTablePrefix) {
+        Collection<Column> primaryKey = this.getReferenced();
+        return getLabel(primaryKey, withTablePrefix);
+    }
+
+    private String getForeignKeyName(boolean withTablePrefix) {
+        Collection<Column> foreignKey = this.getDependant();
+        return getLabel(foreignKey, withTablePrefix);
+    }
+
+    public double coverageScore() { //Range [0,1]: 1 best, every FK value has a match in PK, 0 worst
+
+        Set<String> distinctForeignKeyValues = this.getDistinctForeignKeyValues();
+        Set<String> distinctPrimaryKeyValues = this.getDistinctPrimaryKeyValues();
+
+        if (distinctForeignKeyValues.isEmpty()) {
+            return 0.0;
         } else {
-            return new Object[]{-1};
+
+            int commonValueCount = 0;
+
+            for (String value : distinctForeignKeyValues) { //Values of foreign Key that are also in primary Key
+                if (distinctPrimaryKeyValues.contains(value)) {
+                    commonValueCount++;
+                }
+            }
+
+            //Ratio to all values in Foreign Key
+            return (double) commonValueCount / (double) distinctForeignKeyValues.size();
         }
     }
 
-    private int distinctDependentValues(Set<String> distinctForeignKeyValues) {
-        return distinctForeignKeyValues.size();
+    public double columnNameSimilarityScore() { // range [0,1] 1 is exact match, 0 worst
+        Levenshtein levenshtein = new Levenshtein();
+
+        String foreignKeyName = getForeignKeyName(false); //Do not add table name as prefix as some foreign Keys already contain table in their label
+        String primaryKeyName = getPrimaryKeyName(true);
+
+        return levenshtein.compare(foreignKeyName.toLowerCase(), primaryKeyName.toLowerCase());
     } //The higher the better
 
-    private double coverage(Set<String> distinctForeignKeyValues, Set<String> distinctPrimaryKeyValues) {
-        Set<String> commonValues = new HashSet<>(distinctForeignKeyValues);
-        commonValues.retainAll(distinctPrimaryKeyValues);
+    public double valueLengthDifferenceScore() { //Range [0,1]: 1 indicating that both have the same average length, 0 that column(s) do not have values
 
-        return (double) commonValues.size() / (double) distinctPrimaryKeyValues.size();
-    } //The higher the better
+        List<String> foreignKeyValues = getForeignKeyValues();
+        List<String> primaryKeyValues = getPrimaryKeyValues();
 
-    private int dependentAndReferenced(Column foreignKey) {
-        Collection<InclusionDependency> inds = foreignKey.getTable().getDatabase().getMetadata().getInds();
-
-        int count = 0;
-
-        for(InclusionDependency ind : inds) {
-            if(ind.getReferenced().size() == 1) {
-                Column referenced = ind.getReferenced().iterator().next(); //referenced
-
-                if(referenced.equals(foreignKey)) {
-                    count++;
-                }
-            }
-        }
-
-        return count;
-    } //The lower the better
-
-    private int multiDependent(Column foreignKey) {
-        Collection<InclusionDependency> inds = foreignKey.getTable().getDatabase().getMetadata().getInds();
-
-        int count = 0;
-
-        for(InclusionDependency ind : inds) {
-            if(ind.getReferenced().size() == 1) {
-                Column dependent = ind.getDependant().iterator().next(); //referenced
-
-                if(dependent.equals(foreignKey)) {
-                    count++;
-                }
-            }
-        }
-
-        return count;
-    } //The lower the better
-
-    private int multiReferenced(Column primaryKey) {
-        Collection<InclusionDependency> inds = primaryKey.getTable().getDatabase().getMetadata().getInds();
-
-        int count = 0;
-
-        for(InclusionDependency ind : inds) {
-            if(ind.getReferenced().size() == 1) {
-                Column referenced = ind.getReferenced().iterator().next(); //referenced
-
-                if(referenced.equals(primaryKey)) {
-                    count++;
-                }
-            }
-        }
-
-        return count;
-    } //The higher the better
-
-    private double columnNameSimilarity(String foreignKeyName, String primaryKeyName) {
-        JaroWinkler jw = new JaroWinkler();
-        return jw.compare(foreignKeyName, primaryKeyName);
-    } //The higher the better
-
-    private double valueLengthDifference(Column foreignKey, Column primaryKey) {
-
-        OptionalDouble avgValueLengthForeignKey = foreignKey.getValues().stream().mapToInt(String::length).average();
-        OptionalDouble avgValueLengthPrimaryKey = primaryKey.getValues().stream().mapToInt(String::length).average();
-
-        if(avgValueLengthForeignKey.isPresent() && avgValueLengthPrimaryKey.isPresent()) {
-            return Math.abs(avgValueLengthForeignKey.getAsDouble() - avgValueLengthPrimaryKey.getAsDouble());
+        if (foreignKeyValues.isEmpty() || primaryKeyValues.isEmpty()) {
+            return 0.0;
         } else {
-            //throw new IllegalArgumentException("Columns do not contain values. Heuristic cannot be used.");
-            return -1.0;
+            double avgValueLengthForeignKey = foreignKeyValues.stream().mapToInt(String::length).average().orElse(0.0);
+            double avgValueLengthPrimaryKey = primaryKeyValues.stream().mapToInt(String::length).average().orElse(0.0);
+
+            double differenceInLength = Math.abs(avgValueLengthForeignKey - avgValueLengthPrimaryKey);
+            double maxAvgLength = Math.max(Math.max(avgValueLengthForeignKey, avgValueLengthPrimaryKey), 1.0);
+
+            return 1.0 - (differenceInLength / maxAvgLength);
         }
-    } //The lower the better
+    }
 
-    private double outOfRange(Set<String> distinctForeignKeyValues, Set<String> distinctPrimaryKeyValues) {
+    public double outOfRangeScore() {
 
-        Set<String> valuesOnlyContainedInPrimaryKey = new HashSet<>(distinctPrimaryKeyValues);
-        valuesOnlyContainedInPrimaryKey.removeAll(distinctForeignKeyValues);
+        Set<String> distinctForeignKeyValues = getDistinctForeignKeyValues();
+        Set<String> distinctPrimaryKeyValues = getDistinctPrimaryKeyValues();
 
-        return (double) valuesOnlyContainedInPrimaryKey.size() / (double) distinctPrimaryKeyValues.size();
-    } //The lower the better
+        if (distinctPrimaryKeyValues.isEmpty()) {
+            return 0.0;
+        }
 
-    private boolean typicalNameSuffix(String foreignKeyName) {
+        int countValuesOnlyInPrimaryKey = 0;
 
-        String[] suffixes = {"id", "key", "nr", "no"};
-
-        for(String suffix : suffixes) {
-            if(foreignKeyName.endsWith(suffix)) {
-                return true;
+        for (String value : distinctPrimaryKeyValues) { //Values from primary Key that are not in foreign Key
+            if (!distinctForeignKeyValues.contains(value)) {
+                countValuesOnlyInPrimaryKey++;
             }
         }
 
-        return false;
-    } //True is better
-
-    private double tableSizeRatio(Column foreignKey, Column primaryKey) {
-        return (double) foreignKey.getValues().size() / (double) primaryKey.getValues().size();
-    } //The higher the better
+        return 1.0 - (double) countValuesOnlyInPrimaryKey / distinctPrimaryKeyValues.size();
+    } //Range [0,1]: 1 is best as all foreign Key values are contained in primary Key, 0 worst
 
 }

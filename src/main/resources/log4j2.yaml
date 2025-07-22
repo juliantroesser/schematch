@@ -1,27 +1,28 @@
 Configuration:
-  status: INFO
+  status: INFO # This controls the logging level of the log4j2 framework itself
 
   appenders:
     Console:
       name: LogToConsole
       PatternLayout:
-        Pattern: "[%-5level] %d{HH:mm:ss.SSS} [%t] %c - %msg%n"
+        Pattern: "%highlight{[%-5level]} %d{HH:mm:ss.SSS} [%t] %c{1} - %msg%n" # Increase number in '%c{1}' to see more of the package name
 
     File:
       - name: LogToFile
         fileName: "logs/schematch_${date:yyyy-MM-dd_HH-mm-ss}.log"
         PatternLayout:
-          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n"
+          pattern: "[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n" # Don't forget to do the same here
 
   Loggers:
     logger:
       - name: de.uni_marburg.schematch
-        level: INFO
+        level: ALL # Change this to control log level. Possible values: ALL, TRACE, DEBUG, INFO, WARN, ERROR, FATAL, OFF
         additivity: false
         AppenderRef:
           - ref: LogToConsole
           - ref: LogToFile
 
+# This is the root logger. It will log all messages at the ERROR level and above to the console.
     Root:
       level: ERROR
       AppenderRef:

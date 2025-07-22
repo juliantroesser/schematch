@@ -1,0 +1,9 @@
+---
+name: "SimilarityFlooding"
+packageName: "similarityFlooding"
+params:
+  propCoeffPolicy: ["INV_AVG"]
+  fixpoint: ["A"]
+  indFilterThreshold: ["0.5"]
+  uccFilterThreshold: ["0.5"]
+  fdFilterThreshold: ["0.5"]

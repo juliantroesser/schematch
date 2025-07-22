@@ -1,20 +1,7 @@
 ---
-name: "SimilarityFlooding"
-packageName: "similarityFlooding"
-params:
-  wholeSchema: ["true"]
-  propCoeffPolicy: ["INV_PROD"]
-  fixpoint: ["BASIC"]
-  maxIter: ["100"]
-  FDV1: ["true"]
-  FDV2: ["false"]
-  UCCV1: ["false"]
-  UCCV2: ["false"]
-  INDV1: ["false"]
-  INDV2: ["false"]
-  FDSim: ["0"]
-  UCCSim: ["0"]
-  INDSim: ["0"]
+name: "LevenshteinMatcher"
+packageName: "similarity.label"
+
 
 
 

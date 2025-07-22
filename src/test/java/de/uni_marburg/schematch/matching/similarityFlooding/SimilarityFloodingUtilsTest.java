@@ -19,13 +19,13 @@ class SimilarityFloodingUtilsTest {
 
     @Test
     public void calcResidualVectorTest() {
-        Node a = new Node("a", null, null, false, null, null);
-        Node a1 = new Node("a1", null, null, false, null, null);
-        Node a2 = new Node("a2", null, null, false, null, null);
+        Node a = new Node("a", null, null, false, null, null, null);
+        Node a1 = new Node("a1", null, null, false, null, null, null);
+        Node a2 = new Node("a2", null, null, false, null, null, null);
 
-        Node b = new Node("b", null, null, false, null, null);
-        Node b1 = new Node("b1", null, null, false, null, null);
-        Node b2 = new Node("b2", null, null, false, null, null);
+        Node b = new Node("b", null, null, false, null, null, null);
+        Node b1 = new Node("b1", null, null, false, null, null, null);
+        Node b2 = new Node("b2", null, null, false, null, null, null);
 
         Map<NodePair, Double> sigma_i = new HashMap<>();
         sigma_i.put(new NodePair(a, b), 1.0);
@@ -48,13 +48,13 @@ class SimilarityFloodingUtilsTest {
 
     @Test
     public void hasConvergedTest() {
-        Node a = new Node("a", null, null, false, null, null);
-        Node a1 = new Node("a1", null, null, false, null, null);
-        Node a2 = new Node("a2", null, null, false, null, null);
+        Node a = new Node("a", null, null, false, null, null, null);
+        Node a1 = new Node("a1", null, null, false, null, null, null);
+        Node a2 = new Node("a2", null, null, false, null, null, null);
 
-        Node b = new Node("b", null, null, false, null, null);
-        Node b1 = new Node("b1", null, null, false, null, null);
-        Node b2 = new Node("b2", null, null, false, null, null);
+        Node b = new Node("b", null, null, false, null, null, null);
+        Node b1 = new Node("b1", null, null, false, null, null, null);
+        Node b2 = new Node("b2", null, null, false, null, null, null);
 
         Map<NodePair, Double> sigma_i = new HashMap<>();
         sigma_i.put(new NodePair(a, b), 1.0);

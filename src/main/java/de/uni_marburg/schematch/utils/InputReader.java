@@ -17,7 +17,6 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -188,9 +187,9 @@ public class InputReader {
 
             Collection<InclusionDependency> inds = readINDFile(indFilePath, database, database, indMap);
             //Added that INDs are calculated
-            if(inds.isEmpty()) {
-                inds = Metanome.executeIND(database.getTables()); //Find INDs
-            }
+//            if(inds.isEmpty()) {
+//                inds = Metanome.executePartialIND(database.getTables());
+//            }
 
             Collection<FunctionalDependency> fds = new ArrayList<>();
             Collection<UniqueColumnCombination> uccs = new ArrayList<>();
@@ -200,16 +199,18 @@ public class InputReader {
                 Path uccFilePath = metadataFolderPath.resolve(table.getName()).resolve("UCC_results.txt");
 
                 Collection<FunctionalDependency> datasetFDs = readFDFile(fdFilePath, table, fdMap);
-                if(datasetFDs.isEmpty()) {
-                    datasetFDs = Metanome.executeFD(List.of(table));
-                }
-                for (FunctionalDependency fd : datasetFDs) {
-                    fd.setPdepTuple(MetadataUtils.getPdep(fd));
-                }
+//                if(datasetFDs.isEmpty()) {
+//                    // datasetFDs = Metanome.executeFD(List.of(table));
+//                    datasetFDs = Metanome.executePartialFD(List.of(table));
+//                }
+//                for (FunctionalDependency fd : datasetFDs) {
+//                    fd.setPdepTriple(MetadataUtils.getPdep(fd));
+//                }
                 Collection<UniqueColumnCombination> datasetUCCs = readUCCFile(uccFilePath, table, uccMap);
-                if(datasetUCCs.isEmpty()) {
-                    datasetUCCs = Metanome.executeUCC(List.of(table));
-                }
+//                if(datasetUCCs.isEmpty()) {
+//                    // datasetUCCs = Metanome.executeUCC(List.of(table));
+//                    datasetUCCs = Metanome.executePartialUCC(List.of(table));
+//                }
                 fds.addAll(datasetFDs);
                 uccs.addAll(datasetUCCs);
             }

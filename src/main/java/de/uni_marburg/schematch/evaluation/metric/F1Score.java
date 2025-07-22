@@ -3,9 +3,6 @@ package de.uni_marburg.schematch.evaluation.metric;
 public class F1Score extends Metric {
     @Override
     public float run(int[] groundTruthVector, float[] simVector) {
-
-        //TODO: Implement Fall-out metric
-
         float precision = new Precision().run(groundTruthVector, simVector);
         float recall = new Recall().run(groundTruthVector, simVector);
 

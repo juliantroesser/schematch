@@ -34,7 +34,7 @@ evaluateAttributes: True
 saveOutputPerTablePair: False
 # adds header and index with attribute names to output files
 # applies to all matching steps for which output saving is enabled (see below)
-saveOutputVerbose: True
+saveOutputVerbose: False
 
 # MatchSteps configuration
 # run: execute this match step
@@ -47,26 +47,26 @@ saveOutputVerbose: True
 saveOutputTablePairGeneration: False
 evaluateTablePairGeneration: False
 # Step 2: run first line matchers (i.e., matchers that use table data to match)
-saveOutputFirstLineMatchers: True
+saveOutputFirstLineMatchers: False
 evaluateFirstLineMatchers: False
 readCacheFirstLineMatchers: False
 writeCacheFirstLineMatchers: False
 # Step 3: run similarity matrix boosting on the output of first line matchers
 runSimMatrixBoostingOnFirstLineMatchers: True
-saveOutputSimMatrixBoostingOnFirstLineMatchers: True
-evaluateSimMatrixBoostingOnFirstLineMatchers: True
+saveOutputSimMatrixBoostingOnFirstLineMatchers: False
+evaluateSimMatrixBoostingOnFirstLineMatchers: True # Should be true
 readCacheSimMatrixBoostingOnFirstLineMatchers: False
 writeCacheSimMatrixBoostingOnFirstLineMatchers: False
 # Step 4: run second line matchers (ensemble matchers and other matchers using output of first line matchers)
-runSecondLineMatchers: False
+runSecondLineMatchers: True
 saveOutputSecondLineMatchers: False
 evaluateSecondLineMatchers: False
 readCacheSecondLineMatchers: False
 writeCacheSecondLineMatchers: False
 # Step 5: run similarity matrix boosting on the output of second line matchers
-runSimMatrixBoostingOnSecondLineMatchers: False
+runSimMatrixBoostingOnSecondLineMatchers: True
 saveOutputSimMatrixBoostingOnSecondLineMatchers: False
-evaluateSimMatrixBoostingOnSecondLineMatchers: False
+evaluateSimMatrixBoostingOnSecondLineMatchers: True
 readCacheSimMatrixBoostingOnSecondLineMatchers: False
 writeCacheSimMatrixBoostingOnSecondLineMatchers: False
 

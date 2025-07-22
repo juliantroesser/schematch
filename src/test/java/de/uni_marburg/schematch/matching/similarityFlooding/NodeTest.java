@@ -15,10 +15,10 @@ class NodeTest {
     @Test
     void isIDNode() {
         Column column = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
-        Table table = new Table("table", List.of("lastname"), List.of(column), null);
+        Table table = new Table("table", List.of("lastname"), List.of(column), null, null);
 
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node2 = new Node("NodeID1", NodeType.COLUMN, Datatype.STRING, true, node1, table);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, column);
+        Node node2 = new Node("NodeID1", NodeType.COLUMN, Datatype.STRING, true, node1, table, null);
 
         Assertions.assertFalse(node1.isIDNode());
         Assertions.assertTrue(node2.isIDNode());
@@ -27,10 +27,10 @@ class NodeTest {
     @Test
     void getNameNode() {
         Column column = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
-        Table table = new Table("table", List.of("lastname"), List.of(column), null);
+        Table table = new Table("table", List.of("lastname"), List.of(column), null, null);
 
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node2 = new Node("NodeID1", NodeType.COLUMN, Datatype.STRING, true, node1, table);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, column);
+        Node node2 = new Node("NodeID1", NodeType.COLUMN, Datatype.STRING, true, node1, table, null);
 
         Assertions.assertFalse(node1.isIDNode());
         Assertions.assertTrue(node2.isIDNode());
@@ -42,29 +42,29 @@ class NodeTest {
     void testEquals() {
         Column column1 = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
         Column column2 = new Column("surname", List.of("Patel, Kim, Garcia"));
-        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null);
-        Table table2 = new Table("table2", List.of("lastname, surname"), List.of(column1, column2), null);
+        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null, null);
+        Table table2 = new Table("table2", List.of("lastname, surname"), List.of(column1, column2), null, null);
 
         //Same Name, same table
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
-        Node node2 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, node1, table1);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1, column1);
+        Node node2 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, node1, table1, column1);
         Assertions.assertEquals(node1, node2);
 
         //Different Name, same table
-        Node node3 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
+        Node node3 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, table1, column2);
         Assertions.assertNotEquals(node1, node3);
         Assertions.assertNotEquals(node2, node3);
 
         //Same Name, Different Table
-        Node node4 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table2);
+        Node node4 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table2, column1);
         Assertions.assertNotEquals(node1, node4);
 
         //Same Name, null value as Table
-        Node node5 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node6 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, node1, null);
+        Node node5 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, column1);
+        Node node6 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, node1, null, column1);
         Assertions.assertEquals(node5, node6);
 
-        Node node7 = new Node("surname", NodeType.COLUMN, Datatype.STRING, true, node1, null);
+        Node node7 = new Node("surname", NodeType.COLUMN, Datatype.STRING, true, node1, null, column2);
         Assertions.assertNotEquals(node5, node7);
         Assertions.assertNotEquals(node6, node7);
     }
@@ -73,9 +73,9 @@ class NodeTest {
     void testHashCode() {
 
         //Case 1: Table is null
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null);
-        Node node2 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, null, null);
-        Node node3 = new Node("surname", NodeType.COLUMN, Datatype.STRING, true, null, null);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, null, null);
+        Node node2 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, null, null, null);
+        Node node3 = new Node("surname", NodeType.COLUMN, Datatype.STRING, true, null, null, null);
 
         Assertions.assertEquals(node1.hashCode(), node1.hashCode());
         Assertions.assertEquals(node1.hashCode(), node2.hashCode());
@@ -85,10 +85,10 @@ class NodeTest {
         //Case 2: Table is not null
         Column column1 = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
         Column column2 = new Column("surname", List.of("Patel, Kim, Garcia"));
-        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null);
-        Node node4 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
-        Node node5 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, null, table1);
-        Node node6 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
+        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null, null);
+        Node node4 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1, column1);
+        Node node5 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, true, null, table1, column1);
+        Node node6 = new Node("surname", NodeType.COLUMN, Datatype.STRING, false, null, table1, column2);
 
         //Consistency
         Assertions.assertEquals(node4.hashCode(), node4.hashCode());
@@ -101,12 +101,12 @@ class NodeTest {
     void testToString() {
         Column column1 = new Column("lastname", List.of("Johnson, Martinez, O'Connor"));
         Column column2 = new Column("surname", List.of("Patel, Kim, Garcia"));
-        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null);
-        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1);
+        Table table1 = new Table("table1", List.of("lastname, surname"), List.of(column1, column2), null, null);
+        Node node1 = new Node("lastname", NodeType.COLUMN, Datatype.STRING, false, null, table1, column1);
 
         Assertions.assertEquals("table1__lastname", node1.toString());
 
-        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, true, null, null);
+        Node node2 = new Node("surname", NodeType.COLUMN, Datatype.STRING, true, null, null, column2);
 
         Assertions.assertEquals("surname", node2.toString());
     }
