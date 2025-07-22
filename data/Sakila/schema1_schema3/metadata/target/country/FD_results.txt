@@ -1,2 +1,0 @@
-[country.country_id] --> country.country
-[country.country] --> country.country_id

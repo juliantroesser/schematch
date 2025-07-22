@@ -1,4 +1,0 @@
-[target_publishers.pub_id]
-[target_publishers.pub_name]
-[target_publishers.city]
-[target_publishers.country, target_publishers.state]

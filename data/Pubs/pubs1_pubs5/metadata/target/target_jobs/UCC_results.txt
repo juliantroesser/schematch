@@ -1,2 +1,0 @@
-[target_jobs.job_id]
-[target_jobs.job_desc]

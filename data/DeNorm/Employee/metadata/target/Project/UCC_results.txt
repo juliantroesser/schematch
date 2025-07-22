@@ -1,5 +1,0 @@
-[Project.EmployeeID]
-[Project.EmployeeName]
-[Project.Department, Project.ProjectID]
-[Project.Department, Project.ProjectManager]
-[Project.Department, Project.ManagerRoom]

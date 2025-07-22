@@ -1,2 +1,0 @@
-[isbn.citkey]
-[isbn.isbnnum]

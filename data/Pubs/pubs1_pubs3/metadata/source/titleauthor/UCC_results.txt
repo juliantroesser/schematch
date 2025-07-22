@@ -1,2 +1,0 @@
-[titleauthor.au_id, titleauthor.title_id]
-[titleauthor.au_ord, titleauthor.title_id]

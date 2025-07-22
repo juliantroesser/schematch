@@ -1,1 +1,0 @@
-[film_category.film_id] --> film_category.category_id
