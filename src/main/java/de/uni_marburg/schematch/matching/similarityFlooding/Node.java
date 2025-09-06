@@ -19,7 +19,6 @@ public class Node {
     @Getter
     private final Column representedColumn;
 
-
     public Node(String value, NodeType nodeType, Datatype datatype, boolean isIDNode, Node name, Table table, Column representedColumn) {
         this.value = value;
         this.nodeType = nodeType;
@@ -30,7 +29,6 @@ public class Node {
         this.representedColumn = representedColumn;
     }
 
-
     public boolean isIDNode() {
         return isIDNode;
     }
@@ -38,8 +36,6 @@ public class Node {
     public Node getNameNode() {
         return name;
     }
-
-    //Valentine: equal if: this.name = other.name & this.db = other.db
 
     @Override
     public boolean equals(Object obj) {

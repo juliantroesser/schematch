@@ -55,8 +55,6 @@ public class SimilarityFloodingUtils {
 
         double distance = getDistanceBetweenProbabilityMaps(probabilityMap1, probabilityMap2);
 
-        //log.info("Distance: " + distance + "; Similarity: " + 1.0 / (1.0 + distance));
-
         return 1.0 / (1.0 + distance);
     }
 

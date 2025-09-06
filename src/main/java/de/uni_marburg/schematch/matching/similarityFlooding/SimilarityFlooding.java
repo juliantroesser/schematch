@@ -192,8 +192,9 @@ public class SimilarityFlooding extends Matcher {
         return simMatrix;
     }
 
-    //TODO: Make function a firstLine matcher for better comparison
     private Map<NodePair, Double> calculateInitialMapping(Graph<NodePair, CoefficientEdge> propagationGraph) {
+        //Method to calculate initial similarities between NodePairs
+        //Currently not used, as SimilarityFlooding Algorithm is used as second-line matcher
 
         Map<NodePair, Double> initialMapping = new HashMap<>();
 
@@ -281,7 +282,6 @@ public class SimilarityFlooding extends Matcher {
         }
     }
 
-
     private Map<NodePair, Double> buildInitialMappingFromMatrix(float[][] simMatrix, Database sourceDb, Database targetDb) {
         Map<NodePair, Double> initialMapping = new HashMap<>();
 
@@ -302,7 +302,7 @@ public class SimilarityFlooding extends Matcher {
                         Node targetNode = new Node(targetLabel, NodeType.COLUMN, null, false, null, targetTable, null);
 
                         float value = simMatrix[sourceTable.getOffset() + i] [targetTable.getOffset() + j];
-                        initialMapping.put(new NodePair(sourceNode,targetNode), Double.valueOf(value));
+                        initialMapping.put(new NodePair(sourceNode,targetNode), (double) value);
                     }
                 }
             }
@@ -311,15 +311,12 @@ public class SimilarityFlooding extends Matcher {
         return initialMapping;
     }
 
-
-
     public enum Param {
         PROP_COEFF_POLICY("propCoeffPolicy", List.of("INV_AVG", "INV_PROD")),
-        FIXPOINT("fixpoint", List.of("A", "B", "C")),
-//        IND_FILTER_THRESHOLD("indFilterThreshold", List.of("normalizedValue")),
-        FD_FILTER("fdFilter", List.of("ngpdep", "alt_ngpdep_sum", "alt_ngpdep_max"));
-//        FD_FILTER_THRESHOLD("fdFilterThreshold", List.of("normalizedValue"));
-//        UCC_FILTER_THRESHOLD("uccFilterThreshold", List.of("normalizedValue"));
+        FIXPOINT("fixpoint", List.of("BASIC","A", "B", "C")),
+        IND_FILTER_THRESHOLD("indFilterThreshold", List.of("normalizedValue")),
+        FD_FILTER_THRESHOLD("fdFilterThreshold", List.of("normalizedValue")),
+        UCC_FILTER_THRESHOLD("uccFilterThreshold", List.of("normalizedValue"));
 
         public final String key;
         public final Collection<String> possibleValues;

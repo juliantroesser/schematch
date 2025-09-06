@@ -61,13 +61,6 @@ public enum PropagationCoefficientPolicy {
         public List<Map<String, Double>> evaluate(Node nodeGraph1, Node nodeGraph2, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) throws NoSuchMethodException {
             return new ArrayList<>();
         }
-    },
-
-    CONSTANT_POINT_FIVE {
-        @Override
-        public List<Map<String, Double>> evaluate(Node nodeGraph1, Node nodeGraph2, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) throws NoSuchMethodException {
-            return new ArrayList<>();
-        }
     };
 
     public List<Map<String, Double>> evaluate(Node nodeGraph1, Node nodeGraph2, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2) throws NoSuchMethodException {

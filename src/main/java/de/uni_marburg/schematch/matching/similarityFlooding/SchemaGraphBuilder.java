@@ -10,7 +10,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
-
 import java.util.*;
 
 class SchemaGraphBuilder {
@@ -25,11 +24,8 @@ class SchemaGraphBuilder {
 
         Graph<NodePair, LabelEdge> connectivityGraph = new DefaultDirectedWeightedGraph<>(LabelEdge.class);
 
-        //Für jede Kante aus Graph1
         for (LabelEdge label1 : graph1.edgeSet()) {
-            //Für jede Kante aus Graph2
             for (LabelEdge label2 : graph2.edgeSet()) {
-                //Falls die Labels beider Kanten gleich sind
                 if (label1 != label2 && label1.equals(label2)) {
 
                     Node sourceVertex1 = graph1.getEdgeSource(label1);
@@ -38,16 +34,12 @@ class SchemaGraphBuilder {
                     Node sourceVertex2 = graph2.getEdgeSource(label2);
                     Node targetVertex2 = graph2.getEdgeTarget(label2);
 
-                    //Knotenpaar1 erstellen mit NodePair(startKnotenKante1, startKnotenKante2)
                     NodePair connectedSourceNode = new NodePair(sourceVertex1, sourceVertex2);
-                    //Knotenpaar2 erstellen mit NodePair(endKnotenKante1, endKnotenKante2)
                     NodePair connectedTargetNode = new NodePair(targetVertex1, targetVertex2);
 
-                    //Beide Knoten zu Graph hinzufügen
                     connectivityGraph.addVertex(connectedSourceNode);
                     connectivityGraph.addVertex(connectedTargetNode);
 
-                    //Kante von Knotenpaar1 zu Knotenpaar2 mit Label der beiden Kanten
                     connectivityGraph.addEdge(connectedSourceNode, connectedTargetNode, new LabelEdge(label1.getLabel()));
                 }
             }
@@ -57,8 +49,7 @@ class SchemaGraphBuilder {
     }
 
     static Graph<NodePair, CoefficientEdge> inducePropagationGraph
-            (Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy
-                    policy) {
+            (Graph<NodePair, LabelEdge> connectivityGraph, Graph<Node, LabelEdge> graph1, Graph<Node, LabelEdge> graph2, PropagationCoefficientPolicy policy) {
 
         Graph<NodePair, CoefficientEdge> propagationGraph = new DefaultDirectedWeightedGraph<>(CoefficientEdge.class);
 
@@ -76,7 +67,7 @@ class SchemaGraphBuilder {
             try {
                 propagationCoefficients = policy.evaluate(nodeGraph1, nodeGraph2, graph1, graph2);
             } catch (Exception e) {
-                log.info("Not a policy");
+                log.info("Not a valid propagation coefficient calculation policy");
             }
 
             Map<String, Double> countInLabelsTotal = propagationCoefficients.get(0);
@@ -173,14 +164,14 @@ class SchemaGraphBuilder {
                 Node columnDataType = new Node(column.getDatatype().toString(), NodeType.COLUMN_TYPE, column.getDatatype(), false, null, null, null);
                 boolean dataTypeNodeExistsInGraph = graphRepresentation.containsVertex(columnDataType);
 
-                if (dataTypeNodeExistsInGraph) { //Dann Kante zu
+                if (dataTypeNodeExistsInGraph) { //Edge to existing node
 
                     Set<LabelEdge> edgesOfIdToColumnType = graphRepresentation.incomingEdgesOf(columnDataType);
                     LabelEdge edgeOfIdToColumnType = edgesOfIdToColumnType.stream().findFirst().orElseThrow(() -> new NoSuchElementException("No such data Type edge present in the graph"));
                     Node columnTypeIdentifier = graphRepresentation.getEdgeSource(edgeOfIdToColumnType);
                     graphRepresentation.addEdge(currentColumnNode, columnTypeIdentifier, new LabelEdge("datatype"));
 
-                } else { //Neuen Knoten anlegen
+                } else { //Create new node
 
                     Node columnTypeIdentifier = new Node("NodeID" + uniqueID++, NodeType.COLUMN_TYPE, column.getDatatype(), true, columnDataType, null, null);
 
@@ -231,6 +222,7 @@ class SchemaGraphBuilder {
 
     @Deprecated
     private void uniqueColumnCombinationsLegacy(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
+        //Legacy way of extending the graph representation with ucc info
         List<UniqueColumnCombination> uniqueColumnCombinations = db.getMetadata().getUccs().stream().toList();
         int uccID = 1;
 
@@ -297,15 +289,12 @@ class SchemaGraphBuilder {
                 }
             }
 
-            //log.debug("TotalNodesPartOfTable: {}", tableOfUCC.getColumns().size());
-            //log.debug("nodesPartOfUcc: {}, nodesNotPartOfUCC: {}", nodesPartOfUcc.size(), nodesNotPartOfUCC.size());
-
             for(Node IDNode : nodesPartOfUcc) {
-                graphRepresentation.addEdge(uccNode, IDNode, new LabelEdge("unique")); //TODO: Eventuell besseren Namen ausdenken
+                graphRepresentation.addEdge(uccNode, IDNode, new LabelEdge("unique"));
             }
 
             for(Node IDNode : nodesNotPartOfUCC) {
-                graphRepresentation.addEdge(uccNode, IDNode, new LabelEdge("notunique")); //TODO: Definitiv besseren Namen ausdenken
+                graphRepresentation.addEdge(uccNode, IDNode, new LabelEdge("notunique"));
             }
         }
     }
@@ -313,7 +302,7 @@ class SchemaGraphBuilder {
     private void functionalDependencies(Database db, Graph<Node, LabelEdge> graphRepresentation, Node constraintNode) {
         Collection<FunctionalDependency> functionalDependencies;
 
-        functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies(); //We only use fds that are not a UCC themselves, as keys are trivial fds
+        functionalDependencies = db.getMetadata().getMeaningfulFunctionalDependencies(); //only use fds that are not a UCC themselves, as keys are trivial fds
 
         int fdID = 1;
 

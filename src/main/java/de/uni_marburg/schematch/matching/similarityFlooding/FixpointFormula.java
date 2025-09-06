@@ -3,11 +3,6 @@ import org.jgrapht.Graph;
 import java.util.Map;
 import java.util.Set;
 
-/**
- * Enum Class that holds the FixpointFormulas for the SimilarityFlooding Algorithm
- * Each Object decides how to perform the calculations.
- */
-
 public enum FixpointFormula {
 
     BASIC {
@@ -82,6 +77,8 @@ public enum FixpointFormula {
             return sigma_0.get(node) + phi;
         }
     },
+
+    // Weighted variants for the Fixpoint Formulas
 
     FORMULA_A_Lambda {
         @Override
@@ -216,8 +213,8 @@ public enum FixpointFormula {
         }
     };
 
-    protected static final double LAMBDA_D = 0.0; //TODO: Find good values
-    protected static final double LAMBDA_E = 1.0; //TODO: Find good values
+    protected static final double LAMBDA_D = 1.0;
+    protected static final double LAMBDA_E = 1.0;
 
     public double evaluate(NodePair node, Set<NodePair> neighborNodes, Map<NodePair, Double> sigma_0, Map<NodePair, Double> sigma_i, Graph<NodePair, CoefficientEdge> propagationGraph) throws NoSuchMethodException {
         throw new NoSuchMethodException("Not implemented");
